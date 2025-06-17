@@ -1,6 +1,7 @@
+import pytest
+
 from src.ssd import VirtualSSD
 from src.write_command import WriteCommand
-
 
 def test_write_command_성공(mocker):
     mock_ssd = mocker.Mock(spec=VirtualSSD)
@@ -12,9 +13,10 @@ def test_write_command_성공(mocker):
 
     mock_ssd.write.assert_called_once()
 
-def test_write_command_유효성검사_LBA오류(mocker):
+
+@pytest.mark.parametrize('test_address', [-1, 200])
+def test_write_command_유효성검사_LBA오류(test_address, mocker):
     mock_ssd = mocker.Mock(spec=VirtualSSD)
-    test_address = 200
     test_value = "0x12345678"
 
     write_cmd = WriteCommand(mock_ssd, test_address, test_value)
