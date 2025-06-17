@@ -6,10 +6,16 @@ class ReadCommand(CommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._address: int = self._arguments
+        self._address: int = self._arguments[0]
 
     def run(self) -> str:
+        if self.validate() is False:
+            return ""
+
         return self._ssd_driver.read(self._address)
 
     def validate(self) -> bool:
-        pass
+        if not 0 <= self._address <= 99:
+            return False
+
+        return True
