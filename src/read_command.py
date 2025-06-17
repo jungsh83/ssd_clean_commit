@@ -16,7 +16,7 @@ class ReadCommand(CommandAction):
         return f'LBA {self._address}: {self._ssd_driver.read(self._address)}'
 
     def validate(self) -> bool:
-        if not 0 <= self._address <= 99:
+        if (not 0 <= self._address <= 99) or (not isinstance(self._address, int)):
             return False
 
         return True

@@ -4,10 +4,14 @@ from src.read_command import ReadCommand
 from src.ssd import VirtualSSD
 
 
-def test_read_command_성공(mocker):
+@pytest.fixture
+def mock_ssd(mocker):
     mock_ssd = mocker.Mock(spec=VirtualSSD)
-    test_address = 3
-    test_value = "0x00000000"
+    return mock_ssd
+
+
+@pytest.mark.parametrize('test_address, test_value', [(3, "0x00000000"), (99, "0xABCDEF00"), (50, "0x12345678")])
+def test_read_command_성공(test_address, test_value, mock_ssd):
     mock_ssd.read.return_value = test_value
 
     read_cmd = ReadCommand(mock_ssd, test_address)
@@ -17,10 +21,8 @@ def test_read_command_성공(mocker):
     assert read_value == f'LBA {test_address}: {test_value}'
 
 
-def test_read_command_유효성체크_LBA에러(mocker):
-    mock_ssd = mocker.Mock(spec=VirtualSSD)
-    test_address = 100
-
+@pytest.mark.parametrize('test_address', [100, 999, 0.1, -1])
+def test_read_command_유효성체크_LBA에러(test_address, mock_ssd):
     read_cmd = ReadCommand(mock_ssd, test_address)
 
     with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED_ADDRESS):
