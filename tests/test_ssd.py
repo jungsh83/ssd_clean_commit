@@ -50,6 +50,7 @@ def test_write_lba가_invalid_값이면_output에_ERROR():
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == 'ERROR'
 
+
 def test_write_lba가_overflow_값이면_output에_ERROR():
     ssd = VirtualSSD()
     ssd.write(100, '0x12345678')  # 0~99까지만 유효

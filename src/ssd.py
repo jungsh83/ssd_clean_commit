@@ -8,10 +8,10 @@ class VirtualSSD:
     LBA_COUNT = 100
 
     def __init__(self):
-        os.makedirs(os.path.dirname(self.NAND_PATH), exist_ok=True)
         self._initialize_nand_if_needed()
 
     def _initialize_nand_if_needed(self):
+        os.makedirs(os.path.dirname(self.NAND_PATH), exist_ok=True)
         if not os.path.exists(self.NAND_PATH):
             with open(self.NAND_PATH, 'w') as f:
                 for _ in range(self.LBA_COUNT):
