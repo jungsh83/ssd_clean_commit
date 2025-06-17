@@ -12,9 +12,12 @@ class VirtualSSD:
         self.output_file = output_file
 
     def read(self, lba: int) -> str:
-        """지정 LBA에서 4 Byte 값을 읽어온다."""
-        # 아직 구현 안 됨 → 테스트가 실패해야 정상
-        return "0x00000000"
+        # Green 단계용: 항상 기본값 반환 및 기록만 수행
+        value = "0x00000000"
+        # 출력 파일에 덮어쓰기 방식으로 한 줄 기록
+        with open(self.output_file, 'w') as out:
+            out.write(value + "\n")
+        return value
 
     def write(self, lba: int, value: str) -> None:
         """지정 LBA에 4 Byte 값을 기록한다."""
