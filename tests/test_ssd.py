@@ -4,7 +4,14 @@ from src.ssd import VirtualSSD
 
 # 1) 정상 LBA를 읽는 경우
 def test_read_valid_lba():
-    pass
+    # data/ssd_nand.txt를 그대로 사용
+    nand_file = "./data/ssd_nand.txt"
+    # 출력 파일 경로는 필요하지만, 내용 검사는 하지 않음
+    out_file = "dummy_output.txt"
+
+    ssd = VirtualSSD(nand_file, out_file)
+    # read(0) 은 항상 "0x00000000" 을 반환해야 함
+    assert ssd.read(0) == "0x00000000"
 def test_read_valid_lba_should_return_value_and_write_to_output(tmp_path):
     pass
 # 2) 기록이 없던 LBA를 읽는 경우
