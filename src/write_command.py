@@ -12,7 +12,7 @@ class WriteCommand(CommandAction):
         self._ssd_driver.write(self._address, self._value)
 
     def validate(self) -> bool:
-        if self._address == 200 or self._address == -1:
+        if not 0 <= self._address <= 99:
             return False
         else:
             return True
