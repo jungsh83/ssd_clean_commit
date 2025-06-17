@@ -37,7 +37,7 @@ def test_수행_성공(mocker: MockerFixture):
     out = catch_run_stdout(sut)
 
     # assert
-    assert out == "PASS"
+    assert out == "PASS\n"
 
 def test_수행_실패(mocker: MockerFixture):
     data_dict = {}
@@ -59,7 +59,7 @@ def test_수행_실패(mocker: MockerFixture):
     out = catch_run_stdout(sut)
 
     # assert
-    assert out == "FAIL"
+    assert out == "FAIL\n"
 
 
 
