@@ -23,6 +23,10 @@ class VirtualSSD:
         return "0x00000000"
 
     def write(self, lba: int, value: str) -> None:
+        if not (0 <= lba < self.LBA_COUNT):
+            with open(self.OUTPUT_PATH, 'w') as f:
+                f.write('ERROR')
+            return
         data_lines = self._load_nand()
         data_lines[lba] = value
         self._save_nand(data_lines)
