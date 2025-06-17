@@ -7,12 +7,12 @@ NAND_FILE = "./data/ssd_nand.txt"
 OUT_FILE = "./data/output.txt"
 
 # 1) 정상 LBA를 읽는 경우
-def 정상_LBA_0_를_읽는_경우():
+def test_정상_LBA_0_를_읽는_경우():
     ssd = VirtualSSD(NAND_FILE, OUT_FILE)
     # read(0) 은 항상 "0x00000000" 을 반환해야 함
     assert ssd.read(0) == "0x00000000"
 
-def 정상_LBA_0을_읽고_파일에_출력():
+def test_정상_LBA_0을_읽고_파일에_출력():
     """
     read() 호출 후
     data/ssd_output.txt에 한 줄로 "0x00000000"이 기록되어야 한다.
@@ -23,7 +23,7 @@ def 정상_LBA_0을_읽고_파일에_출력():
     with open(OUT_FILE, "r") as f:
         assert f.read().strip() == "0x00000000"
 
-def test_read_valid_lba_should_return_value_and_write_to_output(tmp_path):
+def test_정상파일_여러값을읽은후_출력(tmp_path):
     pass
 # 2) 기록이 없던 LBA를 읽는 경우
 def test_read_unwritten_lba_returns_zero_and_writes_zero(tmp_path):
