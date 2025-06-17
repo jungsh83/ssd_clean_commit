@@ -26,7 +26,7 @@ def main():
 
             handler_instance = handler(ssd_driver)
 
-            result = handler_instance.run_test(*args)
+            result = handler_instance.run(*args)
             print(f"[{command.upper()}] {result}")
 
         except Exception as e:
