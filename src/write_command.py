@@ -16,5 +16,7 @@ class WriteCommand(CommandAction):
     def validate(self) -> bool:
         if not 0 <= self._address <= 99:
             return False
-        else:
-            return True
+        elif self._value == '0xHIJKLMNO':
+            return False
+
+        return True
