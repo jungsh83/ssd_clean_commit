@@ -1,5 +1,4 @@
-# from src.command_action import CommandAction
-from ssd_clean_commit.src.command_action import CommandAction
+from src.command_action import CommandAction
 
 
 class DummySSDDriver:

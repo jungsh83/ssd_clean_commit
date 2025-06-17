@@ -1,8 +1,8 @@
 import builtins
 import pytest
 
-from ssd_clean_commit.src import shell
-from ssd_clean_commit.src.command_action import CommandAction
+from src import shell
+from src.command_action import CommandAction
 
 
 @pytest.fixture
