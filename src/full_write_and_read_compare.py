@@ -3,13 +3,18 @@ from src.command_action import CommandAction
 
 
 class FullWriteAndReadCompare(CommandAction):
+    command_name = ["1_FullWriteAndReadCompare", "1_"]
+
+    def validate(self) -> bool:
+        return self._arguments == []
+
     def run(self) -> None:
         for i in range(25):
             if not self.run_test_case(start_addr=i * 4, test_value=self.generate_test_value()):
                 print("FAIL")
                 return
 
-        print("PASS", end="")
+        print("PASS")
         return
 
     def run_test_case(self, start_addr, test_value) -> bool:
@@ -22,9 +27,6 @@ class FullWriteAndReadCompare(CommandAction):
 
     def generate_test_value(self):
         return f"0x{random.randint(1111111, 4444444):08X}"
-
-    def validate(self) -> bool:
-        return self._arguments == []
 
     def read_compare(self, addr, test_value) -> bool:
         return self._ssd_driver.read(addr) == test_value
