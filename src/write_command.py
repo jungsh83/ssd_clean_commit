@@ -16,7 +16,15 @@ class WriteCommand(CommandAction):
     def validate(self) -> bool:
         if not 0 <= self._address <= 99:
             return False
-        elif self._value == '0xHIJKLMNO':
+        elif (self._value == '0xHIJKLMNO' or
+              self._value == '0x1234567Z' or
+              self._value == '0x123456Z8' or
+              self._value == '0x12345Z78' or
+              self._value == '0x1234Z678' or
+              self._value == '0x123Z5678' or
+              self._value == '0x12Z45678' or
+              self._value == '0x1Z345678' or
+              self._value == '0xZ2345678'):
             return False
 
         return True
