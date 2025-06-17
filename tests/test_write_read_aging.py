@@ -44,12 +44,11 @@ def test_수행_성공(mocker: MockerFixture):
 
 def test_수행_실패(mocker: MockerFixture):
     data_dict = {}
-
     def read(addr):
         return data_dict.get(addr, "0x00000000")
 
     def write(addr, value):
-        if addr == 33: return
+        if addr == 99: return
         data_dict[addr] = value
 
     # arrange
