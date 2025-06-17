@@ -23,15 +23,16 @@ def test_partial_lba_write_name_run_write_150번_수행_확인(mocker: MockerFix
     assert ssd_driver.write.call_count == 150
 
 
-def test_partial_lba_write_name_run_write_순서_확인(mocker: MockerFixture):
+def test_partial_lba_write_name_run_write_random_처리_확인(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
-    assert ssd_driver.write.call_args_list[:5] == [call(4, '0xABCDFFFF'),
-                                               call(0, '0xABCDFFFF'),
-                                               call(3, '0xABCDFFFF'),
-                                               call(1, '0xABCDFFFF'),
-                                               call(2, '0xABCDFFFF')]
+    assert ssd_driver.write.call_args_list[0].args[0] != \
+           ssd_driver.write.call_args_list[1].args[0] != \
+           ssd_driver.write.call_args_list[2].args[0] != \
+           ssd_driver.write.call_args_list[3].args[0] != \
+           ssd_driver.write.call_args_list[4].args[0]
+
 
 @pytest.mark.skip
 def test_partial_lba_write_name_run_read_150번_수행_확인(mocker: MockerFixture):
@@ -39,6 +40,7 @@ def test_partial_lba_write_name_run_read_150번_수행_확인(mocker: MockerFixt
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert ssd_driver.read.call_count == 150
+
 
 @pytest.mark.skip
 def test_partial_lba_write_name_run_read_success(mocker: MockerFixture):
@@ -50,6 +52,7 @@ def test_partial_lba_write_name_run_read_success(mocker: MockerFixture):
 
     assert output.getvalue() == "PASS"
     sys.stdout = original
+
 
 @pytest.mark.skip
 def test_partial_lba_write_name_run_read_fail(mocker: MockerFixture):
