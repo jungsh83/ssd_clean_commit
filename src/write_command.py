@@ -19,7 +19,7 @@ class WriteCommand(CommandAction):
             return False
 
         for v in self._value.strip('0x'):
-            if not 'A' <= v <= 'F':
+            if not 'A' <= v <= 'F' and not '0' <= v <= '9':
                 return False
 
         return True
