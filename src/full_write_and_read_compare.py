@@ -10,17 +10,17 @@ class FullWriteAndReadCompare(CommandAction):
 
     def run(self) -> None:
         for i in range(25):
-            if not self.run_test_case(start_addr=i * 4, test_value=self.generate_test_value()):
+            if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
                 print("FAIL")
                 return
 
         print("PASS")
         return
 
-    def run_test_case(self, start_addr, test_value) -> bool:
-        for addr in range(start_addr, start_addr + 4):
-            self._ssd_driver.write(addr, test_value)
-            if not self.read_compare(addr, test_value):
+    def run_test_case(self, start_lba, test_value) -> bool:
+        for lba in range(start_lba, start_lba + 4):
+            self._ssd_driver.write(lba, test_value)
+            if not self.read_compare(lba, test_value):
                 return False
 
         return True
@@ -28,5 +28,5 @@ class FullWriteAndReadCompare(CommandAction):
     def generate_test_value(self):
         return f"0x{random.randint(1111111, 4444444):08X}"
 
-    def read_compare(self, addr, test_value) -> bool:
-        return self._ssd_driver.read(addr) == test_value
+    def read_compare(self, lba, test_value) -> bool:
+        return self._ssd_driver.read(lba) == test_value
