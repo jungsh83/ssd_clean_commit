@@ -2,7 +2,7 @@ from src.command_action import CommandAction
 
 
 class WriteCommand(CommandAction):
-    _name = 'write'
+    command_name: list = ['write']
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
