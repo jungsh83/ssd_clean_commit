@@ -1,62 +1,117 @@
+import os
 import pytest
 from src.ssd import VirtualSSD
 
-# data/ssd_nand.txt를 그대로 사용
-NAND_FILE = "./data/ssd_nand.txt"
-# 출력 파일 경로는 필요하지만, 내용 검사는 하지 않음
-OUT_FILE = "./data/ssd_output.txt"
+# ───────── 경로 상수 (클래스와 동일) ─────────────────────────────────
+NAND_PATH   = VirtualSSD.NAND_PATH
+OUTPUT_PATH = VirtualSSD.OUTPUT_PATH
+
+
+# ───────── 픽스처: 테스트 전후 파일 정리 ────────────────────────────
+@pytest.fixture(autouse=True)
+def clean_files():
+    yield
+    for path in (NAND_PATH, OUTPUT_PATH):
+        if os.path.exists(path):
+            os.remove(path)
 
 
 # 1) 정상 LBA를 읽는 경우
 def test_정상_LBA_0_를_읽는_경우():
-    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
-    # read(0) 은 항상 "0x00000000" 을 반환해야 함
+    ssd = VirtualSSD()
     assert ssd.read(0) == "0x00000000"
 
 
 def test_정상_LBA_0을_읽고_파일에_출력():
-    """
-    read() 호출 후
-    data/ssd_output.txt에 한 줄로 "0x00000000"이 기록되어야 한다.
-    """
-    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
-    _ = ssd.read(0)
-
-    with open(OUT_FILE, "r") as f:
+    ssd = VirtualSSD()
+    ssd.read(0)
+    with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "0x00000000"
 
 
 def test_정상파일_여러값을읽은후_파일에_출력():
-    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
-    _ = ssd.read(0)  # 첫 번째 읽기 (0번 칸 → "0x00000000")
-    _ = ssd.read(1)  # 두 번째 읽기 (1번 칸 → "0x00000000")
-
-    with open(OUT_FILE, "r") as f:
-        # 마지막으로 읽은 1번 칸의 값만 덮어써져 있어야 한다
+    ssd = VirtualSSD()
+    ssd.read(0)
+    ssd.read(1)
+    with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "0x00000000"
 
 
 # 2) 기록이 없던 LBA를 읽는 경우
 def test_기록이_없던_LBA를_읽는_경우():
-    """
-    NAND 파일에 미리 기록된 값이 없던 LBA(예: 5)를 읽으면
-    항상 기본값 “0x00000000”을 반환해야 한다.
-    """
-    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
+    ssd = VirtualSSD()
     assert ssd.read(5) == "0x00000000"
 
 
 # 3) 잘못된 LBA 범위(0~99 벗어남)
 def test_잘못된_LBA_범위_0_99_벗어남():
-    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
+    ssd = VirtualSSD()
     assert ssd.read(150) == "ERROR"
-
-    with open(OUT_FILE, "r") as f:
+    with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "ERROR"
 
 
-def test_write_then_read_round_trip():
+# ───────── write() 관련 테스트 ───────────────────────────────────────
+def test_write하면_ssd_nand_txt에_해당값이_바뀐다():
+    ssd = VirtualSSD()
+    ssd.write(2, "0xAABBCCDD")
+
+    with open(NAND_PATH) as f:
+        lines = [line.strip() for line in f.readlines()]
+
+    assert len(lines) == 100
+    assert lines[2] == "0xAABBCCDD"
+    assert all(line == "0x00000000" for i, line in enumerate(lines) if i != 2)
+
+
+def test_write_여러개_하면_nand_값이_바뀐다():
+    ssd = VirtualSSD()
+    ssd.write(0,  "0x11111111")
+    ssd.write(4,  "0x12345678")
+    ssd.write(99, "0x99999999")
+
+    with open(NAND_PATH) as f:
+        lines = [line.strip() for line in f.readlines()]
+
+    assert lines[0]  == "0x11111111"
+    assert lines[4]  == "0x12345678"
+    assert lines[99] == "0x99999999"
+
+
+def test_write_lba가_invalid_값이면_output에_ERROR():
+    ssd = VirtualSSD()
+    ssd.write(-1, "0x12345678")
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == "ERROR"
+
+
+def test_write_lba가_overflow_값이면_output에_ERROR():
+    ssd = VirtualSSD()
+    ssd.write(100, "0x12345678")  # 0~99만 유효
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == "ERROR"
+
+
+def test_write_nand_txt_파일이_없으면_새로_파일_만든다():
+    if os.path.exists(NAND_PATH):
+        os.remove(NAND_PATH)
+
+    ssd = VirtualSSD()
+    ssd.write(5, "0xCAFEBABE")
+
+    assert os.path.exists(NAND_PATH)
+
+    with open(NAND_PATH) as f:
+        lines = [line.strip() for line in f.readlines()]
+
+    assert lines[5] == "0xCAFEBABE"
+
+
+def test_쓴_값을_바로_읽어서_같은지_확인():
     """write 후 같은 LBA를 read하면 값이 같아야 한다."""
     ssd = VirtualSSD()
-    ssd.write(10, "0x12345678")
-    assert ssd.write(10, "0x12345678") == "0x12345678"
+    target_val = "0x12345678"
+    ssd.write(10, target_val)
+    assert ssd.read(10) == target_val

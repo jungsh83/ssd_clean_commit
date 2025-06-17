@@ -1,44 +1,57 @@
 import os
 
-
 class VirtualSSD:
-    """칸 100개짜리 가상 SSD. 아직 로직은 안 넣었음."""
+    # 프로젝트 루트/data/ssd_*.txt
+    BASE_DIR   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    NAND_PATH  = os.path.join(BASE_DIR, 'data', 'ssd_nand.txt')
+    OUTPUT_PATH = os.path.join(BASE_DIR, 'data', 'ssd_output.txt')
 
-    NUM_BLOCKS = 100  # LBA 0 ~ 99
-    DEFAULT_VAL = "0x00000000"
+    LBA_COUNT   = 100          # LBA 0~99
+    DEFAULT_VAL = "0x00000000" # 읽기 실패 시 기본값
 
-    def __init__(self,
-                 nand_file="./data/ssd_nand.txt",
-                 output_file="./data/ssd_output.txt"):
-        # 경로를 문자열 그대로 사용
-        self.nand_file = nand_file
-        self.output_file = output_file
+    def __init__(self):
+        self._initialize_nand_if_needed()
 
+    # ───────── 내부 유틸 ──────────────────────────────────────────────
+    def _initialize_nand_if_needed(self):
+        os.makedirs(os.path.dirname(self.NAND_PATH), exist_ok=True)
+        if not os.path.exists(self.NAND_PATH):
+            with open(self.NAND_PATH, 'w', encoding='utf-8') as f:
+                for _ in range(self.LBA_COUNT):
+                    f.write(self.DEFAULT_VAL + '\n')
+
+    def _load_nand(self) -> list[str]:
+        with open(self.NAND_PATH, 'r', encoding='utf-8') as f:
+            return [line.rstrip('\n') for line in f]
+
+    def _save_nand(self, data_lines: list[str]) -> None:
+        with open(self.NAND_PATH, 'w', encoding='utf-8') as f:
+            f.writelines(line + '\n' for line in data_lines)
+
+    # ───────── 퍼블릭 API ────────────────────────────────────────────
     def read(self, lba: int) -> str:
-        # ── 1) 범위 체크 ─────────────────────────────────────────────
-        if not 0 <= lba < self.NUM_BLOCKS:
-            with open(self.output_file, "w", encoding="utf-8") as f:
-                f.write("ERROR\n")
-            return "ERROR"
+        # 1) 범위 체크
+        if not 0 <= lba < self.LBA_COUNT:
+            with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+                f.write('ERROR\n')
+            return 'ERROR'
 
-        # ── 2) 값 읽기 ───────────────────────────────────────────────
-        value = self.DEFAULT_VAL
+        # 2) 값 읽기
         try:
-            with open(self.nand_file, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-            raw_line = lines[lba]
-            # expected format: "idx: 0xXXXXXXXX" → take substring after ':'
-            value = raw_line.split(":", 1)[1].strip()
-        except Exception:
-            # file missing, index error, parse error → keep DEFAULT_VAL
-            pass
+            value = self._load_nand()[lba]
+        except Exception:           # 파일 없음·인덱스 오류 등
+            value = self.DEFAULT_VAL
 
-        # ── 3) 파일 기록 ─────────────────────────────────────────────
-        with open(self.output_file, "w", encoding="utf-8") as f:
-            f.write(value + "\n")
+        # 3) 결과 기록
+        with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            f.write(value + '\n')
         return value
 
     def write(self, lba: int, value: str) -> None:
-        """지정 LBA에 4 Byte 값을 기록한다."""
-        # 아직 구현 안 됨
-        return "0x12345678"
+        if not 0 <= lba < self.LBA_COUNT:
+            with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+                f.write('ERROR')
+            return
+        data = self._load_nand()
+        data[lba] = value
+        self._save_nand(data)
