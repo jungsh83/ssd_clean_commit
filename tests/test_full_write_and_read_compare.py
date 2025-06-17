@@ -85,4 +85,26 @@ def test_수행_실패(mocker: MockerFixture):
     assert out == "FAIL\n"
 
 
+def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
+    data_dict = {}
+
+    def read(addr):
+        return data_dict.get(addr, "0x00000000")
+
+    def write(addr, value):
+        if addr == 49: return
+        data_dict[addr] = value
+
+    # arrange
+    ssd_driver = mocker.Mock()
+    ssd_driver.read.side_effect = read
+    ssd_driver.write.side_effect = write
+    sut = FullWriteAndReadCompare(ssd_driver)
+
+    # act
+    out = catch_run_stdout(sut)
+
+    # assert
+    assert ssd_driver.write.call_count == 50
+    assert ssd_driver.read.call_count == 50
 
