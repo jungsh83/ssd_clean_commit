@@ -5,15 +5,20 @@ from src.command_action import CommandAction
 class FullWriteAndReadCompare(CommandAction):
     def run(self) -> None:
         for i in range(25):
-            test_value = self.generate_test_value()
-            for addr in range(i * 4, i * 4 + 4):
-                self._ssd_driver.write(addr, test_value)
-                if not self.read_compare(addr, test_value):
-                    print("FAIL", end="")
-                    return
+            if not self.run_test_case(start_addr=i * 4, test_value=self.generate_test_value()):
+                print("FAIL")
+                return
 
         print("PASS", end="")
         return
+
+    def run_test_case(self, start_addr, test_value) -> bool:
+        for addr in range(start_addr, start_addr + 4):
+            self._ssd_driver.write(addr, test_value)
+            if not self.read_compare(addr, test_value):
+                return False
+
+        return True
 
     def generate_test_value(self):
         return f"0x{random.randint(1111111, 4444444):08X}"
