@@ -10,9 +10,9 @@ class ReadCommand(CommandAction):
 
     def run(self) -> str:
         if self.validate() is False:
-            return ""
+            raise ValueError('Unvalidated Address Error')
 
-        return self._ssd_driver.read(self._address)
+        return f'LBA {self._address}: {self._ssd_driver.read(self._address)}'
 
     def validate(self) -> bool:
         if not 0 <= self._address <= 99:
