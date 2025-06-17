@@ -40,17 +40,26 @@ def test_수행_성공(mocker: MockerFixture):
     assert out == "PASS"
 
 def test_수행_실패(mocker: MockerFixture):
+    data_dict = {}
+
+    def read(addr):
+        return data_dict.get(addr, "0x00000000")
+
+    def write(addr, value):
+        if addr == 33: return
+        data_dict[addr] = value
+
     # arrange
     ssd_driver = mocker.Mock()
-    ssd_driver.read.return_value = 0x12345678
-    ssd_driver.write.return_value = True
+    ssd_driver.read.side_effect = read
+    ssd_driver.write.side_effect = write
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
     out = catch_run_stdout(sut)
 
     # assert
-    assert out == "PASS"
+    assert out == "FAIL"
 
 
 
