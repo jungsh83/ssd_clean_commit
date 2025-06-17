@@ -4,9 +4,14 @@ from src.ssd import VirtualSSD
 from src.write_command import WriteCommand
 
 
-def test_write_command_성공(mocker):
+@pytest.fixture
+def mock_ssd(mocker):
     mock_ssd = mocker.Mock(spec=VirtualSSD)
-    test_address = 3
+    return mock_ssd
+
+
+@pytest.mark.parametrize('test_address', [0, 15, 99])
+def test_write_command_성공(test_address, mock_ssd):
     test_value = "0x12345678"
 
     write_cmd = WriteCommand(mock_ssd, test_address, test_value)
@@ -16,8 +21,7 @@ def test_write_command_성공(mocker):
 
 
 @pytest.mark.parametrize('test_address', [-1, 200])
-def test_write_command_유효성검사_LBA오류(test_address, mocker):
-    mock_ssd = mocker.Mock(spec=VirtualSSD)
+def test_write_command_유효성검사_LBA오류(test_address, mock_ssd):
     test_value = "0x12345678"
 
     write_cmd = WriteCommand(mock_ssd, test_address, test_value)
