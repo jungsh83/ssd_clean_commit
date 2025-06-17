@@ -1,17 +1,28 @@
 import pytest
 from src.ssd import VirtualSSD
 
+# data/ssd_nand.txt를 그대로 사용
+NAND_FILE = "./data/ssd_nand.txt"
+# 출력 파일 경로는 필요하지만, 내용 검사는 하지 않음
+OUT_FILE = "./data/output.txt"
 
 # 1) 정상 LBA를 읽는 경우
-def test_read_valid_lba():
-    # data/ssd_nand.txt를 그대로 사용
-    nand_file = "./data/ssd_nand.txt"
-    # 출력 파일 경로는 필요하지만, 내용 검사는 하지 않음
-    out_file = "dummy_output.txt"
-
-    ssd = VirtualSSD(nand_file, out_file)
+def 정상_LBA_0_를_읽는_경우():
+    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
     # read(0) 은 항상 "0x00000000" 을 반환해야 함
     assert ssd.read(0) == "0x00000000"
+
+def 정상_LBA_0을_읽고_파일에_출력():
+    """
+    read() 호출 후
+    data/ssd_output.txt에 한 줄로 "0x00000000"이 기록되어야 한다.
+    """
+    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
+    _ = ssd.read(0)
+
+    with open(OUT_FILE, "r") as f:
+        assert f.read().strip() == "0x00000000"
+
 def test_read_valid_lba_should_return_value_and_write_to_output(tmp_path):
     pass
 # 2) 기록이 없던 LBA를 읽는 경우
