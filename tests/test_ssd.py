@@ -48,8 +48,6 @@ def test_잘못된_LBA_범위_0_99_벗어남():
     with open(OUT_FILE, "r") as f:
         assert f.read().strip() == "ERROR"
 
-
-
 def test_write_then_read_round_trip():
     """write 후 같은 LBA를 read하면 값이 같아야 한다."""
     ssd = VirtualSSD()
