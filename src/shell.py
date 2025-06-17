@@ -1,9 +1,13 @@
-from interface import SomeThing
+# from src.command_action import CommandAction
+from ssd_clean_commit.src.command_action import CommandAction
+
+
+class DummySSDDriver:
+    ...
 
 
 def main():
-    handler = SomeThing()
-
+    ssd_driver = DummySSDDriver()
     while True:
         try:
             user_input = input("Shell> ").strip()
@@ -15,15 +19,19 @@ def main():
             args = parts[1:]
 
             if command == "exit":
+                print(f"[{command.upper()}]")
                 break
 
-            if not hasattr(handler, command):
-                print(f"[{command}] INVALID COMMAND")
+            handler = CommandAction.registry.get(command)
+
+            if not handler:
+                print(f"[{command.upper()}] INVALID COMMAND")
                 continue
 
-            method = getattr(handler, command)
-            result = method(*args)
-            print(f"[{command}] {result}")
+            handler_instance = handler(ssd_driver)
+
+            result = handler_instance.run_test(*args)
+            print(f"[{command.upper()}] {result}")
 
         except Exception as e:
             print(f"[ERROR] {str(e)}")
