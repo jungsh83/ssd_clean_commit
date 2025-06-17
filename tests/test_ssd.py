@@ -41,8 +41,12 @@ def test_기록이_없던_LBA를_읽는_경우():
     assert ssd.read(5) == "0x00000000"
 
 # 3) 잘못된 LBA 범위(0~99 벗어남)
-def test_read_invalid_lba_writes_error(tmp_path):
-    pass
+def test_잘못된_LBA_범위_0_99_벗어남():
+    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
+    assert ssd.read(150) == "ERROR"
+
+    with open(OUT_FILE, "r") as f:
+        assert f.read().strip() == "ERROR"
 
 
 

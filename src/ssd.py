@@ -14,12 +14,10 @@ class VirtualSSD:
 
     def read(self, lba: int) -> str:
         # Green 단계용: 항상 기본값 반환 및 기록만 수행
-        value = "0x00000000"
-        # 출력 파일에 덮어쓰기 방식으로 한 줄 기록
-        out_dir = os.path.dirname(self.output_file)
-        if out_dir and not os.path.exists(out_dir):
-            os.makedirs(out_dir, exist_ok=True)
-        # 덮어쓰기 모드로 기록
+        if 0 <= lba < self.NUM_BLOCKS:
+            value = "0x00000000"
+        else:
+            value = "ERROR"
         with open(self.output_file, 'w') as out:
             out.write(value + "\n")
         return value
