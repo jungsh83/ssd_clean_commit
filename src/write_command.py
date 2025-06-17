@@ -2,6 +2,8 @@ from src.command_action import CommandAction
 
 
 class WriteCommand(CommandAction):
+    _name = 'write'
+
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._address, self._value = self._arguments
