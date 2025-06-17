@@ -21,7 +21,12 @@ class PartialLBAWrite(CommandAction):
             self._ssd_driver.write(lba, WRITE_TEST_VALUE)
 
     def generate_order(self) -> list[int]:
-        return [random.randint(0, 5) for _ in range(5)]
+        orders = list(range(5))  # [0, 1, 2, 3, 4]
+        random.shuffle(orders)
+
+        return orders
 
     def validate(self) -> bool:
+        if self._arguments:
+            return False
         return True
