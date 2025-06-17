@@ -32,8 +32,13 @@ def test_정상파일_여러값을읽은후_파일에_출력():
         # 마지막으로 읽은 1번 칸의 값만 덮어써져 있어야 한다
         assert f.read().strip() == "0x00000000"
 # 2) 기록이 없던 LBA를 읽는 경우
-def test_read_unwritten_lba_returns_zero_and_writes_zero(tmp_path):
-    pass
+def test_기록이_없던_LBA를_읽는_경우():
+    """
+    NAND 파일에 미리 기록된 값이 없던 LBA(예: 5)를 읽으면
+    항상 기본값 “0x00000000”을 반환해야 한다.
+    """
+    ssd = VirtualSSD(NAND_FILE, OUT_FILE)
+    assert ssd.read(5) == "0x00000000"
 
 # 3) 잘못된 LBA 범위(0~99 벗어남)
 def test_read_invalid_lba_writes_error(tmp_path):
