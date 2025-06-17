@@ -11,11 +11,11 @@ def mock_registry_and_driver(mocker):
     mock_handler = mocker.Mock()
     mock_handler_instance = mocker.Mock()
     mock_handler.return_value = mock_handler_instance
-    mock_handler_instance.run_test.return_value = "PASS"
+    mock_handler_instance.run.return_value = "PASS"
 
     CommandAction.registry["read"] = mock_handler
 
-    mocker.patch("ssd_clean_commit.src.shell.DummySSDDriver", return_value=mock_driver)
+    mocker.patch("src.ssd.VirtualSSD", return_value=mock_driver)
     return mock_driver, mock_handler, mock_handler_instance
 
 
@@ -39,7 +39,7 @@ def test_shell_일반적인_명령어(monkeypatch, capsys, mock_registry_and_dri
 
 
 def test_shell_없는_명령어_입력_시_invalid_command_확인(monkeypatch, capsys, mocker):
-    mocker.patch("ssd_clean_commit.src.shell.DummySSDDriver", return_value=mocker.Mock())
+    mocker.patch("src.ssd.VirtualSSD", return_value=mocker.Mock())
     simulate_shell(["foobar", "exit"], monkeypatch)
 
     shell.main()
@@ -50,21 +50,22 @@ def test_shell_없는_명령어_입력_시_invalid_command_확인(monkeypatch, c
 
 
 def test_shell_exception_뜨면_안멈추고_메시지_띄우는지(monkeypatch, capsys, mocker):
-    def broken_run_test(*args):
+    def broken_run(*args):
         raise Exception("boom")
 
     mock_driver = mocker.Mock()
     mock_handler = mocker.Mock()
     mock_handler_instance = mocker.Mock()
     mock_handler.return_value = mock_handler_instance
-    mock_handler_instance.run_test.side_effect = broken_run_test
+    mock_handler_instance.run.side_effect = broken_run
 
     CommandAction.registry["explode"] = mock_handler
-    mocker.patch("ssd_clean_commit.src.shell.DummySSDDriver", return_value=mock_driver)
+    mocker.patch("src.ssd.VirtualSSD", return_value=mock_driver)
 
-    simulate_shell(["explode", "exit"], monkeypatch)
+    simulate_shell(["explode", "foobar", "exit"], monkeypatch)
 
     shell.main()
 
     captured = capsys.readouterr()
     assert "[ERROR] boom" in captured.out
+    assert "[FOOBAR] INVALID COMMAND" in captured.out

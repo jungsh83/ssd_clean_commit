@@ -1,12 +1,9 @@
 from src.command_action import CommandAction
-
-
-class DummySSDDriver:
-    ...
+from src.ssd import VirtualSSD
 
 
 def main():
-    ssd_driver = DummySSDDriver()
+    ssd_driver = VirtualSSD()
     while True:
         try:
             user_input = input("Shell> ").strip()
