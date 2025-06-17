@@ -27,4 +27,6 @@ class PartialLBAWrite(CommandAction):
         return orders
 
     def validate(self) -> bool:
+        if self._arguments:
+            return False
         return True
