@@ -9,6 +9,9 @@ class VirtualSSD:
 
     def __init__(self):
         os.makedirs(os.path.dirname(self.NAND_PATH), exist_ok=True)
+        self._initialize_nand_if_needed()
+
+    def _initialize_nand_if_needed(self):
         if not os.path.exists(self.NAND_PATH):
             with open(self.NAND_PATH, 'w') as f:
                 for _ in range(self.LBA_COUNT):
@@ -20,8 +23,15 @@ class VirtualSSD:
         return "0x00000000"
 
     def write(self, lba: int, value: str) -> None:
-        with open(self.NAND_PATH, 'r') as f:
-            data = [line.strip() for line in f.readlines()]
-        data[lba] = value
+        data_lines = self._load_nand()
+        data_lines[lba] = value
+        self._save_nand(data_lines)
+
+    def _save_nand(self, data_lines: list[str]) -> None:
         with open(self.NAND_PATH, 'w') as f:
-            f.writelines([line + '\n' for line in data])
+            f.writelines([line + '\n' for line in data_lines])
+
+    def _load_nand(self) -> list[str]:
+        with open(self.NAND_PATH, 'r') as f:
+            data_lines = [line.strip() for line in f.readlines()]
+        return data_lines
