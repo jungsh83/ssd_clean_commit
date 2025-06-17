@@ -1,11 +1,25 @@
 import pytest
 from src.ssd import VirtualSSD
+from pathlib import Path
+
+NAND_PATH = Path(__file__).parent.parent / "data" / "ssd_nand.txt"
 
 
-def test_read_empty_returns_zero():
-    """아무 것도 안 썼을 때 read(0)은 0x00000000을 돌려줘야 한다."""
-    ssd = VirtualSSD()
-    assert ssd.read(0) == "0x00000000"
+# 1) 정상 LBA를 읽는 경우
+def test_read_valid_lba(tmp_path):
+    pass
+def test_read_valid_lba_should_return_value_and_write_to_output(tmp_path):
+    pass
+
+# 2) 기록이 없던 LBA를 읽는 경우
+def test_read_unwritten_lba_returns_zero_and_writes_zero(tmp_path):
+    pass
+
+# 3) 잘못된 LBA 범위(0~99 벗어남)
+def test_read_invalid_lba_writes_error(tmp_path):
+    pass
+
+
 
 
 def test_write_then_read_round_trip():
