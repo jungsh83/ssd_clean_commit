@@ -23,6 +23,6 @@ def test_read_command_유효성체크_LBA에러(mocker):
 
     read_cmd = ReadCommand(mock_ssd, test_address)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED_ADDRESS):
         read_cmd.run()
     mock_ssd.read.assert_not_called()

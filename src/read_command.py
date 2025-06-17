@@ -2,6 +2,7 @@ from src.command_action import CommandAction
 
 
 class ReadCommand(CommandAction):
+    ERROR_UNVALIDATED_ADDRESS = 'Unvalidated Address Error'
     command_name: list = ['read']
 
     def __init__(self, ssd_driver, *args):
@@ -10,7 +11,7 @@ class ReadCommand(CommandAction):
 
     def run(self) -> str:
         if self.validate() is False:
-            raise ValueError('Unvalidated Address Error')
+            raise ValueError(self.ERROR_UNVALIDATED_ADDRESS)
 
         return f'LBA {self._address}: {self._ssd_driver.read(self._address)}'
 
