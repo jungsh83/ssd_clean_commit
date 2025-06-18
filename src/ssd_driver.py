@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 class ReadException(Exception):
     pass
 
@@ -5,6 +8,9 @@ class WriteException(Exception):
     pass
 
 class SSDDriver:
+    COMMAND_PATH = Path(__file__).parent / "ssd.py"
+    OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
+
     def __init__(self):
         pass
 
@@ -16,7 +22,12 @@ class SSDDriver:
         :return: 데이터
         :raise 'ERROR" return 받으면 ReadException 처리
         """
-        return "0x00000000"
+
+        # system call
+        os.system(f"{self.COMMAND_PATH} R {lba}")
+
+        # read output_file
+        return self.OUTPUT_TXT_PATH.read_text().strip()
 
     def write(self, lba: int, value: str) -> None:
         """
