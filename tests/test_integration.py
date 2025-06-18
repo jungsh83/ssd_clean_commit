@@ -19,7 +19,7 @@ def simulate_shell(inputs, monkeypatch):
 @pytest.mark.parametrize('operation, expected',
                          [
                              ('write 0 0x12345678', "[WRITE] Done"),
-                             ('read 1', "[READ] LBA 00 : 0x00000000"),
+                             ('read 0', "[READ] LBA 0 : 0x12345678"),
                              ('fullwrite 0x87654321', ""),
                              ('fullread', "[FULLREAD] 0 0x87654321"),
                              ('1_FullWriteAndReadCompare', "[1_FULLWRITEANDREADCOMPARE] PASS"),
