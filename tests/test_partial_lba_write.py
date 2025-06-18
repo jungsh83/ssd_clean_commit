@@ -25,7 +25,7 @@ def test_partial_lba_write_run_호출시_인자값_넣어서_실패(mocker: Mock
         PartialLBAWriteCommand(mocker.Mock(), 3, "0x00000000", ).run()
 
 def test_partial_lba_write_name_클래스변수_리스트_확인(mocker: MockerFixture):
-    assert PartialLBAWriteCommand.command_name == ['2_PartialLBAWrite', '2_']
+    assert PartialLBAWriteCommand.command_name == '2_PartialLBAWrite'
 
 
 def test_partial_lba_write_name_run_write_150번_수행_확인(mocker: MockerFixture):
