@@ -15,11 +15,9 @@ class WriteReadAging(CommandAction):
         for _ in range(200):
             self.write_data()
             if not self.read_compare(TEST_LBA_1, TEST_LBA_2):
-                print("FAIL")
-                return
+                return "FAIL"
 
-        print("PASS")
-        return
+        return "PASS"
 
     def write_data(self):
         test_value = f"0x{random.randint(1111111, 4444444):08X}"
