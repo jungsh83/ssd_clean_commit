@@ -2,10 +2,10 @@ import os
 from pathlib import Path
 
 class ReadException(Exception):
-    pass
+    __module__ = "builtins"
 
 class WriteException(Exception):
-    pass
+    __module__ = "builtins"
 
 class SSDDriver:
     COMMAND_PATH = Path(__file__).parent / "ssd.py"
@@ -27,7 +27,12 @@ class SSDDriver:
         os.system(f"{self.COMMAND_PATH} R {lba}")
 
         # read output_file
-        return self.OUTPUT_TXT_PATH.read_text().strip()
+        out = self.OUTPUT_TXT_PATH.read_text().strip()
+
+        if out == "ERROR":
+            raise ReadException("ERROR")
+
+        return out
 
     def write(self, lba: int, value: str) -> None:
         """
@@ -37,4 +42,14 @@ class SSDDriver:
         :param value:
         :raise 'ERROR" return 받으면 WriteException 처리
         """
-        pass
+
+        # system call
+        os.system(f"{self.COMMAND_PATH} W {lba} {value}")
+
+        # read output_file
+        out = self.OUTPUT_TXT_PATH.read_text().strip()
+
+        if out == "ERROR":
+            raise WriteException("ERROR")
+
+        return
