@@ -16,7 +16,7 @@ class ReadCommand(CommandAction):
         return f'LBA {self._address} : {self._ssd_driver.read(self._address)}'
 
     def validate(self) -> bool:
-        if len(self._arguments) == 2 or len(self._arguments) == 0:
+        if len(self._arguments) != 1:
             return False
 
         self._address: int = self._arguments[0]
