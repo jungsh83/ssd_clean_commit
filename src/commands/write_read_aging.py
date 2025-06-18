@@ -6,7 +6,7 @@ TEST_LBA_2 = 99
 
 
 class WriteReadAgingCommand(CommandAction):
-    command_name: list[str] = ["3_WriteReadAging"]
+    command_name: str = "3_WriteReadAging"
     _description = 'Execute test scenario: Write Read Aging'
     _usage = "'3_WriteReadAging' or '3_'"
     _author = 'Woosung Ji'
@@ -17,7 +17,7 @@ class WriteReadAgingCommand(CommandAction):
 
     def run(self) -> str:
         if not self.validate():
-            msg = f"{self.command_name[0]} takes no arguments, but got '{self._arguments}'"
+            msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
 
         if self._test_loop_failed(TEST_LBA_1):
