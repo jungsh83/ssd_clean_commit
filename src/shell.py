@@ -2,6 +2,7 @@ from src.commands.command_action import CommandAction
 from src.ssd import VirtualSSD
 from src.ssd_driver import SSDDriver
 
+
 def resolve_command(name):
     handler = CommandAction.registry.get(name)
     if handler:
@@ -13,7 +14,19 @@ def resolve_command(name):
     return None, name
 
 
-def main(ssd_driver = SSDDriver()):
+def execute_command(command: str, args: list[str], ssd_driver):
+    handler, resolved_name = resolve_command(command)
+
+    if not handler:
+        print(f"[{command.upper()}] INVALID COMMAND")
+        return resolved_name, None
+
+    handler_instance = handler(ssd_driver, *args)
+    result = handler_instance.run()
+    return resolved_name, result
+
+
+def main(ssd_driver=SSDDriver()):
     while True:
         try:
             user_input = input("Shell> ").strip()
@@ -24,19 +37,12 @@ def main(ssd_driver = SSDDriver()):
             command = parts[0]
             args = parts[1:]
 
-            handler, command = resolve_command(command)
-
-            if not handler:
-                print(f"[{command.upper()}] INVALID COMMAND")
-                continue
-
-            handler_instance = handler(ssd_driver, *args)
-            result = handler_instance.run()
+            resolved_command, result = execute_command(command, args, ssd_driver)
 
             if result:
-                print(f"[{command.upper()}] {result}")
+                print(f"[{resolved_command.upper()}] {result}")
 
-            if command == 'exit':
+            if resolved_command == 'exit':
                 break
 
         except Exception as e:
