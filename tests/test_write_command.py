@@ -20,7 +20,7 @@ def test_write_command_성공(test_address, mock_ssd):
     mock_ssd.write.assert_called_once()
 
 
-@pytest.mark.parametrize('test_address', [-1, 200])
+@pytest.mark.parametrize('test_address', [-1, 200, 'c'])
 def test_write_command_유효성검사_LBA오류(test_address, mock_ssd):
     test_value = "0x12345678"
 
