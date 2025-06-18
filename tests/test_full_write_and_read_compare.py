@@ -32,6 +32,14 @@ def ssd_driver_fail(mocker: MockerFixture):
 
     return mk
 
+def test_validate_수행_성공(ssd_driver):
+    # act & assert
+    assert FullWriteAndReadCompare(ssd_driver).validate()
+
+
+def test_validate_수행_실패(ssd_driver):
+    # act & assert
+    assert not FullWriteAndReadCompare(ssd_driver, 1, "0x12345678").validate()
 
 def test_수행_성공(ssd_driver):
     assert FullWriteAndReadCompare(ssd_driver).run() == "PASS"
