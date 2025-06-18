@@ -89,7 +89,7 @@ def test_수행_실패(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act & assert
-    assert sut.run() == "FAIL\n"
+    assert sut.run() == "FAIL"
 
 
 def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
