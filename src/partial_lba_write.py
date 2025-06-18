@@ -28,11 +28,9 @@ class PartialLBAWrite(CommandAction):
         return False
 
     def bulk_write(self):
-        write_order = self.generate_order()
-
         self.test_value += 1
 
-        for lba in write_order:
+        for lba in self.generate_order():
             self._ssd_driver.write(lba, self.get_test_value())
 
     def get_test_value(self):
