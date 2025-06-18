@@ -52,7 +52,7 @@ class SSDDriver:
         # system call
         cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.WRITE_TOKEN, str(lba), str(value)])
         if cp.returncode != VALID_RETURN_CODE:
-            raise ReadException("Non-zero exit code has been returned.")
+            raise WriteException("Non-zero exit code has been returned.")
 
         # read output_file
         out = self.OUTPUT_TXT_PATH.read_text().strip()
