@@ -64,10 +64,22 @@ if __name__ == "__main__":
     ssd = VirtualSSD()
 
     if len(args) == 3 and args[0] == 'W':
-        lba = int(args[1])
-        value = args[2]
-        ssd.write(lba, value)
+        try:
+            lba = int(args[1])
+            value = args[2]
+            ssd.write(lba, value)
+        except Exception:
+            with open(ssd.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+                f.write("ERROR\n")
 
     elif len(args) == 2 and args[0] == 'R':
-        lba = int(args[1])
-        ssd.read(lba)
+        try:
+            lba = int(args[1])
+            ssd.read(lba)
+        except Exception:
+            with open(ssd.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+                f.write("ERROR\n")
+
+    else:
+        with open(ssd.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            f.write("ERROR\n")

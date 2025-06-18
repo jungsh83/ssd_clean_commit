@@ -136,7 +136,7 @@ def test_cli에서_read하면_nand값_읽는다():
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == '0xABCDEF12'
 
-@pytest.mark.skip
+
 def test_cli에서_command가_잘못되면_output에_error입력():
     subprocess.run([sys.executable, SSD_PY, 'X', '1'], check=True)
 
