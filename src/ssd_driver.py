@@ -1,4 +1,4 @@
-import os
+import subprocess
 from pathlib import Path
 
 class ReadException(Exception):
@@ -24,7 +24,9 @@ class SSDDriver:
         """
 
         # system call
-        os.system(f"{self.COMMAND_PATH} R {lba}")
+        cp = subprocess.run([self.COMMAND_PATH, 'R', lba])
+        if cp.returncode != 0:
+            raise ReadException("Non-zero exit code has been returned.")
 
         # read output_file
         out = self.OUTPUT_TXT_PATH.read_text().strip()
@@ -44,7 +46,9 @@ class SSDDriver:
         """
 
         # system call
-        os.system(f"{self.COMMAND_PATH} W {lba} {value}")
+        cp = subprocess.run([self.COMMAND_PATH, 'R', lba])
+        if cp.returncode != 0:
+            raise ReadException("Non-zero exit code has been returned.")
 
         # read output_file
         out = self.OUTPUT_TXT_PATH.read_text().strip()
