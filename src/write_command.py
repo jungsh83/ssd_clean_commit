@@ -25,17 +25,17 @@ class WriteCommand(CommandAction):
         if not isinstance(self._address, int) or not 0 <= self._address <= 99:
             return False
 
-        if not isinstance(self._value, str):
+        if self.validate_value() is False:
             return False
-
-        if len(self._value) != 10:
-            return False
-
-        if not self._value.startswith("0x"):
-            return False
-
-        for v in self._value.strip('0x'):
-            if not 'A' <= v <= 'F' and not '0' <= v <= '9':
-                return False
 
         return True
+
+    def validate_value(self):
+        if (not isinstance(self._value, str) or
+                len(self._value) != 10 or
+                not self._value.startswith("0x")):
+            return False
+
+        for bit in self._value.strip('0x'):
+            if not 'A' <= bit <= 'F' and not '0' <= bit <= '9':
+                return False
