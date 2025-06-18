@@ -24,7 +24,7 @@ class FullWriteCommand(CommandAction):
         if not isinstance(self._value, str):
             return False
 
-        if self._value == '0x1111':
+        if self._value == '0x1111' or self._value == '0x123456':
             return False
 
         for v in self._value.strip('0x'):

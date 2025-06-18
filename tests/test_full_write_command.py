@@ -21,7 +21,7 @@ def test_full_write_command_성공(mock_ssd):
 
 @pytest.mark.parametrize('test_value', ['0x1234567Z', '0x123456Z8', '0x12345Z78', '0x1234Z678',
                                         '0x123Z5678', '0x12Z45678', '0x1Z345678', '0xZ2345678',
-                                        -3, 'c', 0.1, '0x1111'])
+                                        -3, 'c', 0.1, '0x1111', '0x123456'])
 def test_full_write_command_유효성검사_value_에러(test_value, mock_ssd):
     full_write_cmd = FullWriteCommand(mock_ssd, test_value)
 
