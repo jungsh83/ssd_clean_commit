@@ -17,5 +17,9 @@ def test_fullread_1줄출력이_첫번째와같은지_확인(capsys):
     lines = capsys.readouterr().out.splitlines()
     assert lines[0] == ssd.read(0)
 
-def test_fullread_last_line_matches_lba99():
-    pass
+def test_fullread_100줄출력이_마지막과_같은지_화인(capsys):
+    ssd = VirtualSSD()
+    FullRead(ssd).run()
+
+    lines = capsys.readouterr().out.splitlines()
+    assert lines[-1] == ssd.read(VirtualSSD.LBA_COUNT - 1)
