@@ -39,3 +39,11 @@ def test_read_command_유효성체크_LBA에러(test_address, test_value, mock_s
     with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED):
         read_cmd.run()
     mock_ssd.read.assert_not_called()
+
+
+def test_read_command_유효성체크_LBA에러(mock_ssd):
+    read_cmd = ReadCommand(mock_ssd)
+
+    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED):
+        read_cmd.run()
+    mock_ssd.read.assert_not_called()

@@ -7,7 +7,7 @@ class ReadCommand(CommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._address: int = self._arguments[0]
+        self._address = None
 
     def run(self) -> str:
         if self.validate() is False:
@@ -16,9 +16,10 @@ class ReadCommand(CommandAction):
         return f'LBA {self._address} : {self._ssd_driver.read(self._address)}'
 
     def validate(self) -> bool:
-        if len(self._arguments) == 2:
+        if len(self._arguments) == 2 or len(self._arguments) == 0:
             return False
 
+        self._address: int = self._arguments[0]
         if not isinstance(self._address, int) or (not 0 <= self._address <= 99):
             return False
 
