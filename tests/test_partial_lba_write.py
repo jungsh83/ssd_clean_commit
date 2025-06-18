@@ -1,6 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
+from src.commands.command_action import InvalidArgumentException
 from src.commands.partial_lba_write import PartialLBAWriteCommand
 
 
@@ -21,7 +22,7 @@ def test_partial_lba_write_validate_호출시_인자값_넣어서_실패(mocker:
     assert not PartialLBAWriteCommand(mocker.Mock(), 3, "0x00000000", ).validate()
 
 def test_partial_lba_write_run_호출시_인자값_넣어서_실패(mocker: MockerFixture):
-    with pytest.raises(Exception):
+    with pytest.raises(InvalidArgumentException):
         PartialLBAWriteCommand(mocker.Mock(), 3, "0x00000000", ).run()
 
 def test_partial_lba_write_name_클래스변수_리스트_확인(mocker: MockerFixture):

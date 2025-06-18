@@ -17,7 +17,8 @@ class PartialLBAWriteCommand(CommandAction):
 
     def run(self) -> str:
         if not self.validate():
-            raise Exception
+            msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
+            raise InvalidArgumentException(msg)
         for i in range(30):
             self._bulk_write()
             if self._is_read_compare_failed():
