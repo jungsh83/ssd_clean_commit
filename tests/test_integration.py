@@ -23,8 +23,11 @@ def simulate_shell(inputs, monkeypatch):
                              ('fullwrite 0x87654321', ""),
                              ('fullread', "[FULLREAD] 0 0x87654321"),
                              ('1_FullWriteAndReadCompare', "[1_FULLWRITEANDREADCOMPARE] PASS"),
+                             ('1_', "[1_FULLWRITEANDREADCOMPARE] PASS"),
                              ('2_PartialLBAWrite', "[2_PARTIALLBAWRITE] PASS"),
+                             ('2_', "[2_PARTIALLBAWRITE] PASS"),
                              ('3_WriteReadAging', "[3_WRITEREADAGING] PASS"),
+                             ('3_', "[3_WRITEREADAGING] PASS"),
                          ])
 def test_통합테스트_정상명령어(monkeypatch, capsys, operation, expected):
     simulate_shell([operation, 'exit'], monkeypatch)
