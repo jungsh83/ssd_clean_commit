@@ -38,13 +38,12 @@ class VirtualSSD:
             return self.ERROR_TEXT
 
         value = self._load_nand()[lba]
-
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(value + '\n')
         return value
 
     def write(self, lba: int, value: str) -> None:
-        if not self.LBA_START_INDEX <= lba < self.LBA_COUNT:
+        if not self._is_valid_lba(lba) or not self._is_valid_value(value):
             self._write_error()
             return
         data = self._load_nand()
@@ -52,6 +51,17 @@ class VirtualSSD:
         self._save_nand(data)
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             pass  # 명령 성공 시 빈 파일 생성
+
+    def _is_valid_lba(self, lba: int) -> bool:
+        return 0 <= lba < self.LBA_COUNT
+
+    def _is_valid_value(self, value: str) -> bool:
+        if not isinstance(value, str) or len(value) != 10:
+            return False
+        if not value.startswith("0x"):
+            return False
+        hex_part = value[2:]
+        return all(c in "0123456789ABCDEF" for c in hex_part)
 
     def _write_error(self):
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
@@ -62,19 +72,20 @@ def main(args: list[str]):
     ssd = VirtualSSD()
 
     if len(args) == 2 and args[0] == ssd.COMMAND_READ:
-        try:
-            lba = int(args[1])
-            ssd.read(lba)
-        except (ValueError, IndexError):
+        lba_str = args[1]
+        if not lba_str.isdigit():
             ssd._write_error()
+            return
+        lba = int(lba_str)
+        ssd.read(lba)
 
     elif len(args) == 3 and args[0] == ssd.COMMAND_WRITE:
-        try:
-            lba = int(args[1])
-            value = args[2]
-            ssd.write(lba, value)
-        except (ValueError, IndexError):
+        lba_str, value = args[1], args[2]
+        if not lba_str.isdigit():
             ssd._write_error()
+            return
+        lba = int(lba_str)
+        ssd.write(lba, value)
 
     else:
         ssd._write_error()
