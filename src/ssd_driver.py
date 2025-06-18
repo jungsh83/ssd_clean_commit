@@ -1,18 +1,18 @@
 import subprocess
 from pathlib import Path
 
+
 class ReadException(Exception):
     __module__ = "builtins"
+
 
 class WriteException(Exception):
     __module__ = "builtins"
 
+
 class SSDDriver:
     COMMAND_PATH = Path(__file__).parent / "ssd.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
-
-    def __init__(self):
-        pass
 
     def read(self, lba: int) -> str:
         """
