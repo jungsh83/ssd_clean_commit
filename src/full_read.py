@@ -1,5 +1,3 @@
-from __future__ import annotations
-from typing import List
 from src.command_action import CommandAction
 
 
@@ -15,13 +13,12 @@ class FullRead(CommandAction):
 
     def _dump_all(self) -> list[str]:
         return [
-            self._ssd_driver.read(lba)
+            f"{lba} {self._ssd_driver.read(lba)}"
             for lba in range(self._ssd_driver.LBA_COUNT)
         ]
 
-    def run(self) -> None:
+    def run(self) -> str:
         if not self.validate():
             raise ValueError(self.ERROR_UNVALIDATED)
 
-        for value in self._dump_all():
-            print(value)
+        return "\n           ".join(self._dump_all())

@@ -1,4 +1,3 @@
-# tests/test_full_read.py
 import pytest
 
 from src.full_read import FullRead
@@ -13,28 +12,26 @@ def ssd_driver(mocker):
     return driver
 
 
-def test_fullread_100줄_출력확인(ssd_driver, capsys):
-    FullRead(ssd_driver).run()
-    assert len(capsys.readouterr().out.splitlines()) == VirtualSSD.LBA_COUNT
+def test_fullread_100줄_출력확인(ssd_driver):
+    result = FullRead(ssd_driver).run()
+    assert len(result.splitlines()) == VirtualSSD.LBA_COUNT
 
 
-def test_fullread_첫줄_LBA0_값확인(ssd_driver, capsys):
-    FullRead(ssd_driver).run()
-    lines = capsys.readouterr().out.splitlines()
-    assert lines[0] == "0x00000000"
+def test_fullread_첫줄_LBA0_값확인(ssd_driver):
+    result = FullRead(ssd_driver).run()
+    first = result.splitlines()[0]
+    assert first == "0 0x00000000"
 
 
-def test_fullread_마지막줄_LBA99_값확인(ssd_driver, capsys):
-    FullRead(ssd_driver).run()
-    lines = capsys.readouterr().out.splitlines()
+def test_fullread_마지막줄_LBA99_값확인(ssd_driver):
+    result = FullRead(ssd_driver).run()
+    last = result.splitlines()[-1]
 
-    expected = f"0x{VirtualSSD.LBA_COUNT - 1:08X}"  # 0x00000063
-    assert lines[-1] == expected
+    indent = " " * 11  # 줄 앞에 들어가는 11칸 공백
+    expected = f"{indent}{VirtualSSD.LBA_COUNT - 1} 0x{VirtualSSD.LBA_COUNT - 1:08X}"
+    assert last == expected  # '           99 0x00000063'
 
 
 def test_fullread_유효성범위검사(ssd_driver):
-    cmd = FullRead(ssd_driver, "dummy")  # 인자 1개 → validate 실패
-    assert not cmd.validate()  # 사전 확인
-
     with pytest.raises(ValueError, match=FullRead.ERROR_UNVALIDATED):
-        cmd.run()
+        FullRead(ssd_driver, "dummy").run()
