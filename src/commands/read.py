@@ -3,7 +3,7 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 
 class ReadCommand(CommandAction):
     command_name: str = 'read'
-    _description = 'Show list of available commands.'
+    _description = 'read value from LBA'
     _usage = 'read <LBA: int [0-99]>'
     _author = 'Gunam Kwon'
     _alias = []
@@ -16,7 +16,7 @@ class ReadCommand(CommandAction):
 
     def run(self) -> str:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string(len(self._arguments)))
+            raise InvalidArgumentException(self.get_exception_string())
 
         return self.print_output(self._address, self._ssd_driver.read(self._address))
 
@@ -32,5 +32,5 @@ class ReadCommand(CommandAction):
     def print_output(address, value):
         return f'LBA {address} : {value}'
 
-    def get_exception_string(self, error_arguments_len):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {error_arguments_len}."
+    def get_exception_string(self):
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."

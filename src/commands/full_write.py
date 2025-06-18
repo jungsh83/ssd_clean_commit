@@ -3,7 +3,7 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 
 class FullWriteCommand(CommandAction):
     command_name: str = 'fullwrite'
-    _description = 'Show list of available commands.'
+    _description = 'write value to all of LBAs'
     _usage = 'fullwrite <value: hex32bit, e.g. 0x12345678>'
     _author = 'Gunam Kwon'
     _alias = []
@@ -16,7 +16,7 @@ class FullWriteCommand(CommandAction):
 
     def run(self) -> None:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string(len(self._arguments)))
+            raise InvalidArgumentException(self.get_exception_string())
 
         for address in range(100):
             self._ssd_driver.write(address, self._value)
@@ -28,5 +28,5 @@ class FullWriteCommand(CommandAction):
         self._value = self._arguments[0]
         return True
 
-    def get_exception_string(self, error_arguments_len):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {error_arguments_len}."
+    def get_exception_string(self):
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."

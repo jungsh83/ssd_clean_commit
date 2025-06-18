@@ -3,7 +3,7 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 
 class WriteCommand(CommandAction):
     command_name: str = 'write'
-    _description = 'Show list of available commands.'
+    _description = 'write value to LBA'
     _usage = 'write <LBA: int [0-99]> <value: hex32bit, e.g. 0x12345678>'
     _author = 'Gunam Kwon'
     _alias = []
@@ -17,7 +17,7 @@ class WriteCommand(CommandAction):
 
     def run(self) -> None:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string(len(self._arguments)))
+            raise InvalidArgumentException(self.get_exception_string())
 
         self._ssd_driver.write(self._address, self._value)
 
@@ -29,5 +29,5 @@ class WriteCommand(CommandAction):
 
         return True
 
-    def get_exception_string(self, error_arguments_len):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {error_arguments_len}."
+    def get_exception_string(self):
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."

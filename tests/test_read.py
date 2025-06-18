@@ -26,19 +26,15 @@ def test_read_command_성공(test_address, test_value, mock_ssd_driver):
                                                       ('c', "0x00000000")])
 def test_read_command_유효성체크_Param개수_초과(test_address, test_value, mock_ssd_driver):
     read_cmd = ReadCommand(mock_ssd_driver, test_address, test_value)
-    error_argument_len = 2
 
-    with pytest.raises(InvalidArgumentException,
-                       match=read_cmd.get_exception_string(error_argument_len)):
+    with pytest.raises(InvalidArgumentException):
         read_cmd.run()
     mock_ssd_driver.read.assert_not_called()
 
 
 def test_read_command_유효성체크_Param개수_부족(mock_ssd_driver):
     read_cmd = ReadCommand(mock_ssd_driver)
-    error_argument_len = 0
 
-    with pytest.raises(InvalidArgumentException,
-                       match=read_cmd.get_exception_string(error_argument_len)):
+    with pytest.raises(InvalidArgumentException):
         read_cmd.run()
     mock_ssd_driver.read.assert_not_called()

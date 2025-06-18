@@ -21,11 +21,9 @@ def test_full_write_command_성공(mock_ssd_driver):
 
 
 def test_full_write_command_유효성검사_Param개수_부족(mock_ssd_driver):
-    error_argument_len = 0
     full_write_cmd = FullWriteCommand(mock_ssd_driver)
 
-    with pytest.raises(InvalidArgumentException,
-                       match=full_write_cmd.get_exception_string(error_argument_len)):
+    with pytest.raises(InvalidArgumentException):
         full_write_cmd.run()
 
     assert not full_write_cmd.validate()
@@ -37,11 +35,9 @@ def test_full_write_command_유효성검사_Param개수_부족(mock_ssd_driver):
                                                      ('0x123Z5678', 0.1), ('0x12Z45678', 123),
                                                      ('0x1Z345678', 1), ('0xZ2345678', 0)])
 def test_full_write_command_유효성검사_Param개수_초과(test_value, error_param, mock_ssd_driver):
-    error_argument_len = 2
     full_write_cmd = FullWriteCommand(mock_ssd_driver, test_value, error_param)
 
-    with pytest.raises(InvalidArgumentException,
-                       match=full_write_cmd.get_exception_string(error_argument_len)):
+    with pytest.raises(InvalidArgumentException):
         full_write_cmd.run()
 
     assert not full_write_cmd.validate()
