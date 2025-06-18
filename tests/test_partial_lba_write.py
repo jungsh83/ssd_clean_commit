@@ -52,8 +52,7 @@ def test_partial_lba_write_name_run_성공(mocker: MockerFixture):
     assert actual == "PASS"
 
 
-@pytest.mark.skip
-def test_partial_lba_write_name_run_read_실패(mocker: MockerFixture):
+def test_partial_lba_write_name_run_실패(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
     ssd_driver.read.return_value = "0x00000002"
     actual = PartialLBAWrite(ssd_driver=ssd_driver).run()
