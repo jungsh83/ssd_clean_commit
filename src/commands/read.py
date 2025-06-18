@@ -4,9 +4,11 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 class ReadCommand(CommandAction):
     command_name: str = 'read'
     _description = 'Show list of available commands.'
-    _usage = 'read'
+    _usage = 'read <LBA: int [0-99]>'
     _author = 'Gunam Kwon'
     _alias = []
+
+    VALID_ARGUMENT_LEN = 1
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
@@ -14,12 +16,12 @@ class ReadCommand(CommandAction):
 
     def run(self) -> str:
         if not self.validate():
-            raise InvalidArgumentException()
+            raise InvalidArgumentException(self.get_exception_string(len(self._arguments)))
 
         return self.print_output(self._address, self._ssd_driver.read(self._address))
 
     def validate(self) -> bool:
-        if len(self._arguments) != 1:
+        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
             return False
 
         self._address: int = self._arguments[0]
@@ -29,3 +31,6 @@ class ReadCommand(CommandAction):
     @staticmethod
     def print_output(address, value):
         return f'LBA {address} : {value}'
+
+    def get_exception_string(self, error_arguments_len):
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {error_arguments_len}."

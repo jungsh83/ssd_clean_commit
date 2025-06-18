@@ -26,10 +26,12 @@ def test_write_command_성공(test_address, mock_ssd_driver):
                                                      ('0x1Z345678', 1), ('0xZ2345678', 0)])
 def test_write_command_유효성검사_Param개수_초과(test_value, error_param, mock_ssd_driver):
     test_address = 0
+    error_argument_len = 3
 
     write_cmd = WriteCommand(mock_ssd_driver, test_address, test_value, error_param)
 
-    with pytest.raises(InvalidArgumentException):
+    with pytest.raises(InvalidArgumentException,
+                       match=write_cmd.get_exception_string(error_argument_len)):
         write_cmd.run()
 
     assert not write_cmd.validate()
@@ -38,8 +40,10 @@ def test_write_command_유효성검사_Param개수_초과(test_value, error_para
 
 def test_write_command_유효성검사_Param개수_부족(mock_ssd_driver):
     write_cmd = WriteCommand(mock_ssd_driver)
+    error_argument_len = 0
 
-    with pytest.raises(InvalidArgumentException):
+    with pytest.raises(InvalidArgumentException,
+                       match=write_cmd.get_exception_string(error_argument_len)):
         write_cmd.run()
 
     assert not write_cmd.validate()
