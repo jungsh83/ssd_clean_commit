@@ -1,4 +1,5 @@
 from src.commands.command_action import CommandAction, InvalidArgumentException
+from src.ssd import VirtualSSD
 
 
 class FullWriteCommand(CommandAction):
@@ -18,8 +19,8 @@ class FullWriteCommand(CommandAction):
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 
-        for address in range(100):
-            self._ssd_driver.write(address, self._value)
+        for lba in range(VirtualSSD.LBA_COUNT):
+            self._ssd_driver.write(lba, self._value)
 
     def validate(self) -> bool:
         if len(self._arguments) != self.VALID_ARGUMENT_LEN:

@@ -29,8 +29,8 @@ class ReadCommand(CommandAction):
         return True
 
     @staticmethod
-    def print_output(LBA, value):
-        return f'LBA {LBA} : {value}'
+    def print_output(lba, value):
+        return f'LBA {lba} : {value}'
 
     def get_exception_string(self):
         return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."

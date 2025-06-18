@@ -9,13 +9,11 @@ class FullReadCommand(CommandAction):
     _author = 'Gunam Kwon'
     _alias = []
 
-    VALID_ARGUMENT_LEN = 0
-
-    def __init__(self, ssd_driver, *args: str) -> None:
-        super().__init__(ssd_driver, *args)
+    def __init__(self, ssd_driver, *arguments: str) -> None:
+        super().__init__(ssd_driver, *arguments)
 
     def validate(self) -> bool:
-        return not self._arguments
+        return self._arguments == ()
 
     def _dump_all(self) -> list[str]:
         return [
@@ -30,4 +28,4 @@ class FullReadCommand(CommandAction):
         return "\n           ".join(self._dump_all())
 
     def get_exception_string(self):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
+        return f"{self.command_name} takes no arguments, but got {self._arguments}."
