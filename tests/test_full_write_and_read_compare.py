@@ -24,20 +24,22 @@ def ssd_driver(mocker: MockerFixture):
 
     return mk
 
+@pytest.fixture
+def ssd_driver_fail(mocker: MockerFixture):
+    mk = mocker.Mock()
+    mk.read.side_effect = mk_read
+    mk.write.side_effect = mk_write_fail
+
+    return mk
+
 
 def test_수행_성공(ssd_driver):
-    sut = FullWriteAndReadCompare(ssd_driver)
-
-    # act & assert
-    assert sut.run() == "PASS"
+    assert FullWriteAndReadCompare(ssd_driver).run() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_확인(ssd_driver):
-    # arrange
-    sut = FullWriteAndReadCompare(ssd_driver)
-
     # act
-    sut.run()
+    FullWriteAndReadCompare(ssd_driver).run()
 
     # assert
     assert ssd_driver.read.call_count == 100
@@ -45,11 +47,8 @@ def test_수행_성공시_read_write_횟수_확인(ssd_driver):
 
 
 def test_수행_성공시_테스트_케이스_검증(ssd_driver):
-    # arrange
-    sut = FullWriteAndReadCompare(ssd_driver)
-
     # act
-    sut.run()
+    FullWriteAndReadCompare(ssd_driver).run()
 
     # assert
     samples = set(
@@ -59,23 +58,14 @@ def test_수행_성공시_테스트_케이스_검증(ssd_driver):
     assert len(samples) == 4
 
 
-def test_수행_실패(ssd_driver):
-    # arrange
-    ssd_driver.write.side_effect = mk_write_fail
-    sut = FullWriteAndReadCompare(ssd_driver)
-
-    # act & assert
-    assert sut.run() == "FAIL"
+def test_수행_실패(ssd_driver_fail):
+    assert FullWriteAndReadCompare(ssd_driver_fail).run() == "FAIL"
 
 
-def test_수행_실패시_read_write_횟수_확인(ssd_driver):
-    # arrange
-    ssd_driver.write.side_effect = mk_write_fail
-    sut = FullWriteAndReadCompare(ssd_driver)
-
+def test_수행_실패시_read_write_횟수_확인(ssd_driver_fail):
     # act
-    sut.run()
+    FullWriteAndReadCompare(ssd_driver_fail).run()
 
     # assert
-    assert ssd_driver.write.call_count == 34
-    assert ssd_driver.read.call_count == 34
+    assert ssd_driver_fail.write.call_count == 34
+    assert ssd_driver_fail.read.call_count == 34
