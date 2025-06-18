@@ -3,18 +3,19 @@ import sys
 
 
 class VirtualSSD:
-    # 프로젝트 루트/data/ssd_*.txt
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     NAND_PATH = os.path.join(BASE_DIR, 'data', 'ssd_nand.txt')
     OUTPUT_PATH = os.path.join(BASE_DIR, 'data', 'ssd_output.txt')
 
     LBA_COUNT = 100  # LBA 0~99
-    DEFAULT_VAL = "0x00000000"  # 읽기 실패 시 기본값
+    DEFAULT_VAL = "0x00000000"
+    ERROR_TEXT = 'ERROR'
+    COMMAND_READ = "R"
+    COMMAND_WRITE = "W"
 
     def __init__(self):
         self._initialize_nand_if_needed()
 
-    # ───────── 내부 유틸 ──────────────────────────────────────────────
     def _initialize_nand_if_needed(self):
         os.makedirs(os.path.dirname(self.NAND_PATH), exist_ok=True)
         if not os.path.exists(self.NAND_PATH):
@@ -30,62 +31,53 @@ class VirtualSSD:
         with open(self.NAND_PATH, 'w', encoding='utf-8') as f:
             f.writelines(line + '\n' for line in data_lines)
 
-    # ───────── 퍼블릭 API ────────────────────────────────────────────
     def read(self, lba: int) -> str:
-        # 1) 범위 체크
         if not 0 <= lba < self.LBA_COUNT:
-            with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
-                f.write('ERROR\n')
-            return 'ERROR'
+            self._write_error()
+            return self.ERROR_TEXT
 
-        # 2) 값 읽기
-        try:
-            value = self._load_nand()[lba]
-        except Exception:  # 파일 없음·인덱스 오류 등
-            value = self.DEFAULT_VAL
+        value = self._load_nand()[lba]
 
-        # 3) 결과 기록
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(value + '\n')
         return value
 
     def write(self, lba: int, value: str) -> None:
         if not 0 <= lba < self.LBA_COUNT:
-            with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
-                f.write('ERROR')
+            self._write_error()
             return
         data = self._load_nand()
         data[lba] = value
         self._save_nand(data)
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
-            pass
+            pass  # 명령 성공 시 빈 파일 생성
+
+    def _write_error(self):
+        with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            f.write(self.ERROR_TEXT)
 
 
-if __name__ == "__main__":
-
-    args = sys.argv[1:]
+def main(args: list[str]):
     ssd = VirtualSSD()
 
-
-    def write_error():
-        with open(ssd.OUTPUT_PATH, 'w', encoding='utf-8') as f:
-            f.write("ERROR\n")
-
-
-    if len(args) == 2 and args[0] == 'R':
+    if len(args) == 2 and args[0] == ssd.COMMAND_READ:
         try:
             lba = int(args[1])
             ssd.read(lba)
-        except Exception:
-            write_error()
+        except (ValueError, IndexError):
+            ssd._write_error()
 
-    elif len(args) == 3 and args[0] == 'W':
+    elif len(args) == 3 and args[0] == ssd.COMMAND_WRITE:
         try:
             lba = int(args[1])
             value = args[2]
             ssd.write(lba, value)
-        except Exception:
-            write_error()
+        except (ValueError, IndexError):
+            ssd._write_error()
 
     else:
-        write_error()
+        ssd._write_error()
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
