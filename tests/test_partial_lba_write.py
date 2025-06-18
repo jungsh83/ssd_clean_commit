@@ -1,6 +1,3 @@
-import io
-import sys
-
 import pytest
 from pytest_mock import MockerFixture
 from unittest.mock import call
