@@ -34,9 +34,7 @@ def test_fullread_마지막줄_LBA99_값확인(ssd_driver, capsys):
 
 def test_fullread_유효성범위검사(ssd_driver):
     cmd = FullRead(ssd_driver, "dummy")  # 인자 1개 → validate 실패
-    assert not cmd.validate()
+    assert not cmd.validate()  # 사전 확인
 
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(ValueError, match=FullRead.ERROR_UNVALIDATED):
         cmd.run()
-
-    assert str(exc.value) == FullRead.ERROR_UNVALIDATED
