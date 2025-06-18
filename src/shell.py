@@ -1,6 +1,6 @@
 from src.commands.command_action import CommandAction
 from src.ssd import VirtualSSD
-
+from src.ssd_driver import SSDDriver
 
 def resolve_command(name):
     handler = CommandAction.registry.get(name)
@@ -13,8 +13,7 @@ def resolve_command(name):
     return None, name
 
 
-def main():
-    ssd_driver = VirtualSSD()
+def main(ssd_driver = SSDDriver()):
     while True:
         try:
             user_input = input("Shell> ").strip()
@@ -37,9 +36,12 @@ def main():
             if result:
                 print(f"[{command.upper()}] {result}")
 
+            if command == 'exit':
+                break
+
         except Exception as e:
             print(f"[ERROR] {str(e)}")
 
 
 if __name__ == "__main__":
-    main()
+    main(SSDDriver())
