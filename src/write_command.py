@@ -6,7 +6,8 @@ class WriteCommand(CommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._address, self._value = self._arguments
+        self._value = None
+        self._address = None
 
     def run(self) -> None:
         if self.validate() is False:
@@ -15,6 +16,11 @@ class WriteCommand(CommandAction):
         self._ssd_driver.write(self._address, self._value)
 
     def validate(self) -> bool:
+        if len(self._arguments) == 0:
+            return False
+
+        self._address, self._value = self._arguments
+
         if not 0 <= self._address <= 99:
             return False
 
