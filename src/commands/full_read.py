@@ -1,7 +1,7 @@
-from src.command_action import CommandAction
+from src.commands.command_action import CommandAction
 
 
-class FullRead(CommandAction):
+class FullReadCommand(CommandAction):
     command_name = ["fullread", "fr"]
     ERROR_UNVALIDATED = "Validation Error"
 

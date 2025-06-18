@@ -1,6 +1,6 @@
 import pytest
 
-from src.full_write_command import FullWriteCommand
+from src.commands.full_write import FullWriteCommand
 from src.ssd import VirtualSSD
 
 

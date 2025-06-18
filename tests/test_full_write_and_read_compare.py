@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.full_write_and_read_compare import FullWriteAndReadCompare
+from src.commands.full_write_and_read_compare import FullWriteAndReadCompareCommand
 
 
 data_dict = {}
@@ -34,20 +34,20 @@ def ssd_driver_fail(mocker: MockerFixture):
 
 def test_validate_수행_성공(ssd_driver):
     # act & assert
-    assert FullWriteAndReadCompare(ssd_driver).validate()
+    assert FullWriteAndReadCompareCommand(ssd_driver).validate()
 
 
 def test_validate_수행_실패(ssd_driver):
     # act & assert
-    assert not FullWriteAndReadCompare(ssd_driver, 1, "0x12345678").validate()
+    assert not FullWriteAndReadCompareCommand(ssd_driver, 1, "0x12345678").validate()
 
 def test_수행_성공(ssd_driver):
-    assert FullWriteAndReadCompare(ssd_driver).run() == "PASS"
+    assert FullWriteAndReadCompareCommand(ssd_driver).run() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_확인(ssd_driver):
     # act
-    FullWriteAndReadCompare(ssd_driver).run()
+    FullWriteAndReadCompareCommand(ssd_driver).run()
 
     # assert
     assert ssd_driver.read.call_count == 100
@@ -56,7 +56,7 @@ def test_수행_성공시_read_write_횟수_확인(ssd_driver):
 
 def test_수행_성공시_테스트_케이스_검증(ssd_driver):
     # act
-    FullWriteAndReadCompare(ssd_driver).run()
+    FullWriteAndReadCompareCommand(ssd_driver).run()
 
     # assert
     samples = set(
@@ -67,12 +67,12 @@ def test_수행_성공시_테스트_케이스_검증(ssd_driver):
 
 
 def test_수행_실패(ssd_driver_fail):
-    assert FullWriteAndReadCompare(ssd_driver_fail).run() == "FAIL"
+    assert FullWriteAndReadCompareCommand(ssd_driver_fail).run() == "FAIL"
 
 
 def test_수행_실패시_read_write_횟수_확인(ssd_driver_fail):
     # act
-    FullWriteAndReadCompare(ssd_driver_fail).run()
+    FullWriteAndReadCompareCommand(ssd_driver_fail).run()
 
     # assert
     assert ssd_driver_fail.write.call_count == 34

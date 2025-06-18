@@ -1,11 +1,11 @@
 import random
-from src.command_action import CommandAction
+from src.commands.command_action import CommandAction
 
 TEST_LBA_1 = 0
 TEST_LBA_2 = 99
 
 
-class WriteReadAging(CommandAction):
+class WriteReadAgingCommand(CommandAction):
     command_name = ["3_WriteReadAging", "3_"]
 
     def validate(self) -> bool:

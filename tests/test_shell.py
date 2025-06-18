@@ -2,7 +2,7 @@ import builtins
 import pytest
 
 from src import shell
-from src.command_action import CommandAction
+from src.commands.command_action import CommandAction
 
 
 @pytest.fixture

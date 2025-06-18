@@ -1,15 +1,13 @@
 import random
 
-from setuptools.config.pyprojecttoml import validate
-
-from src.command_action import CommandAction
+from src.commands.command_action import CommandAction
 
 START_TEST_VALUE = 10000000
 
 PARTIAL_LBA_WRITE_COMMAND = ['2_PartialLBAWrite', '2_']
 
 
-class PartialLBAWrite(CommandAction):
+class PartialLBAWriteCommand(CommandAction):
     command_name = PARTIAL_LBA_WRITE_COMMAND
 
     def __init__(self, ssd_driver, *args):

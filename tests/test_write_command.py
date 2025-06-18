@@ -1,7 +1,7 @@
 import pytest
 
 from src.ssd import VirtualSSD
-from src.write_command import WriteCommand
+from src.commands.write import WriteCommand
 
 
 @pytest.fixture
