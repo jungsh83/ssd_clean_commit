@@ -1,23 +1,7 @@
-import sys
 import pytest
-from io import StringIO
 from pytest_mock import MockerFixture
 
 from src.full_write_and_read_compare import FullWriteAndReadCompare
-
-
-def catch_run_stdout(sut):
-    stdout = sys.stdout
-    output = StringIO()
-    sys.stdout = output
-
-    try:
-        sut.run()
-
-    finally:
-        sys.stdout = stdout
-
-    return output.getvalue()
 
 
 def test_수행_성공(mocker: MockerFixture):
@@ -36,10 +20,10 @@ def test_수행_성공(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
-    out = catch_run_stdout(sut)
+    out = sut.run()
 
     # assert
-    assert out == "PASS\n"
+    assert out == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
@@ -58,7 +42,7 @@ def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
-    out = catch_run_stdout(sut)
+    sut.run()
 
     # assert
     assert ssd_driver.read.call_count == 100
@@ -81,7 +65,7 @@ def test_수행_성공시_테스트_케이스_검증(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
-    out = catch_run_stdout(sut)
+    sut.run()
 
     # assert
     samples = set(
@@ -108,7 +92,7 @@ def test_수행_실패(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
-    out = catch_run_stdout(sut)
+    out = sut.run()
 
     # assert
     assert out == "FAIL\n"
@@ -131,7 +115,7 @@ def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
-    out = catch_run_stdout(sut)
+    out = sut.run()
 
     # assert
     assert ssd_driver.write.call_count == 50
