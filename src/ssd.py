@@ -1,4 +1,5 @@
 import os
+import sys
 
 class VirtualSSD:
     # 프로젝트 루트/data/ssd_*.txt
@@ -55,3 +56,14 @@ class VirtualSSD:
         data = self._load_nand()
         data[lba] = value
         self._save_nand(data)
+
+
+if __name__ == "__main__":
+
+    args = sys.argv[1:]
+    ssd = VirtualSSD()
+
+    if len(args) == 3 and args[0] == 'W':
+        lba = int(args[1])
+        value = args[2]
+        ssd.write(lba, value)

@@ -1,11 +1,13 @@
 import os
 import pytest
 from src.ssd import VirtualSSD
+import subprocess
+import sys
 
 # ───────── 경로 상수 (클래스와 동일) ─────────────────────────────────
 NAND_PATH   = VirtualSSD.NAND_PATH
 OUTPUT_PATH = VirtualSSD.OUTPUT_PATH
-
+SSD_PY = os.path.join(VirtualSSD.BASE_DIR, 'src', 'ssd.py')
 
 # ───────── 픽스처: 테스트 전후 파일 정리 ────────────────────────────
 @pytest.fixture(autouse=True)
@@ -115,3 +117,28 @@ def test_쓴_값을_바로_읽어서_같은지_확인():
     target_val = "0x12345678"
     ssd.write(10, target_val)
     assert ssd.read(10) == target_val
+
+def test_cli에서_write하면_nand에_입력한다():
+    subprocess.run([sys.executable, SSD_PY, 'W', '2', '0xDEADBEEF'], check=True)
+
+    with open(NAND_PATH) as f:
+        lines = [line.strip() for line in f.readlines()]
+
+    assert lines[2] == '0xDEADBEEF'
+
+@pytest.mark.skip
+def test_cli에서_read하면_nand값_읽는다():
+    ssd = VirtualSSD()
+    ssd.write(3, '0xABCDEF12')
+
+    subprocess.run([sys.executable, SSD_PY, 'R', '3'], check=True)
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == '0xABCDEF12'
+
+@pytest.mark.skip
+def test_cli에서_command가_잘못되면_output에_error입력():
+    subprocess.run([sys.executable, SSD_PY, 'X', '1'], check=True)
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == 'ERROR'
