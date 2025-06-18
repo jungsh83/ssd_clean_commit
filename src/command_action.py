@@ -12,7 +12,8 @@ class CommandAction(ABC):
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         if hasattr(cls, 'command_name'):
-            CommandAction.registry[cls.command_name] = cls
+            for name in cls.command_name:
+                CommandAction.registry[name] = cls
 
     @abstractmethod
     def run(self) -> None:

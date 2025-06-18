@@ -2,7 +2,7 @@ from src.command_action import CommandAction
 
 
 class HelpCommand(CommandAction):
-    command_name: list[str] = 'help'
+    command_name: list[str] = ['help']
     Description = 'Show list of available commands.'
     Usage = 'help'
     Author = 'Songju Na'
