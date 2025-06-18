@@ -1,4 +1,4 @@
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class WriteCommand(CommandAction):
@@ -12,8 +12,8 @@ class WriteCommand(CommandAction):
         self._address: int = None
 
     def run(self) -> None:
-        if self.validate() is False:
-            raise ValueError(self.ERROR_UNVALIDATED)
+        if not self.validate():
+            raise InvalidArgumentException()
 
         self._ssd_driver.write(self._address, self._value)
 
@@ -23,20 +23,4 @@ class WriteCommand(CommandAction):
 
         self._address, self._value = self._arguments
 
-        if not isinstance(self._address, int) or not 0 <= self._address <= 99:
-            return False
-
-        if self.validate_value() is False:
-            return False
-
         return True
-
-    def validate_value(self):
-        if (not isinstance(self._value, str) or
-                len(self._value) != 10 or
-                not self._value.startswith(self.VALUE_PREFIX)):
-            return False
-
-        for bit in self._value.strip(self.VALUE_PREFIX):
-            if not 'A' <= bit <= 'F' and not '0' <= bit <= '9':
-                return False
