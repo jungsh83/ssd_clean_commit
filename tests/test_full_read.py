@@ -1,5 +1,6 @@
 import pytest
 
+from src.commands.command_action import InvalidArgumentException
 from src.commands.full_read import FullReadCommand
 from src.ssd import VirtualSSD
 
@@ -33,5 +34,5 @@ def test_fullread_마지막줄_LBA99_값확인(ssd_driver):
 
 
 def test_fullread_유효성범위검사(ssd_driver):
-    with pytest.raises(ValueError, match=FullReadCommand.ERROR_UNVALIDATED):
+    with pytest.raises(InvalidArgumentException):
         FullReadCommand(ssd_driver, "dummy").run()

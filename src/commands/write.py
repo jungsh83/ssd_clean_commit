@@ -1,42 +1,33 @@
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class WriteCommand(CommandAction):
-    ERROR_UNVALIDATED = 'Validation Error'
-    VALUE_PREFIX = '0x'
-    command_name: list = ['write']
+    command_name: str = 'write'
+    _description = 'write value to LBA'
+    _usage = 'write <LBA: int [0-99]> <value: hex32bit, e.g. 0x12345678>'
+    _author = 'Gunam Kwon'
+    _alias = []
+
+    VALID_ARGUMENT_LEN = 2
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._value: str = None
-        self._address: int = None
+        self._LBA: int = None
 
     def run(self) -> None:
-        if self.validate() is False:
-            raise ValueError(self.ERROR_UNVALIDATED)
+        if not self.validate():
+            raise InvalidArgumentException(self.get_exception_string())
 
-        self._ssd_driver.write(self._address, self._value)
+        self._ssd_driver.write(self._LBA, self._value)
 
     def validate(self) -> bool:
         if len(self._arguments) != 2:
             return False
 
-        self._address, self._value = self._arguments
-
-        if not isinstance(self._address, int) or not 0 <= self._address <= 99:
-            return False
-
-        if self.validate_value() is False:
-            return False
+        self._LBA, self._value = self._arguments
 
         return True
 
-    def validate_value(self):
-        if (not isinstance(self._value, str) or
-                len(self._value) != 10 or
-                not self._value.startswith(self.VALUE_PREFIX)):
-            return False
-
-        for bit in self._value.strip(self.VALUE_PREFIX):
-            if not 'A' <= bit <= 'F' and not '0' <= bit <= '9':
-                return False
+    def get_exception_string(self):
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."

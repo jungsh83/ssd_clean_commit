@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
+
 class InvalidArgumentException(Exception):
     __module__ = 'builtins'
+
 
 class CommandAction(ABC):
     registry = {}
@@ -14,11 +16,10 @@ class CommandAction(ABC):
     def __init_subclass__(cls):
         super().__init_subclass__()
         if hasattr(cls, 'command_name'):
-            for command in cls.command_name:
-                CommandAction.registry[command] = cls
+            CommandAction.registry[cls.command_name] = cls
 
     @abstractmethod
-    def run(self) -> str | None:
+    def run(self) -> str:
         ...
 
     @abstractmethod

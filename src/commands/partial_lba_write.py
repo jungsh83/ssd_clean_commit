@@ -1,14 +1,16 @@
 import random
 
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 START_TEST_VALUE = 10000000
 
-PARTIAL_LBA_WRITE_COMMAND = ['2_PartialLBAWrite', '2_']
-
 
 class PartialLBAWriteCommand(CommandAction):
-    command_name = PARTIAL_LBA_WRITE_COMMAND
+    command_name: str = "2_PartialLBAWrite"
+    _description = 'Execute test scenario: Partial LBA Write'
+    _usage = "'2_PartialLBAWrite' or '2_'"
+    _author = 'Songhwa Jeong'
+    _alias = ['2_']
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
@@ -16,7 +18,8 @@ class PartialLBAWriteCommand(CommandAction):
 
     def run(self) -> str:
         if not self.validate():
-            raise Exception
+            msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
+            raise InvalidArgumentException(msg)
         for i in range(30):
             self._bulk_write()
             if self._is_read_compare_failed():
