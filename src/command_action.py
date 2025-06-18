@@ -16,7 +16,7 @@ class CommandAction(ABC):
                 CommandAction.registry[command] = cls
 
     @abstractmethod
-    def run(self) -> str:
+    def run(self) -> str | None:
         ...
 
     @abstractmethod
