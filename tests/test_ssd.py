@@ -13,6 +13,9 @@ SSD_PY = os.path.join(VirtualSSD.BASE_DIR, 'src', 'ssd.py')
 # ───────── 픽스처: 테스트 전후 파일 정리 ────────────────────────────
 @pytest.fixture(autouse=True)
 def clean_files():
+    for path in (NAND_PATH, OUTPUT_PATH):
+        if os.path.exists(path):
+            os.remove(path)
     yield
     for path in (NAND_PATH, OUTPUT_PATH):
         if os.path.exists(path):
@@ -144,3 +147,16 @@ def test_cli에서_command가_잘못되면_output에_error입력():
 
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == 'ERROR'
+
+def test_cli_최초실행시_output파일이_없으면_생성한다():
+    if os.path.exists(OUTPUT_PATH):
+        os.remove(OUTPUT_PATH)
+
+    assert not os.path.exists(OUTPUT_PATH)
+
+    subprocess.run([sys.executable, SSD_PY, 'R', '0'], check=True)
+
+    assert os.path.exists(OUTPUT_PATH)
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == '0x00000000'
