@@ -5,7 +5,7 @@ from src.command_action import CommandAction
 
 class FullRead(CommandAction):
     command_name = ["fullread", "fr"]
-
+    ERROR_UNVALIDATED = 'Validation Error'
     def __init__(self, ssd_driver, *arguments: str) -> None:
         super().__init__(ssd_driver, *arguments)
 
@@ -20,8 +20,7 @@ class FullRead(CommandAction):
 
     def run(self) -> None:
         if not self.validate():
-            print("ERROR")
-            return
+            raise ValueError(self.ERROR_UNVALIDATED)
 
         for value in self._dump_all():
             print(value)

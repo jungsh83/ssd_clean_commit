@@ -25,8 +25,11 @@ def test_fullread_lba_출력줄양끝단_검증(ssd, capsys, index):
     assert lines[index] == ssd.read(index)
 
 
-def test_fullread_유효성범위검사(ssd, capsys):
-    cmd = FullRead(ssd, "dummy")
-    assert not cmd.validate()
-    cmd.run()
-    assert "ERROR" in capsys.readouterr().out
+def test_fullread_유효성범위검사(ssd):
+    cmd = FullRead(ssd, "dummy")          # 인자 1개 → validate 실패
+    assert not cmd.validate()             # 사전 체크
+
+    with pytest.raises(ValueError) as exc:
+        cmd.run()
+
+    assert str(exc.value) == FullRead.ERROR_UNVALIDATED
