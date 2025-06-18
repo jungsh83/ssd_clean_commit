@@ -11,7 +11,7 @@ class WriteReadAgingCommand(CommandAction):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    def run(self) -> None:
+    def run(self) -> str:
         if not self.validate():
             raise Exception(f"Invalid arguments: {self._arguments}")
 
