@@ -35,7 +35,7 @@ def test_write_command_유효성검사_LBA오류(test_address, mock_ssd):
 
 @pytest.mark.parametrize('test_value', ['0x1234567Z', '0x123456Z8', '0x12345Z78', '0x1234Z678',
                                         '0x123Z5678', '0x12Z45678', '0x1Z345678', '0xZ2345678',
-                                        0.1, 'c', -1, '0x1111', '0x11111', '1234567890'])
+                                        0.1, 'c', -1, '0x1111', '0x11111', '1234567890', 'AAAAABBBBB'])
 def test_write_command_유효성검사_Value오류(test_value, mock_ssd):
     test_address = 0
 
