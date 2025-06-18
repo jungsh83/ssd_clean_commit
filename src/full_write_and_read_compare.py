@@ -6,7 +6,7 @@ class FullWriteAndReadCompare(CommandAction):
     command_name = ["1_FullWriteAndReadCompare", "1_"]
 
     def validate(self) -> bool:
-        return self._arguments == []
+        return self._arguments == ()
 
     def run(self) -> None:
         for i in range(25):
