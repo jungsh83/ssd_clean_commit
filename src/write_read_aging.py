@@ -13,16 +13,16 @@ class WriteReadAging(CommandAction):
 
     def run(self) -> None:
         for _ in range(200):
-            self.write_data()
-            if not self.read_compare(TEST_LBA_1, TEST_LBA_2):
+            if self._write_read_compare(TEST_LBA_1):
+                return "FAIL"
+            if self._write_read_compare(TEST_LBA_2):
                 return "FAIL"
 
         return "PASS"
 
-    def write_data(self):
+    def _write_read_compare(self, lba) -> bool:
         test_value = f"0x{random.randint(1111111, 4444444):08X}"
-        self._ssd_driver.write(TEST_LBA_1, test_value)
-        self._ssd_driver.write(TEST_LBA_2, test_value)
+        self._ssd_driver.write(lba, test_value)
+        read_value = self._ssd_driver.read(lba)
 
-    def read_compare(self, lba1, lba2) -> bool:
-        return self._ssd_driver.read(lba1) == self._ssd_driver.read(lba2)
+        return read_value == test_value
