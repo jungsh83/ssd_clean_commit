@@ -20,10 +20,8 @@ def test_수행_성공(mocker: MockerFixture):
     sut = WriteReadAging(ssd_driver)
 
     # act
-    out = sut.run()
-
     # assert
-    assert out == "PASS"
+    assert sut.run() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_점검(mocker: MockerFixture):
@@ -66,10 +64,8 @@ def test_수행_실패(mocker: MockerFixture):
     sut = WriteReadAging(ssd_driver)
 
     # act
-    out = sut.run()
-
     # assert
-    assert out == "FAIL"
+    assert sut.run() == "FAIL"
 
 
 def test_수행_실패시_read_write_횟수_점검(mocker: MockerFixture):
@@ -89,7 +85,7 @@ def test_수행_실패시_read_write_횟수_점검(mocker: MockerFixture):
     sut = WriteReadAging(ssd_driver)
 
     # act
-    out = sut.run()
+    sut.run()
 
     # assert
     assert ssd_driver.write.call_count == 2
