@@ -20,6 +20,7 @@ class WriteCommand(CommandAction):
             raise InvalidArgumentException(self.get_exception_string())
 
         self._ssd_driver.write(self._LBA, self._value)
+        return "Done"
 
     def validate(self) -> bool:
         if len(self._arguments) != 2:
