@@ -176,3 +176,17 @@ def test_cli_W_정상동작시_output파일은_빈파일이다():
     with open(OUTPUT_PATH, encoding='utf-8') as f:
         content = f.read()
     assert content == ''
+
+def test_write_value가_16진수형식이_아니면_ERROR():
+    ssd = VirtualSSD()
+    ssd.write(5, "0xZZZZZZZZ")  # 유효하지 않은 hex 문자
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == "ERROR"
+
+
+def test_cli에서_lba가_숫자가_아니면_ERROR():
+    subprocess.run([sys.executable, SSD_PY, 'W', 'abc', '0x12345678'], check=True)
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == "ERROR"
