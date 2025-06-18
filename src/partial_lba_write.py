@@ -13,6 +13,16 @@ class PartialLBAWrite(CommandAction):
     def run(self) -> None:
         for i in range(30):
             self.bulk_write()
+            if not WRITE_TEST_VALUE == self._ssd_driver.read(0):
+                return
+            if not WRITE_TEST_VALUE == self._ssd_driver.read(1):
+                return
+            if not WRITE_TEST_VALUE == self._ssd_driver.read(2):
+                return
+            if not WRITE_TEST_VALUE == self._ssd_driver.read(3):
+                return
+            if not WRITE_TEST_VALUE == self._ssd_driver.read(4):
+                return
 
     def bulk_write(self):
         write_order = self.generate_order()

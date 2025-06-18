@@ -5,7 +5,7 @@ import pytest
 from pytest_mock import MockerFixture
 from unittest.mock import call
 
-from src.partial_lba_write import PartialLBAWrite
+from src.partial_lba_write import PartialLBAWrite, WRITE_TEST_VALUE
 
 
 def test_partial_lba_write_validate_호출_정상(mocker: MockerFixture):
@@ -20,6 +20,7 @@ def test_partial_lba_write_name_클래스변수_리스트_확인(mocker: MockerF
 
 def test_partial_lba_write_name_run_write_150번_수행_확인(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.read.return_value = WRITE_TEST_VALUE
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert ssd_driver.write.call_count == 150
@@ -36,9 +37,9 @@ def test_partial_lba_write_name_run_write_random_처리_확인(mocker: MockerFix
            ssd_driver.write.call_args_list[4].args[0]
 
 
-@pytest.mark.skip
 def test_partial_lba_write_name_run_read_150번_수행_확인(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.read.return_value = WRITE_TEST_VALUE
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert ssd_driver.read.call_count == 150
