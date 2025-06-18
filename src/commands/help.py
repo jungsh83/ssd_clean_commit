@@ -13,7 +13,8 @@ class HelpCommand(CommandAction):
 
     def run(self):
         if not self.validate():
-            raise InvalidArgumentException(f"{self.__class__.command_name} takes 0 arguments, but got {self._arguments}")
+            raise InvalidArgumentException(
+                f"{self.__class__.command_name} takes no arguments, but got {self._arguments}")
 
         for name, cls in sorted(CommandAction.registry.items()):
             print(f"\n▶ {name}")
@@ -27,4 +28,4 @@ class HelpCommand(CommandAction):
                 print(f"  - Alias       : {', '.join(aliases)}")
 
     def validate(self) -> bool:
-        return len(self._arguments) == 0
+        return self._arguments == ()
