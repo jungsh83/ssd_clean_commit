@@ -35,9 +35,8 @@ def main():
                 print(f"[{command.upper()}] INVALID COMMAND")
                 continue
 
-            handler_instance = handler(ssd_driver)
-
-            result = handler_instance.run(*args)
+            handler_instance = handler(ssd_driver, *args)
+            result = handler_instance.run()
 
             if result:
                 print(f"[{command.upper()}] {result}")

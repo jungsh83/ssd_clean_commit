@@ -3,10 +3,10 @@ from src.command_action import CommandAction
 
 class HelpCommand(CommandAction):
     command_name: list[str] = ['help']
-    description = 'Show list of available commands.'
-    usage = 'help'
-    author = 'Songju Na'
-    alias = ['h']
+    _description = 'Show list of available commands.'
+    _usage = 'help'
+    _author = 'Songju Na'
+    _alias = ['h']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -17,11 +17,12 @@ class HelpCommand(CommandAction):
 
         for name, cls in sorted(CommandAction.registry.items()):
             print(f"\n▶ {name}")
-            print(f"  - Description : {getattr(cls, 'description', 'No description')}")
-            print(f"  - Usage       : {getattr(cls, 'usage', 'No usage')}")
-            print(f"  - Author      : {getattr(cls, 'author', 'Unknown')}")
+            print(f"  - Description : {getattr(cls, '_description', 'No description')}")
+            print(f"  - Usage       : {getattr(cls, '_usage', 'No usage')}")
+            team_name = getattr(cls, '_team_name', "")
+            print(f"  - Author      : [{team_name}] {getattr(cls, '_author', 'Unknown')}")
 
-            aliases = getattr(cls, 'alias', [])
+            aliases = getattr(cls, '_alias', [])
             if aliases:
                 print(f"  - Alias       : {', '.join(aliases)}")
 

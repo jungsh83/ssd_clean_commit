@@ -1,9 +1,9 @@
-from functools import cached_property
 from abc import ABC, abstractmethod
 
 
 class CommandAction(ABC):
     registry = {}
+    _team_name = 'C-team (Clean Commit)'
 
     def __init__(self, ssd_driver, *args):
         self._ssd_driver = ssd_driver
