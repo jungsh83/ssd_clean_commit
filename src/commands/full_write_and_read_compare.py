@@ -1,5 +1,5 @@
 import random
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class FullWriteAndReadCompareCommand(CommandAction):
@@ -15,7 +15,8 @@ class FullWriteAndReadCompareCommand(CommandAction):
     def run(self) -> str:
 
         if not self.validate():
-            raise Exception(f"Invalid arguments; {self._arguments}")
+            msg = f"{self.command_name[0]} takes no arguments, but got '{self._arguments}'"
+            raise InvalidArgumentException(msg)
 
         for i in range(25):
             if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
