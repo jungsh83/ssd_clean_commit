@@ -14,6 +14,7 @@ def test_full_write_command_성공(mocker):
 
     assert mock_ssd.write.call_count == 100
 
+
 def test_full_write_command_유효성검사_value_type에러(mocker):
     mock_ssd = mocker.Mock(spec=VirtualSSD)
     test_value = 3
@@ -26,3 +27,15 @@ def test_full_write_command_유효성검사_value_type에러(mocker):
     assert full_write_cmd.validate() is False
     mock_ssd.write.assert_not_called()
 
+
+def test_full_write_command_유효성검사_value_값에러(mocker):
+    mock_ssd = mocker.Mock(spec=VirtualSSD)
+    test_value = '0x1234567Z'
+
+    full_write_cmd = FullWriteCommand(mock_ssd, test_value)
+
+    with pytest.raises(ValueError):
+        full_write_cmd.run()
+
+    assert full_write_cmd.validate() is False
+    mock_ssd.write.assert_not_called()

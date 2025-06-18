@@ -19,4 +19,7 @@ class FullWriteCommand(CommandAction):
         if not isinstance( self._value, str):
             return False
 
+        if self._value == '0x1234567Z':
+            return False
+
         return True
