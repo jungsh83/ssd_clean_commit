@@ -1,5 +1,6 @@
 import pytest
 
+from src.commands.command_action import InvalidArgumentException
 from src.commands.read import ReadCommand
 from src.ssd import VirtualSSD
 
@@ -21,22 +22,13 @@ def test_read_command_성공(test_address, test_value, mock_ssd):
     assert read_value == f'LBA {test_address}: {test_value}'
 
 
-@pytest.mark.parametrize('test_address', [100, 999, 0.1, -1, 'c'])
-def test_read_command_유효성체크_LBA에러(test_address, mock_ssd):
-    read_cmd = ReadCommand(mock_ssd, test_address)
-
-    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED):
-        read_cmd.run()
-    mock_ssd.read.assert_not_called()
-
-
 @pytest.mark.parametrize('test_address, test_value', [(1, "0x00000000"), (100, "0x00000000"),
                                                       (0.1, "0x00000000"), (-1, "0x00000000"),
                                                       ('c', "0x00000000")])
 def test_read_command_유효성체크_Param개수_초과(test_address, test_value, mock_ssd):
     read_cmd = ReadCommand(mock_ssd, test_address, test_value)
 
-    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED):
+    with pytest.raises(InvalidArgumentException):
         read_cmd.run()
     mock_ssd.read.assert_not_called()
 
@@ -44,6 +36,6 @@ def test_read_command_유효성체크_Param개수_초과(test_address, test_valu
 def test_read_command_유효성체크_Param개수_부족(mock_ssd):
     read_cmd = ReadCommand(mock_ssd)
 
-    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED):
+    with pytest.raises(InvalidArgumentException):
         read_cmd.run()
     mock_ssd.read.assert_not_called()

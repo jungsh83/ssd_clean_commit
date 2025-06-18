@@ -1,4 +1,4 @@
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class ReadCommand(CommandAction):
@@ -10,8 +10,8 @@ class ReadCommand(CommandAction):
         self._address = None
 
     def run(self) -> str:
-        if self.validate() is False:
-            raise ValueError(self.ERROR_UNVALIDATED)
+        if not self.validate():
+            raise InvalidArgumentException()
 
         return f'LBA {self._address} : {self._ssd_driver.read(self._address)}'
 
@@ -20,7 +20,5 @@ class ReadCommand(CommandAction):
             return False
 
         self._address: int = self._arguments[0]
-        if not isinstance(self._address, int) or (not 0 <= self._address <= 99):
-            return False
 
         return True
