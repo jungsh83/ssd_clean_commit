@@ -17,10 +17,10 @@ class SSDDriver:
 
     def read(self, lba: int) -> str:
         """
-        system call 날려도 되고, subprocess를 날려서 돌려도 됩니다.
-        별개의 프로세스로 돌아가게 만든다.
+        지정된 lba 위치의 SSD Data를 읽어 값을 반환 한다.
+
         :param lba: 주소
-        :return: 데이터
+        :return: 4byte 16진수 형식의 문자열 "e.g 0x00000000"
         :raise 'ERROR" return 받으면 ReadException 처리
         """
 
@@ -39,10 +39,10 @@ class SSDDriver:
 
     def write(self, lba: int, value: str) -> None:
         """
-        system call 날려도 되고, subprocess를 날려서 돌려도 됩니다.
-        별개의 프로세스로 돌아가게 만든다.
-        :param lba:
-        :param value:
+        lba 위치에 value 값을  SSD Data에 기록 한다.
+
+        :param lba: SSD의 저장 위치 (0~99)
+        :param value: 4byte 16진수 형식의 문자열 "e.g 0x00000000"
         :raise 'ERROR" return 받으면 WriteException 처리
         """
 
