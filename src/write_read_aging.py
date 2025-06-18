@@ -12,6 +12,9 @@ class WriteReadAging(CommandAction):
         return self._arguments == ()
 
     def run(self) -> None:
+        if not self.validate():
+            raise Exception(f"Invalid arguments: {self._arguments}")
+
         if self._test_loop_failed(TEST_LBA_1):
             return "FAIL"
 
