@@ -21,22 +21,23 @@ def clean_files():
         if os.path.exists(path):
             os.remove(path)
 
+@pytest.fixture
+def ssd():
+    return VirtualSSD()
+
 
 # 1) 정상 LBA를 읽는 경우
-def test_정상_LBA_0_를_읽는_경우():
-    ssd = VirtualSSD()
+def test_정상_LBA_0_를_읽는_경우(ssd):
     assert ssd.read(0) == "0x00000000"
 
 
-def test_정상_LBA_0을_읽고_파일에_출력():
-    ssd = VirtualSSD()
+def test_정상_LBA_0을_읽고_파일에_출력(ssd):
     ssd.read(0)
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "0x00000000"
 
 
-def test_정상파일_여러값을읽은후_파일에_출력():
-    ssd = VirtualSSD()
+def test_정상파일_여러값을읽은후_파일에_출력(ssd):
     ssd.read(0)
     ssd.read(1)
     with open(OUTPUT_PATH) as f:
@@ -44,22 +45,19 @@ def test_정상파일_여러값을읽은후_파일에_출력():
 
 
 # 2) 기록이 없던 LBA를 읽는 경우
-def test_기록이_없던_LBA를_읽는_경우():
-    ssd = VirtualSSD()
+def test_기록이_없던_LBA를_읽는_경우(ssd):
     assert ssd.read(5) == "0x00000000"
 
 
 # 3) 잘못된 LBA 범위(0~99 벗어남)
-def test_잘못된_LBA_범위_0_99_벗어남():
-    ssd = VirtualSSD()
+def test_잘못된_LBA_범위_0_99_벗어남(ssd):
     assert ssd.read(150) == "ERROR"
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "ERROR"
 
 
 # ───────── write() 관련 테스트 ───────────────────────────────────────
-def test_write하면_ssd_nand_txt에_해당값이_바뀐다():
-    ssd = VirtualSSD()
+def test_write하면_ssd_nand_txt에_해당값이_바뀐다(ssd):
     ssd.write(2, "0xAABBCCDD")
 
     with open(NAND_PATH) as f:
@@ -70,8 +68,7 @@ def test_write하면_ssd_nand_txt에_해당값이_바뀐다():
     assert all(line == "0x00000000" for i, line in enumerate(lines) if i != 2)
 
 
-def test_write_여러개_하면_nand_값이_바뀐다():
-    ssd = VirtualSSD()
+def test_write_여러개_하면_nand_값이_바뀐다(ssd):
     ssd.write(0, "0x11111111")
     ssd.write(4, "0x12345678")
     ssd.write(99, "0x99999999")
@@ -84,16 +81,14 @@ def test_write_여러개_하면_nand_값이_바뀐다():
     assert lines[99] == "0x99999999"
 
 
-def test_write_lba가_invalid_값이면_output에_ERROR():
-    ssd = VirtualSSD()
+def test_write_lba가_invalid_값이면_output에_ERROR(ssd):
     ssd.write(-1, "0x12345678")
 
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "ERROR"
 
 
-def test_write_lba가_overflow_값이면_output에_ERROR():
-    ssd = VirtualSSD()
+def test_write_lba가_overflow_값이면_output에_ERROR(ssd):
     ssd.write(100, "0x12345678")  # 0~99만 유효
 
     with open(OUTPUT_PATH) as f:
@@ -115,9 +110,8 @@ def test_write_nand_txt_파일이_없으면_새로_파일_만든다():
     assert lines[5] == "0xCAFEBABE"
 
 
-def test_쓴_값을_바로_읽어서_같은지_확인():
+def test_쓴_값을_바로_읽어서_같은지_확인(ssd):
     """write 후 같은 LBA를 read하면 값이 같아야 한다."""
-    ssd = VirtualSSD()
     target_val = "0x12345678"
     ssd.write(10, target_val)
     assert ssd.read(10) == target_val
@@ -132,8 +126,7 @@ def test_cli에서_write하면_nand에_입력한다():
     assert lines[2] == '0xDEADBEEF'
 
 
-def test_cli에서_read하면_nand값_읽는다():
-    ssd = VirtualSSD()
+def test_cli에서_read하면_nand값_읽는다(ssd):
     ssd.write(3, '0xABCDEF12')
 
     subprocess.run([sys.executable, SSD_PY, 'R', '3'], check=True)
@@ -177,8 +170,7 @@ def test_cli_W_정상동작시_output파일은_빈파일이다():
         content = f.read()
     assert content == ''
 
-def test_write_value가_16진수형식이_아니면_ERROR():
-    ssd = VirtualSSD()
+def test_write_value가_16진수형식이_아니면_ERROR(ssd):
     ssd.write(5, "0xZZZZZZZZ")  # 유효하지 않은 hex 문자
 
     with open(OUTPUT_PATH) as f:
