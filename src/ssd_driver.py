@@ -46,7 +46,7 @@ class SSDDriver:
         """
 
         # system call
-        cp = subprocess.run([self.COMMAND_PATH, 'R', lba])
+        cp = subprocess.run([self.COMMAND_PATH, 'W', lba, value])
         if cp.returncode != 0:
             raise ReadException("Non-zero exit code has been returned.")
 
