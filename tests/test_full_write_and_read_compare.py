@@ -4,65 +4,59 @@ from pytest_mock import MockerFixture
 from src.full_write_and_read_compare import FullWriteAndReadCompare
 
 
-def test_수행_성공(mocker: MockerFixture):
-    data_dict = {}
+data_dict = {}
 
-    def read(lba):
-        return data_dict.get(lba, "0x00000000")
+def mk_read(lba):
+    return data_dict.get(lba, "0x00000000")
 
-    def write(lba, value):
-        data_dict[lba] = value
+def mk_write(lba, value):
+    data_dict[lba] = value
 
-    # arrange
-    ssd_driver = mocker.Mock()
-    ssd_driver.read.side_effect = read
-    ssd_driver.write.side_effect = write
-    sut = FullWriteAndReadCompare(ssd_driver)
+def mk_write_fail(lba, value):
+    if lba == 33: return
+    data_dict[lba] = value
 
+@pytest.fixture
+def ssd_driver(mocker: MockerFixture):
+    mk = mocker.Mock()
+    mk.read.side_effect = mk_read
+    mk.write.side_effect = mk_write
+
+    return mk
+
+@pytest.fixture
+def ssd_driver_fail(mocker: MockerFixture):
+    mk = mocker.Mock()
+    mk.read.side_effect = mk_read
+    mk.write.side_effect = mk_write_fail
+
+    return mk
+
+def test_validate_수행_성공(ssd_driver):
     # act & assert
-    assert sut.run() == "PASS"
+    assert FullWriteAndReadCompare(ssd_driver).validate()
 
 
-def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
-    data_dict = {}
+def test_validate_수행_실패(ssd_driver):
+    # act & assert
+    assert not FullWriteAndReadCompare(ssd_driver, 1, "0x12345678").validate()
 
-    def read(lba):
-        return data_dict.get(lba, "0x00000000")
+def test_수행_성공(ssd_driver):
+    assert FullWriteAndReadCompare(ssd_driver).run() == "PASS"
 
-    def write(lba, value):
-        data_dict[lba] = value
 
-    # arrange
-    ssd_driver = mocker.Mock()
-    ssd_driver.read.side_effect = read
-    ssd_driver.write.side_effect = write
-    sut = FullWriteAndReadCompare(ssd_driver)
-
+def test_수행_성공시_read_write_횟수_확인(ssd_driver):
     # act
-    sut.run()
+    FullWriteAndReadCompare(ssd_driver).run()
 
     # assert
     assert ssd_driver.read.call_count == 100
     assert ssd_driver.write.call_count == 100
 
 
-def test_수행_성공시_테스트_케이스_검증(mocker: MockerFixture):
-    data_dict = {}
-
-    def read(lba):
-        return data_dict.get(lba, "0x00000000")
-
-    def write(lba, value):
-        data_dict[lba] = value
-
-    # arrange
-    ssd_driver = mocker.Mock()
-    ssd_driver.read.side_effect = read
-    ssd_driver.write.side_effect = write
-    sut = FullWriteAndReadCompare(ssd_driver)
-
+def test_수행_성공시_테스트_케이스_검증(ssd_driver):
     # act
-    sut.run()
+    FullWriteAndReadCompare(ssd_driver).run()
 
     # assert
     samples = set(
@@ -72,45 +66,14 @@ def test_수행_성공시_테스트_케이스_검증(mocker: MockerFixture):
     assert len(samples) == 4
 
 
-def test_수행_실패(mocker: MockerFixture):
-    data_dict = {}
-
-    def read(lba):
-        return data_dict.get(lba, "0x00000000")
-
-    def write(lba, value):
-        if lba == 33: return
-        data_dict[lba] = value
-
-    # arrange
-    ssd_driver = mocker.Mock()
-    ssd_driver.read.side_effect = read
-    ssd_driver.write.side_effect = write
-    sut = FullWriteAndReadCompare(ssd_driver)
-
-    # act & assert
-    assert sut.run() == "FAIL"
+def test_수행_실패(ssd_driver_fail):
+    assert FullWriteAndReadCompare(ssd_driver_fail).run() == "FAIL"
 
 
-def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
-    data_dict = {}
-
-    def read(lba):
-        return data_dict.get(lba, "0x00000000")
-
-    def write(lba, value):
-        if lba == 49: return
-        data_dict[lba] = value
-
-    # arrange
-    ssd_driver = mocker.Mock()
-    ssd_driver.read.side_effect = read
-    ssd_driver.write.side_effect = write
-    sut = FullWriteAndReadCompare(ssd_driver)
-
+def test_수행_실패시_read_write_횟수_확인(ssd_driver_fail):
     # act
-    sut.run()
+    FullWriteAndReadCompare(ssd_driver_fail).run()
 
     # assert
-    assert ssd_driver.write.call_count == 50
-    assert ssd_driver.read.call_count == 50
+    assert ssd_driver_fail.write.call_count == 34
+    assert ssd_driver_fail.read.call_count == 34
