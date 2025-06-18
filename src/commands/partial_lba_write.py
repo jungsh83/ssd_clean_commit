@@ -4,6 +4,7 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 
 START_TEST_VALUE = 10000000
 
+
 class PartialLBAWriteCommand(CommandAction):
     command_name: str = "2_PartialLBAWrite"
     _description = 'Execute test scenario: Partial LBA Write'

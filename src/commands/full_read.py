@@ -2,7 +2,7 @@ from src.commands.command_action import CommandAction
 
 
 class FullReadCommand(CommandAction):
-    command_name = ["fullread", "fr"]
+    command_name = "fullread"
     ERROR_UNVALIDATED = "Validation Error"
 
     def __init__(self, ssd_driver, *arguments: str) -> None:

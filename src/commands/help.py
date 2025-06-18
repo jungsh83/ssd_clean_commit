@@ -1,19 +1,19 @@
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class HelpCommand(CommandAction):
-    command_name: list[str] = ['help']
+    command_name: str = 'help'
     _description = 'Show list of available commands.'
     _usage = 'help'
     _author = 'Songju Na'
-    _alias = ['h']
+    _alias: list[str] = ['h']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self):
         if not self.validate():
-            raise Exception(f"help command takes no arguments, but got {self._arguments}")
+            raise InvalidArgumentException(f"{self.__class__.command_name} takes 0 arguments, but got {self._arguments}")
 
         for name, cls in sorted(CommandAction.registry.items()):
             print(f"\n▶ {name}")
