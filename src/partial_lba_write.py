@@ -20,27 +20,27 @@ class PartialLBAWrite(CommandAction):
         if not self.validate():
             raise Exception
         for i in range(30):
-            self.bulk_write()
-            if self.is_read_compare_failed():
+            self._bulk_write()
+            if self._is_read_compare_failed():
                 return "FAIL"
         return "PASS"
 
-    def is_read_compare_failed(self):
+    def _is_read_compare_failed(self):
         for read_lba in range(5):
-            if self.get_test_value() != self._ssd_driver.read(read_lba):
+            if self._get_test_value() != self._ssd_driver.read(read_lba):
                 return True
         return False
 
-    def bulk_write(self):
+    def _bulk_write(self):
         self.test_value += 1
 
-        for lba in self.generate_order():
-            self._ssd_driver.write(lba, self.get_test_value())
+        for lba in self._generate_order():
+            self._ssd_driver.write(lba, self._get_test_value())
 
-    def get_test_value(self):
+    def _get_test_value(self):
         return f'0x{self.test_value}'
 
-    def generate_order(self) -> list[int]:
+    def _generate_order(self) -> list[int]:
         orders = list(range(5))  # [0, 1, 2, 3, 4]
         random.shuffle(orders)
 
