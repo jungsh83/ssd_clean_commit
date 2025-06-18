@@ -2,7 +2,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from src.commands.full_write_and_read_compare import FullWriteAndReadCompareCommand
-
+from src.ssd import VirtualSSD
 
 data_dict = {}
 
@@ -50,8 +50,8 @@ def test_수행_성공시_read_write_횟수_확인(ssd_driver):
     FullWriteAndReadCompareCommand(ssd_driver).run()
 
     # assert
-    assert ssd_driver.read.call_count == 100
-    assert ssd_driver.write.call_count == 100
+    assert ssd_driver.read.call_count == VirtualSSD.LBA_COUNT
+    assert ssd_driver.write.call_count == VirtualSSD.LBA_COUNT
 
 
 def test_수행_성공시_테스트_케이스_검증(ssd_driver):
