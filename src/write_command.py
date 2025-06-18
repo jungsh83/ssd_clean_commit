@@ -2,6 +2,7 @@ from src.command_action import CommandAction
 
 
 class WriteCommand(CommandAction):
+    ERROR_UNVALIDATED = 'Validation Error'
     command_name: list = ['write']
 
     def __init__(self, ssd_driver, *args):
@@ -11,7 +12,7 @@ class WriteCommand(CommandAction):
 
     def run(self) -> None:
         if self.validate() is False:
-            return
+            raise ValueError(self.ERROR_UNVALIDATED)
 
         self._ssd_driver.write(self._address, self._value)
 
