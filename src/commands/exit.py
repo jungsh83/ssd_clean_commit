@@ -1,5 +1,4 @@
-# src/exit_command.py
-from src.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 import sys
 
 class ExitCommand(CommandAction):
@@ -11,7 +10,7 @@ class ExitCommand(CommandAction):
 
     def run(self):
         if not self.validate():
-            raise Exception(f"exit command takes no arguments, but got {self._arguments}")
+            raise InvalidArgumentException(f"{self.__class__.command_name} takes 0 arguments, but got {self._arguments}")
         print("[EXIT]")
         sys.exit(0)
 

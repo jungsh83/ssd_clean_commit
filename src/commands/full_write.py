@@ -4,7 +4,7 @@ from src.commands.command_action import CommandAction
 class FullWriteCommand(CommandAction):
     ERROR_UNVALIDATED = 'Validation Error'
     VALUE_PREFIX = '0x'
-    command_name = ['fullwrite']
+    command_name = 'fullwrite'
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)

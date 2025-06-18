@@ -4,7 +4,7 @@ from src.commands.command_action import CommandAction
 
 START_TEST_VALUE = 10000000
 
-PARTIAL_LBA_WRITE_COMMAND = ['2_PartialLBAWrite', '2_']
+PARTIAL_LBA_WRITE_COMMAND = '2_PartialLBAWrite'
 
 
 class PartialLBAWriteCommand(CommandAction):

@@ -1,4 +1,4 @@
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class HelpCommand(CommandAction):
@@ -13,7 +13,7 @@ class HelpCommand(CommandAction):
 
     def run(self):
         if not self.validate():
-            raise Exception(f"help command takes no arguments, but got {self._arguments}")
+            raise InvalidArgumentException(f"{self.__class__.command_name} takes 0 arguments, but got {self._arguments}")
 
         for name, cls in sorted(CommandAction.registry.items()):
             print(f"\n▶ {name}")

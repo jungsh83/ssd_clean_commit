@@ -1,9 +1,9 @@
 import random
-from src.command_action import CommandAction
+from src.commands.command_action import CommandAction
 
 
 class FullWriteAndReadCompare(CommandAction):
-    command_name = ["1_FullWriteAndReadCompare", "1_"]
+    command_name = "1_FullWriteAndReadCompare"
 
     def validate(self) -> bool:
         return self._arguments == []

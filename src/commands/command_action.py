@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
+
 class InvalidArgumentException(Exception):
     __module__ = 'builtins'
+
 
 class CommandAction(ABC):
     registry = {}

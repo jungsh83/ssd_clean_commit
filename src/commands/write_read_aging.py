@@ -6,7 +6,7 @@ TEST_LBA_2 = 99
 
 
 class WriteReadAgingCommand(CommandAction):
-    command_name = ["3_WriteReadAging", "3_"]
+    command_name = "3_WriteReadAging"
 
     def validate(self) -> bool:
         return self._arguments == ()
