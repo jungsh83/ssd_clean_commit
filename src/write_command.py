@@ -31,7 +31,7 @@ class WriteCommand(CommandAction):
         if len(self._value) != 10:
             return False
 
-        if self._value == '1234567890' or self._value == 'AAAAABBBBB':
+        if not self._value.startswith("0x"):
             return False
 
         for v in self._value.strip('0x'):
