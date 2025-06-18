@@ -10,12 +10,13 @@ PARTIAL_LBA_WRITE_COMMAND = ['2_PartialLBAWrite', '2_']
 class PartialLBAWrite(CommandAction):
     command_name = PARTIAL_LBA_WRITE_COMMAND
 
-    def run(self) -> None:
+    def run(self) -> str:
         for i in range(30):
             self.bulk_write()
             for read_lba in range(5):
                 if not WRITE_TEST_VALUE == self._ssd_driver.read(read_lba):
-                    return
+                    return "FAIL"
+        return "PASS"
 
     def bulk_write(self):
         write_order = self.generate_order()
