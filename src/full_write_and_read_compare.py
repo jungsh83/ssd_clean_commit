@@ -11,11 +11,9 @@ class FullWriteAndReadCompare(CommandAction):
     def run(self) -> None:
         for i in range(25):
             if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
-                print("FAIL")
-                return
+                return "FAIL"
 
-        print("PASS")
-        return
+        return "PASS"
 
     def run_test_case(self, start_lba, test_value) -> bool:
         for lba in range(start_lba, start_lba + 4):
