@@ -9,6 +9,10 @@ class FullWriteAndReadCompare(CommandAction):
         return self._arguments == ()
 
     def run(self) -> None:
+
+        if not self.validate():
+            raise Exception(f"Invalid arguments; {self._arguments}")
+
         for i in range(25):
             if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
                 return "FAIL"
