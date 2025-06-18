@@ -23,7 +23,7 @@ class PartialLBAWrite(CommandAction):
 
     def is_read_compare_failed(self):
         for read_lba in range(5):
-            if not self.get_test_value() == self._ssd_driver.read(read_lba):
+            if self.get_test_value() != self._ssd_driver.read(read_lba):
                 return True
         return False
 
