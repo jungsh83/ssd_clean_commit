@@ -3,7 +3,11 @@ from src.command_action import CommandAction
 
 
 class FullWriteAndReadCompare(CommandAction):
-    command_name = ["1_FullWriteAndReadCompare", "1_"]
+    command_name: str = "1_FullWriteAndReadCompare"
+    _description = 'Writes a value to all LBAs.'
+    _usage = '1_FullWriteAndReadCompare <value: hex32bit, e.g. 0x12345678>'
+    _author = 'Useong Ji'
+    _alias: list[str] = ['1_']
 
     def validate(self) -> bool:
         return self._arguments == []

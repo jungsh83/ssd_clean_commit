@@ -3,7 +3,7 @@ from src.command_action import CommandAction
 
 class ReadCommand(CommandAction):
     ERROR_UNVALIDATED = 'Validation Error'
-    command_name: list = ['read']
+    command_name: str = 'read'
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)

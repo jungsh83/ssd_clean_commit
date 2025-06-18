@@ -5,12 +5,12 @@ from src.ssd import VirtualSSD
 def resolve_command(name):
     handler = CommandAction.registry.get(name)
     if handler:
-        return handler
-    # alias 탐색
+        return handler, name
+
     for cls in CommandAction.registry.values():
-        if name in getattr(cls, 'alias', []):
-            return cls
-    return None
+        if name in getattr(cls, '_alias', []):
+            return cls, cls.command_name
+    return None, name
 
 
 def main():
@@ -25,11 +25,7 @@ def main():
             command = parts[0]
             args = parts[1:]
 
-            if command == "exit":
-                print(f"[{command.upper()}]")
-                break
-
-            handler = resolve_command(command)
+            handler, command = resolve_command(command)
 
             if not handler:
                 print(f"[{command.upper()}] INVALID COMMAND")

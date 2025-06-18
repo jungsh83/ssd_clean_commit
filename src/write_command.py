@@ -4,7 +4,7 @@ from src.command_action import CommandAction
 class WriteCommand(CommandAction):
     ERROR_UNVALIDATED = 'Validation Error'
     VALUE_PREFIX = '0x'
-    command_name: list = ['write']
+    command_name: str = 'write'
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)

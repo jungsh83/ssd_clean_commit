@@ -2,11 +2,11 @@ from src.command_action import CommandAction
 
 
 class HelpCommand(CommandAction):
-    command_name: list[str] = ['help']
+    command_name: str = 'help'
     _description = 'Show list of available commands.'
     _usage = 'help'
     _author = 'Songju Na'
-    _alias = ['h']
+    _alias: list[str] = ['h']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
