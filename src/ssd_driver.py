@@ -15,6 +15,8 @@ class SSDDriver:
     VENV_PYTHON_PATH = Path(__file__).parent.parent / ".venv/Scripts/python.exe"
     COMMAND_PATH = Path(__file__).parent / "ssd.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
+    READ_TOKEN = 'R'
+    WRITE_TOKEN = 'W'
 
     def read(self, lba: int) -> str:
         """
@@ -26,7 +28,7 @@ class SSDDriver:
         """
 
         # system call
-        cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, 'R', str(lba)])
+        cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.READ_TOKEN, str(lba)])
         if cp.returncode != VALID_RETURN_CODE:
             raise ReadException("Non-zero exit code has been returned.")
 
@@ -48,7 +50,7 @@ class SSDDriver:
         """
 
         # system call
-        cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, 'W', str(lba), str(value)])
+        cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.WRITE_TOKEN, str(lba), str(value)])
         if cp.returncode != VALID_RETURN_CODE:
             raise ReadException("Non-zero exit code has been returned.")
 
