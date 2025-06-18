@@ -12,13 +12,19 @@ class WriteReadAging(CommandAction):
         return self._arguments == []
 
     def run(self) -> None:
-        for _ in range(200):
-            if self._write_read_compare_failed(TEST_LBA_1):
-                return "FAIL"
-            if self._write_read_compare_failed(TEST_LBA_2):
-                return "FAIL"
+        if self._test_loop_failed(TEST_LBA_1):
+            return "FAIL"
+
+        elif self._test_loop_failed(TEST_LBA_2):
+            return "FAIL"
 
         return "PASS"
+
+    def _test_loop_failed(self, lba) -> bool:
+        for _ in range(200):
+            if self._write_read_compare_failed(lba):
+                return True
+        return False
 
     def _write_read_compare_failed(self, lba) -> bool:
         test_value = f"0x{random.randint(1111111, 4444444):08X}"
