@@ -4,11 +4,9 @@ from src.commands.command_action import CommandAction
 
 START_TEST_VALUE = 10000000
 
-PARTIAL_LBA_WRITE_COMMAND = '2_PartialLBAWrite'
-
 
 class PartialLBAWriteCommand(CommandAction):
-    command_name = PARTIAL_LBA_WRITE_COMMAND
+    command_name: str = "2_PartialLBAWrite"
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
