@@ -3,6 +3,7 @@ from src.command_action import CommandAction
 
 class WriteCommand(CommandAction):
     ERROR_UNVALIDATED = 'Validation Error'
+    VALUE_PREFIX = '0x'
     command_name: list = ['write']
 
     def __init__(self, ssd_driver, *args):
@@ -33,9 +34,9 @@ class WriteCommand(CommandAction):
     def validate_value(self):
         if (not isinstance(self._value, str) or
                 len(self._value) != 10 or
-                not self._value.startswith("0x")):
+                not self._value.startswith(self.VALUE_PREFIX)):
             return False
 
-        for bit in self._value.strip('0x'):
+        for bit in self._value.strip(self.VALUE_PREFIX):
             if not 'A' <= bit <= 'F' and not '0' <= bit <= '9':
                 return False
