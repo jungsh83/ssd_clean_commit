@@ -19,11 +19,8 @@ def test_수행_성공(mocker: MockerFixture):
     ssd_driver.write.side_effect = write
     sut = FullWriteAndReadCompare(ssd_driver)
 
-    # act
-    out = sut.run()
-
-    # assert
-    assert out == "PASS"
+    # act & assert
+    assert sut.run() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
@@ -91,11 +88,8 @@ def test_수행_실패(mocker: MockerFixture):
     ssd_driver.write.side_effect = write
     sut = FullWriteAndReadCompare(ssd_driver)
 
-    # act
-    out = sut.run()
-
-    # assert
-    assert out == "FAIL\n"
+    # act & assert
+    assert sut.run() == "FAIL\n"
 
 
 def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
@@ -115,7 +109,7 @@ def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
     sut = FullWriteAndReadCompare(ssd_driver)
 
     # act
-    out = sut.run()
+    sut.run()
 
     # assert
     assert ssd_driver.write.call_count == 50
