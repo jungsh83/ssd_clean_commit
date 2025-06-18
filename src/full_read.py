@@ -13,7 +13,7 @@ class FullRead(CommandAction):
     def validate(self) -> bool:
         return not self._arguments
 
-    def _dump_all(self) -> List[str]:
+    def _dump_all(self) -> list[str]:
         return [
             self._ssd_driver.read(lba)
             for lba in range(self._ssd_driver.LBA_COUNT)
