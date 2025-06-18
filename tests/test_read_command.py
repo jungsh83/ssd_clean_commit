@@ -1,6 +1,6 @@
 import pytest
 
-from src.read_command import ReadCommand
+from src.commands.read import ReadCommand
 from src.ssd import VirtualSSD
 
 

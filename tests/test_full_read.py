@@ -1,6 +1,6 @@
 import pytest
 
-from src.full_read import FullRead
+from src.commands.full_read import FullReadCommand
 from src.ssd import VirtualSSD
 
 
@@ -13,18 +13,18 @@ def ssd_driver(mocker):
 
 
 def test_fullread_100줄_출력확인(ssd_driver):
-    result = FullRead(ssd_driver).run()
+    result = FullReadCommand(ssd_driver).run()
     assert len(result.splitlines()) == VirtualSSD.LBA_COUNT
 
 
 def test_fullread_첫줄_LBA0_값확인(ssd_driver):
-    result = FullRead(ssd_driver).run()
+    result = FullReadCommand(ssd_driver).run()
     first = result.splitlines()[0]
     assert first == "0 0x00000000"
 
 
 def test_fullread_마지막줄_LBA99_값확인(ssd_driver):
-    result = FullRead(ssd_driver).run()
+    result = FullReadCommand(ssd_driver).run()
     last = result.splitlines()[-1]
 
     indent = " " * 11  # 줄 앞에 들어가는 11칸 공백
@@ -33,5 +33,5 @@ def test_fullread_마지막줄_LBA99_값확인(ssd_driver):
 
 
 def test_fullread_유효성범위검사(ssd_driver):
-    with pytest.raises(ValueError, match=FullRead.ERROR_UNVALIDATED):
-        FullRead(ssd_driver, "dummy").run()
+    with pytest.raises(ValueError, match=FullReadCommand.ERROR_UNVALIDATED):
+        FullReadCommand(ssd_driver, "dummy").run()
