@@ -11,8 +11,8 @@ class FullReadCommand(CommandAction):
 
     VALID_ARGUMENT_LEN = 0
 
-    def __init__(self, ssd_driver, *arguments: str) -> None:
-        super().__init__(ssd_driver, *arguments)
+    def __init__(self, ssd_driver, *args: str) -> None:
+        super().__init__(ssd_driver, *args)
 
     def validate(self) -> bool:
         return not self._arguments
