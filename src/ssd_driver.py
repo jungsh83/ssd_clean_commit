@@ -1,6 +1,7 @@
 import subprocess
 from pathlib import Path
 
+VALID_RETURN_CODE = 0
 
 class ReadException(Exception):
     __module__ = "builtins"
@@ -26,7 +27,7 @@ class SSDDriver:
 
         # system call
         cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, 'R', str(lba)])
-        if cp.returncode != 0:
+        if cp.returncode != VALID_RETURN_CODE:
             raise ReadException("Non-zero exit code has been returned.")
 
         # read output_file
@@ -48,7 +49,7 @@ class SSDDriver:
 
         # system call
         cp = subprocess.run([self.VENV_PYTHON_PATH, self.COMMAND_PATH, 'W', str(lba), str(value)])
-        if cp.returncode != 0:
+        if cp.returncode != VALID_RETURN_CODE:
             raise ReadException("Non-zero exit code has been returned.")
 
         # read output_file
