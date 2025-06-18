@@ -24,6 +24,9 @@ class WriteCommand(CommandAction):
         if not isinstance(self._address, int) or not 0 <= self._address <= 99:
             return False
 
+        if not isinstance(self._value, str):
+            return False
+
         for v in self._value.strip('0x'):
             if not 'A' <= v <= 'F' and not '0' <= v <= '9':
                 return False
