@@ -67,3 +67,7 @@ if __name__ == "__main__":
         lba = int(args[1])
         value = args[2]
         ssd.write(lba, value)
+
+    elif len(args) == 2 and args[0] == 'R':
+        lba = int(args[1])
+        ssd.read(lba)

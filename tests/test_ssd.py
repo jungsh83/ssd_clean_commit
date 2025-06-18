@@ -126,7 +126,7 @@ def test_cli에서_write하면_nand에_입력한다():
 
     assert lines[2] == '0xDEADBEEF'
 
-@pytest.mark.skip
+
 def test_cli에서_read하면_nand값_읽는다():
     ssd = VirtualSSD()
     ssd.write(3, '0xABCDEF12')
