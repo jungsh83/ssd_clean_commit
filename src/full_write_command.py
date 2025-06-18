@@ -6,7 +6,7 @@ class FullWriteCommand(CommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._value = self._arguments[0]
+        self._value = None
 
     def run(self) -> None:
         if self.validate() is False:
@@ -16,6 +16,11 @@ class FullWriteCommand(CommandAction):
             self._ssd_driver.write(address, self._value)
 
     def validate(self) -> bool:
+        if len(self._arguments) == 0:
+            return False
+
+        self._value = self._arguments[0]
+        
         if not isinstance( self._value, str):
             return False
 
