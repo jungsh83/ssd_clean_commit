@@ -9,7 +9,7 @@ def test_fullread_100줄_출력_확인(capsys):
 
     # 3) 단언
     lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 100  # 100줄인지 확인
+    assert len(lines) == VirtualSSD.LBA_COUNT  # 100줄인지 확인
 
 def test_fullread_first_line_matches_lba0():
     pass
