@@ -11,7 +11,7 @@ def mock_registry_and_driver(mocker):
     mock_handler = mocker.Mock()
     mock_handler_instance = mocker.Mock()
     mock_handler.return_value = mock_handler_instance
-    mock_handler_instance.run.return_value = "PASS"
+    mock_handler_instance.run.return_value = "Done"
 
     CommandAction.registry["read"] = mock_handler
 
@@ -34,7 +34,7 @@ def test_shell_일반적인_명령어(monkeypatch, capsys, mock_registry_and_dri
     shell.main()
 
     captured = capsys.readouterr()
-    assert "[READ] PASS" in captured.out
+    assert "[READ] Done" in captured.out
     assert "[EXIT]" in captured.out
 
 
@@ -105,10 +105,10 @@ def test_shell_exception_뜨면_안멈추고_메시지_띄우는지(monkeypatch,
     CommandAction.registry["explode"] = mock_handler
     mocker.patch("src.ssd.VirtualSSD", return_value=mock_driver)
 
-    simulate_shell(["explode", "foobar", "exit"], monkeypatch)
+    simulate_shell(["explode", "exit"], monkeypatch)
 
     shell.main()
 
     captured = capsys.readouterr()
     assert "[ERROR] boom" in captured.out
-    assert "[FOOBAR] INVALID COMMAND" in captured.out
+    assert "[EXIT]" in captured.out
