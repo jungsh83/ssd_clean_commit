@@ -28,7 +28,9 @@ def test_partial_lba_write_name_클래스변수_리스트_확인(mocker: MockerF
 
 def test_partial_lba_write_name_run_write_150번_수행_확인(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.write.return_value = None
     ssd_driver.read.side_effect = create_test_value()
+
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert ssd_driver.write.call_count == 150
@@ -36,6 +38,9 @@ def test_partial_lba_write_name_run_write_150번_수행_확인(mocker: MockerFix
 
 def test_partial_lba_write_name_run_write_random_처리_확인(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.write.return_value = None
+    ssd_driver.read.side_effect = create_test_value()
+
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert ssd_driver.write.call_args_list[0].args[0] != \
@@ -47,7 +52,9 @@ def test_partial_lba_write_name_run_write_random_처리_확인(mocker: MockerFix
 
 def test_partial_lba_write_name_run_read_150번_수행_확인(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.write.return_value = None
     ssd_driver.read.side_effect = create_test_value()
+
     PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert ssd_driver.read.call_count == 150
@@ -55,7 +62,9 @@ def test_partial_lba_write_name_run_read_150번_수행_확인(mocker: MockerFixt
 
 def test_partial_lba_write_name_run_성공(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.write.return_value = None
     ssd_driver.read.side_effect = create_test_value()
+
     actual = PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert actual == "PASS"
@@ -63,7 +72,9 @@ def test_partial_lba_write_name_run_성공(mocker: MockerFixture):
 
 def test_partial_lba_write_name_run_실패(mocker: MockerFixture):
     ssd_driver = mocker.Mock()
+    ssd_driver.write.return_value = None
     ssd_driver.read.return_value = "0x00000002"
+
     actual = PartialLBAWrite(ssd_driver=ssd_driver).run()
 
     assert actual == "FAIL"
