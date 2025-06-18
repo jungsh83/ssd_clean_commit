@@ -2,8 +2,6 @@ import random
 
 from src.command_action import CommandAction
 
-WRITE_TEST_VALUE = "0xABCDFFFF"
-
 PARTIAL_LBA_WRITE_COMMAND = ['2_PartialLBAWrite', '2_']
 
 

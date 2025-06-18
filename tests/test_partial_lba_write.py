@@ -2,7 +2,7 @@ import pytest
 from pytest_mock import MockerFixture
 from unittest.mock import call
 
-from src.partial_lba_write import PartialLBAWrite, WRITE_TEST_VALUE
+from src.partial_lba_write import PartialLBAWrite
 
 
 def create_test_value():
