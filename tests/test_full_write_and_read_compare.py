@@ -19,11 +19,13 @@ def catch_run_stdout(sut):
 
     return output.getvalue()
 
-def test_수행_성공(mocker: MockerFixture):
 
+def test_수행_성공(mocker: MockerFixture):
     data_dict = {}
+
     def read(lba):
         return data_dict.get(lba, "0x00000000")
+
     def write(lba, value):
         data_dict[lba] = value
 
@@ -39,8 +41,8 @@ def test_수행_성공(mocker: MockerFixture):
     # assert
     assert out == "PASS\n"
 
-def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
 
+def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
     data_dict = {}
 
     def read(lba):
@@ -61,6 +63,33 @@ def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
     # assert
     assert ssd_driver.read.call_count == 100
     assert ssd_driver.write.call_count == 100
+
+
+def test_수행_성공시_테스트_케이스_검증(mocker: MockerFixture):
+    data_dict = {}
+
+    def read(lba):
+        return data_dict.get(lba, "0x00000000")
+
+    def write(lba, value):
+        data_dict[lba] = value
+
+    # arrange
+    ssd_driver = mocker.Mock()
+    ssd_driver.read.side_effect = read
+    ssd_driver.write.side_effect = write
+    sut = FullWriteAndReadCompare(ssd_driver)
+
+    # act
+    out = catch_run_stdout(sut)
+
+    # assert
+    samples = set(
+        ssd_driver.read(i)
+        for i in (0, 4, 8, 12)
+    )
+    assert len(samples) == 4
+
 
 def test_수행_실패(mocker: MockerFixture):
     data_dict = {}
@@ -107,4 +136,3 @@ def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
     # assert
     assert ssd_driver.write.call_count == 50
     assert ssd_driver.read.call_count == 50
-
