@@ -6,7 +6,11 @@ TEST_LBA_2 = 99
 
 
 class WriteReadAgingCommand(CommandAction):
-    command_name = ["3_WriteReadAging", "3_"]
+    command_name: list[str] = ["3_WriteReadAging", "3_"]
+    _description = 'Execute test scenario: Write Read Aging'
+    _usage = "'3_WriteReadAging' or '3_'"
+    _author = 'Woosung Ji'
+    _alias = ['3_']
 
     def validate(self) -> bool:
         return self._arguments == ()
