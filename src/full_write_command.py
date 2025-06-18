@@ -16,12 +16,12 @@ class FullWriteCommand(CommandAction):
             self._ssd_driver.write(address, self._value)
 
     def validate(self) -> bool:
-        if len(self._arguments) == 0:
+        if len(self._arguments) == 0 or len(self._arguments) == 2:
             return False
 
         self._value = self._arguments[0]
-        
-        if not isinstance( self._value, str):
+
+        if not isinstance(self._value, str):
             return False
 
         for v in self._value.strip('0x'):

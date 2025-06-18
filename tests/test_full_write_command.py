@@ -40,3 +40,17 @@ def test_full_write_command_유효성검사_Param개수_부족(mocker):
 
     assert full_write_cmd.validate() is False
     mock_ssd.write.assert_not_called()
+
+
+def test_full_write_command_유효성검사_Param개수_초과(mocker):
+    mock_ssd = mocker.Mock(spec=VirtualSSD)
+    test_value = '0x12345678'
+    error_param = 'Error'
+
+    full_write_cmd = FullWriteCommand(mock_ssd, test_value, error_param)
+
+    with pytest.raises(ValueError):
+        full_write_cmd.run()
+
+    assert full_write_cmd.validate() is False
+    mock_ssd.write.assert_not_called()
