@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 
 
 class CommandAction(ABC):
+    command_name = []
+
     def __init__(self, ssd_driver, *args):
         self._ssd_driver = ssd_driver
         self._arguments = args
