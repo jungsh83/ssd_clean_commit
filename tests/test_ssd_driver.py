@@ -7,6 +7,7 @@ from src.ssd_driver import SSDDriver, ReadException, WriteException
 @pytest.fixture
 def ssd_driver():
     ssd_driver = SSDDriver()
+    return ssd_driver
 
 def test_read_성공(ssd_driver: SSDDriver):
     actual = ssd_driver.read(0)
