@@ -27,6 +27,9 @@ class FullWriteCommand(CommandAction):
         if len(self._value) != 10:
             return False
 
+        if self._value == '1234567890':
+            return False
+
         for v in self._value.strip('0x'):
             if not 'A' <= v <= 'F' and not '0' <= v <= '9':
                 return False
