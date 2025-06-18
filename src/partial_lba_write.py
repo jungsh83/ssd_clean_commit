@@ -1,5 +1,7 @@
 import random
 
+from setuptools.config.pyprojecttoml import validate
+
 from src.command_action import CommandAction
 
 START_TEST_VALUE = 10000000
@@ -15,6 +17,8 @@ class PartialLBAWrite(CommandAction):
         self.test_value = START_TEST_VALUE
 
     def run(self) -> str:
+        if not self.validate():
+            raise Exception
         for i in range(30):
             self.bulk_write()
             if self.is_read_compare_failed():
