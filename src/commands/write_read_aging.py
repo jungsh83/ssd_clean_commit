@@ -1,12 +1,12 @@
 import random
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 TEST_LBA_1 = 0
 TEST_LBA_2 = 99
 
 
 class WriteReadAgingCommand(CommandAction):
-    command_name: list[str] = ["3_WriteReadAging", "3_"]
+    command_name: list[str] = ["3_WriteReadAging"]
     _description = 'Execute test scenario: Write Read Aging'
     _usage = "'3_WriteReadAging' or '3_'"
     _author = 'Woosung Ji'
@@ -17,7 +17,8 @@ class WriteReadAgingCommand(CommandAction):
 
     def run(self) -> str:
         if not self.validate():
-            raise Exception(f"Invalid arguments: {self._arguments}")
+            msg = f"{self.command_name[0]} takes no arguments, but got '{self._arguments}'"
+            raise InvalidArgumentException(msg)
 
         if self._test_loop_failed(TEST_LBA_1):
             return "FAIL"
