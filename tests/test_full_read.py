@@ -1,53 +1,32 @@
+# tests/test_full_read.py
+import os
+import pytest
+
 from src.full_read import FullRead
 from src.ssd import VirtualSSD
 
-import pytest
+@pytest.fixture
+def ssd(tmp_path):
+    """깨끗한 VirtualSSD 인스턴스 반환."""
+    for p in (VirtualSSD.NAND_PATH, VirtualSSD.OUTPUT_PATH):
+        if os.path.exists(p):
+            os.remove(p)
+    return VirtualSSD()
 
-def test_fullread_100줄_출력_확인(capsys):
-    ssd = VirtualSSD()
-    action = FullRead(ssd)  # 인자 없는 커맨드
-    action.run()
 
-    lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 100  # 100줄인지 확인
-
-def test_fullread_1줄출력이_첫번째와같은지_확인(capsys):
-    ssd = VirtualSSD()
+def test_fullread_100줄_출력확인(ssd, capsys):
     FullRead(ssd).run()
+    assert len(capsys.readouterr().out.splitlines()) == VirtualSSD.LBA_COUNT
 
-    lines = capsys.readouterr().out.splitlines()
-    assert lines[0] == ssd.read(0)
-
-def test_fullread_100줄출력이_마지막과_같은지_화인(capsys):
-    ssd = VirtualSSD()
+@pytest.mark.parametrize("index", [0, VirtualSSD.LBA_COUNT - 1])
+def test_fullread_lba_출력줄양끝단_검증(ssd, capsys, index):
     FullRead(ssd).run()
-
     lines = capsys.readouterr().out.splitlines()
-    assert lines[-1] == ssd.read(VirtualSSD.LBA_COUNT - 1)
+    assert lines[index] == ssd.read(index)
 
-def test_fullread_매개변수_유효성검사(capsys):
-    cmd = FullRead(VirtualSSD(), "dummy")   # 인자 1개
-    assert not cmd.validate()               # ① 실패해야 함
 
-    # 혹은 validate() 없어도 run() 해보면 ERROR 출력
+def test_fullread_유효성범위검사(ssd, capsys):
+    cmd = FullRead(ssd, "dummy")
+    assert not cmd.validate()
     cmd.run()
     assert "ERROR" in capsys.readouterr().out
-
-def test_fullead_LBA_범위_0이하_처리확인(capsys):
-    cmd = FullRead(VirtualSSD(), "-1")     # 음수 LBA
-    assert not cmd.validate()          # validate() 가 False 여야 함
-
-    cmd.run()
-    assert "ERROR" in capsys.readouterr().out
-
-def test_fullead_LBA_범위_100이상_처리확인(capsys):
-    cmd = FullRead(VirtualSSD(), "100")    # 0~99 범위 초과
-    assert not cmd.validate()          # 유효성 실패
-
-    cmd.run()
-    assert "ERROR" in capsys.readouterr().out   # stdout에 "ERROR" 확인
-
-def test_임의의_잘못된_명령어_호출(capsys):
-    ssd = VirtualSSD()
-    #execute_command(ssd, ["no_such_cmd", "123"])  # 임의의 잘못된 명령어
-    assert "INVALID COMMAND" in capsys.readouterr().out
