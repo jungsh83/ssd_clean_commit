@@ -2,9 +2,11 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class WriteCommand(CommandAction):
-    ERROR_UNVALIDATED = 'Validation Error'
-    VALUE_PREFIX = '0x'
-    command_name: list = ['write']
+    command_name: str = 'write'
+    _description = 'Show list of available commands.'
+    _usage = 'fullwrite'
+    _author = 'Gunam Kwon'
+    _alias = []
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)

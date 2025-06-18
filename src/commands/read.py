@@ -2,8 +2,11 @@ from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class ReadCommand(CommandAction):
-    ERROR_UNVALIDATED = 'Validation Error'
-    command_name: list = ['read']
+    command_name: str = 'read'
+    _description = 'Show list of available commands.'
+    _usage = 'read'
+    _author = 'Gunam Kwon'
+    _alias = []
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
