@@ -1,26 +1,36 @@
-from src.commands.command_action import CommandAction
+from src.commands.command_action import CommandAction, InvalidArgumentException
 
 
 class ReadCommand(CommandAction):
-    ERROR_UNVALIDATED = 'Validation Error'
     command_name: str = 'read'
+    _description = 'read value from LBA'
+    _usage = 'read <LBA: int [0-99]>'
+    _author = 'Gunam Kwon'
+    _alias = []
+
+    VALID_ARGUMENT_LEN = 1
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._address = None
+        self._LBA = None
 
     def run(self) -> str:
-        if self.validate() is False:
-            raise ValueError(self.ERROR_UNVALIDATED)
+        if not self.validate():
+            raise InvalidArgumentException(self.get_exception_string())
 
-        return f'LBA {self._address} : {self._ssd_driver.read(self._address)}'
+        return self.print_output(self._LBA, self._ssd_driver.read(self._LBA))
 
     def validate(self) -> bool:
-        if len(self._arguments) != 1:
+        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
             return False
 
-        self._address: int = self._arguments[0]
-        if not isinstance(self._address, int) or (not 0 <= self._address <= 99):
-            return False
+        self._LBA: int = self._arguments[0]
 
         return True
+
+    @staticmethod
+    def print_output(LBA, value):
+        return f'LBA {LBA} : {value}'
+
+    def get_exception_string(self):
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
