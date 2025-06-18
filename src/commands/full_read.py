@@ -3,8 +3,13 @@ from src.ssd import VirtualSSD
 
 
 class FullReadCommand(CommandAction):
-    command_name = "fullread"
-    ERROR_UNVALIDATED = "Validation Error"
+    command_name: str = 'fullread'
+    _description = 'read value all of LBAs'
+    _usage = 'fullread'
+    _author = 'Gunam Kwon'
+    _alias = []
+
+    VALID_ARGUMENT_LEN = 0
 
     def __init__(self, ssd_driver, *arguments: str) -> None:
         super().__init__(ssd_driver, *arguments)
