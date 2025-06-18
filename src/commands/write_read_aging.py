@@ -1,9 +1,6 @@
 import random
 from src.commands.command_action import CommandAction, InvalidArgumentException
-
-TEST_LBA_1 = 0
-TEST_LBA_2 = 99
-
+from src.ssd import VirtualSSD
 
 class WriteReadAgingCommand(CommandAction):
     command_name: str = "3_WriteReadAging"
@@ -20,10 +17,10 @@ class WriteReadAgingCommand(CommandAction):
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
 
-        if self._test_loop_failed(TEST_LBA_1):
+        if self._test_loop_failed(VirtualSSD.LBA_START_INDEX):
             return "FAIL"
 
-        elif self._test_loop_failed(TEST_LBA_2):
+        elif self._test_loop_failed(VirtualSSD.LBA_COUNT - 1):
             return "FAIL"
 
         return "PASS"

@@ -10,10 +10,13 @@ class ExitCommand(CommandAction):
 
     def run(self):
         if not self.validate():
-            raise InvalidArgumentException(f"{self.__class__.command_name} takes 0 arguments, but got {self._arguments}")
+            raise InvalidArgumentException(self.get_exception_string())
         print("[EXIT]")
         # sys.exit(0)
         return
 
     def validate(self) -> bool:
-        return len(self._arguments) == 0
+        return self._arguments == ()
+
+    def get_exception_string(self):
+        return f"{self.command_name} takes no arguments, but got {self._arguments}."

@@ -7,6 +7,7 @@ class VirtualSSD:
     NAND_PATH = os.path.join(BASE_DIR, 'data', 'ssd_nand.txt')
     OUTPUT_PATH = os.path.join(BASE_DIR, 'data', 'ssd_output.txt')
 
+    LBA_START_INDEX = 0
     LBA_COUNT = 100  # LBA 0~99
     DEFAULT_VAL = "0x00000000"
     ERROR_TEXT = 'ERROR'
@@ -32,7 +33,7 @@ class VirtualSSD:
             f.writelines(line + '\n' for line in data_lines)
 
     def read(self, lba: int) -> str:
-        if not 0 <= lba < self.LBA_COUNT:
+        if not self.LBA_START_INDEX <= lba < self.LBA_COUNT:
             self._write_error()
             return self.ERROR_TEXT
 
