@@ -27,6 +27,14 @@ def ssd_driver(mocker: MockerFixture):
 
     return mk
 
+@pytest.fixture
+def ssd_driver_fail(mocker: MockerFixture):
+    mk = mocker.Mock()
+    mk.read.side_effect = mk_read
+    mk.write.side_effect = mk_write_fail
+
+    return mk
+
 
 def test_validate_수행_성공(ssd_driver):
     # act & assert
@@ -52,19 +60,14 @@ def test_수행_성공시_read_write_횟수_점검(ssd_driver):
     assert ssd_driver.read.call_count == 400
 
 
-def test_수행_실패(ssd_driver):
-    ssd_driver.write.side_effect = mk_write_fail
-
-    # act & assert
-    assert WriteReadAging(ssd_driver).run() == "FAIL"
+def test_수행_실패(ssd_driver_fail):
+    assert WriteReadAging(ssd_driver_fail).run() == "FAIL"
 
 
-def test_수행_실패시_read_write_횟수_점검(ssd_driver):
-    ssd_driver.write.side_effect = mk_write_fail
-
+def test_수행_실패시_read_write_횟수_점검(ssd_driver_fail):
     # act
-    WriteReadAging(ssd_driver).run()
+    WriteReadAging(ssd_driver_fail).run()
 
     # assert
-    assert ssd_driver.write.call_count == 201
-    assert ssd_driver.read.call_count == 201
+    assert ssd_driver_fail.write.call_count == 201
+    assert ssd_driver_fail.read.call_count == 201
