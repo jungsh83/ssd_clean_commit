@@ -2,8 +2,9 @@ import builtins
 import pytest
 
 from src import shell
-from src.command_action import CommandAction
-from src.help_command import HelpCommand
+
+from src.commands.command_action import CommandAction
+from src.commands.help import HelpCommand
 
 @pytest.fixture
 def mock_handler_and_driver(mocker):
