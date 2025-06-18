@@ -13,7 +13,7 @@ class ReadCommand(CommandAction):
         if not self.validate():
             raise InvalidArgumentException()
 
-        return f'LBA {self._address} : {self._ssd_driver.read(self._address)}'
+        return self.print_output(self._address, self._ssd_driver.read(self._address))
 
     def validate(self) -> bool:
         if len(self._arguments) != 1:
@@ -22,3 +22,7 @@ class ReadCommand(CommandAction):
         self._address: int = self._arguments[0]
 
         return True
+
+    @staticmethod
+    def print_output(address, value):
+        return f'LBA {address} : {value}'
