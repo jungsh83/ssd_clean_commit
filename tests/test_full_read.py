@@ -23,3 +23,12 @@ def test_fullread_100줄출력이_마지막과_같은지_화인(capsys):
 
     lines = capsys.readouterr().out.splitlines()
     assert lines[-1] == ssd.read(VirtualSSD.LBA_COUNT - 1)
+
+def test_fullread_매개변수_유효성검사(capsys):
+    cmd = FullRead(VirtualSSD(), "dummy")   # 인자 1개
+    assert not cmd.validate()               # ① 실패해야 함
+
+    # 혹은 validate() 없어도 run() 해보면 ERROR 출력
+    cmd.run()
+    assert "ERROR" in capsys.readouterr().out
+
