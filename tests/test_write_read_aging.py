@@ -75,7 +75,7 @@ def test_수행_실패시_read_write_횟수_점검(mocker: MockerFixture):
         return data_dict.get(lba, "0x00000000")
 
     def write(lba, value):
-        if lba == 99: return
+        if lba == 0: return
         data_dict[lba] = value
 
     # arrange
@@ -88,5 +88,5 @@ def test_수행_실패시_read_write_횟수_점검(mocker: MockerFixture):
     sut.run()
 
     # assert
-    assert ssd_driver.write.call_count == 2
-    assert ssd_driver.read.call_count == 2
+    assert ssd_driver.write.call_count == 1
+    assert ssd_driver.read.call_count == 1
