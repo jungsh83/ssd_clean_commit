@@ -16,21 +16,16 @@ def ssd_driver():
     return ssd_driver
 
 def test_read_성공(ssd_driver: SSDDriver):
-    actual = ssd_driver.read(0)
-
-    assert actual == '0x00000000'
+    assert ssd_driver.read(0) == '0x00000000'
 
 
 def test_read_실패_LBA범위초과(ssd_driver: SSDDriver):
     with pytest.raises(ReadException):
-        actual = ssd_driver.read(101)
+        ssd_driver.read(101)
 
 def test_write_성공_후_데이터검증(ssd_driver: SSDDriver):
     ssd_driver.write(0, '0x00000001')
-
-    actual = ssd_driver.read(0)
-
-    assert actual == '0x00000001'
+    assert ssd_driver.read(0) == '0x00000001'
 
 def test_write_실패_LBA범위초과(ssd_driver: SSDDriver):
     with pytest.raises(WriteException):
