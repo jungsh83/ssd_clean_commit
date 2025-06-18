@@ -9,7 +9,7 @@ class WriteReadAging(CommandAction):
     command_name = ["3_WriteReadAging", "3_"]
 
     def validate(self) -> bool:
-        return self._arguments == []
+        return self._arguments == ()
 
     def run(self) -> None:
         if self._test_loop_failed(TEST_LBA_1):
