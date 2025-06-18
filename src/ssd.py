@@ -57,6 +57,8 @@ class VirtualSSD:
         data = self._load_nand()
         data[lba] = value
         self._save_nand(data)
+        with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            pass
 
 
 if __name__ == "__main__":

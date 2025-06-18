@@ -148,6 +148,7 @@ def test_cli에서_command가_잘못되면_output에_error입력():
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == 'ERROR'
 
+
 def test_cli_최초실행시_output파일이_없으면_생성한다():
     if os.path.exists(OUTPUT_PATH):
         os.remove(OUTPUT_PATH)
@@ -160,3 +161,18 @@ def test_cli_최초실행시_output파일이_없으면_생성한다():
 
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == '0x00000000'
+
+
+def test_cli_W_정상동작시_output파일은_빈파일이다():
+    subprocess.run([sys.executable, SSD_PY, 'R', '100'], check=True)
+
+    with open(OUTPUT_PATH) as f:
+        assert f.read().strip() == 'ERROR'
+
+    subprocess.run([sys.executable, SSD_PY, 'W', '10', '0xA1B2C3D4'], check=True)
+
+    assert os.path.exists(OUTPUT_PATH)
+
+    with open(OUTPUT_PATH, encoding='utf-8') as f:
+        content = f.read()
+    assert content == ''
