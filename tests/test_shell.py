@@ -29,12 +29,55 @@ def simulate_shell(inputs, monkeypatch):
 
 
 def test_shell_일반적인_명령어(monkeypatch, capsys, mock_registry_and_driver):
-    simulate_shell(["read arg1 arg2", "exit"], monkeypatch)
+    simulate_shell(["read arg1 arg2", "help", "h", "exit"], monkeypatch)
 
     shell.main()
 
     captured = capsys.readouterr()
     assert "[READ] PASS" in captured.out
+    assert "[EXIT]" in captured.out
+
+
+def test_shell_help_명령어_목록_출력(monkeypatch, capsys, mocker):
+    class DummyCommand(CommandAction):
+        command_name = ['read']
+        description = 'Read from SSD'
+        usage = 'read <LBA>'
+        author = 'Tester'
+        alias = ['r']
+
+        def run(self): pass
+
+        def validate(self): return True
+
+    class HelpCommand(CommandAction):
+        command_name = ['help']
+        description = 'Show help'
+        usage = 'help'
+        author = 'Tester'
+        alias = ['h']
+
+        def run(self):
+            if not self.validate():
+                raise Exception()
+            for name in CommandAction.registry:
+                print(f"▶ {name}")
+
+        def validate(self):
+            return len(self._arguments) == 0
+
+    CommandAction.registry.clear()
+    CommandAction.registry['help'] = HelpCommand
+    CommandAction.registry['read'] = DummyCommand
+
+    mocker.patch("src.ssd.VirtualSSD", return_value=mocker.Mock())
+    simulate_shell(["help", "exit"], monkeypatch)
+
+    shell.main()
+    captured = capsys.readouterr()
+
+    assert "▶ help" in captured.out
+    assert "▶ read" in captured.out
     assert "[EXIT]" in captured.out
 
 
