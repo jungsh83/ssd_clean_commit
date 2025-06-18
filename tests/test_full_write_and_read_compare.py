@@ -22,10 +22,10 @@ def catch_run_stdout(sut):
 def test_수행_성공(mocker: MockerFixture):
 
     data_dict = {}
-    def read(addr):
-        return data_dict.get(addr, "0x00000000")
-    def write(addr, value):
-        data_dict[addr] = value
+    def read(lba):
+        return data_dict.get(lba, "0x00000000")
+    def write(lba, value):
+        data_dict[lba] = value
 
     # arrange
     ssd_driver = mocker.Mock()
@@ -43,11 +43,11 @@ def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
 
     data_dict = {}
 
-    def read(addr):
-        return data_dict.get(addr, "0x00000000")
+    def read(lba):
+        return data_dict.get(lba, "0x00000000")
 
-    def write(addr, value):
-        data_dict[addr] = value
+    def write(lba, value):
+        data_dict[lba] = value
 
     # arrange
     ssd_driver = mocker.Mock()
@@ -65,12 +65,12 @@ def test_수행_성공시_read_write_횟수_확인(mocker: MockerFixture):
 def test_수행_실패(mocker: MockerFixture):
     data_dict = {}
 
-    def read(addr):
-        return data_dict.get(addr, "0x00000000")
+    def read(lba):
+        return data_dict.get(lba, "0x00000000")
 
-    def write(addr, value):
-        if addr == 33: return
-        data_dict[addr] = value
+    def write(lba, value):
+        if lba == 33: return
+        data_dict[lba] = value
 
     # arrange
     ssd_driver = mocker.Mock()
@@ -88,12 +88,12 @@ def test_수행_실패(mocker: MockerFixture):
 def test_수행_실패시_read_write_횟수_확인(mocker: MockerFixture):
     data_dict = {}
 
-    def read(addr):
-        return data_dict.get(addr, "0x00000000")
+    def read(lba):
+        return data_dict.get(lba, "0x00000000")
 
-    def write(addr, value):
-        if addr == 49: return
-        data_dict[addr] = value
+    def write(lba, value):
+        if lba == 49: return
+        data_dict[lba] = value
 
     # arrange
     ssd_driver = mocker.Mock()
