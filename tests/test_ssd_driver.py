@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 from pytest_mock import MockerFixture
 
 from src.ssd_driver import SSDDriver, ReadException, WriteException
@@ -6,6 +7,11 @@ from src.ssd_driver import SSDDriver, ReadException, WriteException
 
 @pytest.fixture
 def ssd_driver():
+
+    # initialize
+    (Path(__file__).parent.parent / "data/ssd_nand.txt").unlink(missing_ok=True)
+    (Path(__file__).parent.parent / "data/ssd_output.txt").unlink(missing_ok=True)
+
     ssd_driver = SSDDriver()
     return ssd_driver
 
