@@ -32,3 +32,16 @@ def test_fullread_매개변수_유효성검사(capsys):
     cmd.run()
     assert "ERROR" in capsys.readouterr().out
 
+def test_fullead_LBA_범위_0이하_처리확인(capsys):
+    cmd = FullRead(VirtualSSD(), "-1")     # 음수 LBA
+    assert not cmd.validate()          # validate() 가 False 여야 함
+
+    cmd.run()
+    assert "ERROR" in capsys.readouterr().out
+
+def test_fullead_LBA_범위_100이상_처리확인(capsys):
+    cmd = FullRead(VirtualSSD(), "100")    # 0~99 범위 초과
+    assert not cmd.validate()          # 유효성 실패
+
+    cmd.run()
+    assert "ERROR" in capsys.readouterr().out   # stdout에 "ERROR" 확인
