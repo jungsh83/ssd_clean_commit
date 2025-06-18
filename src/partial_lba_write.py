@@ -2,6 +2,8 @@ import random
 
 from src.command_action import CommandAction
 
+START_TEST_VALUE = 10000000
+
 PARTIAL_LBA_WRITE_COMMAND = ['2_PartialLBAWrite', '2_']
 
 
@@ -10,7 +12,7 @@ class PartialLBAWrite(CommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self.test_value = 10000000
+        self.test_value = START_TEST_VALUE
 
     def run(self) -> str:
         for i in range(30):
