@@ -1,5 +1,6 @@
 from src.full_read import FullRead
 from src.ssd import VirtualSSD
+
 import pytest
 
 def test_fullread_100줄_출력_확인(capsys):
@@ -45,3 +46,8 @@ def test_fullead_LBA_범위_100이상_처리확인(capsys):
 
     cmd.run()
     assert "ERROR" in capsys.readouterr().out   # stdout에 "ERROR" 확인
+
+def test_임의의_잘못된_명령어_호출(capsys):
+    ssd = VirtualSSD()
+    #execute_command(ssd, ["no_such_cmd", "123"])  # 임의의 잘못된 명령어
+    assert "INVALID COMMAND" in capsys.readouterr().out
