@@ -16,7 +16,7 @@ class WriteCommand(CommandAction):
         self._ssd_driver.write(self._address, self._value)
 
     def validate(self) -> bool:
-        if len(self._arguments) == 0 or len(self._arguments) == 3:
+        if len(self._arguments) != 2:
             return False
 
         self._address, self._value = self._arguments
