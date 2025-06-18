@@ -9,11 +9,11 @@ class CommandAction(ABC):
         self._ssd_driver = ssd_driver
         self._arguments = args
 
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
+    def __init_subclass__(cls):
+        super().__init_subclass__()
         if hasattr(cls, 'command_name'):
-            for name in cls.command_name:
-                CommandAction.registry[name] = cls
+            for command in cls.command_name:
+                CommandAction.registry[command] = cls
 
     @abstractmethod
     def run(self) -> None:

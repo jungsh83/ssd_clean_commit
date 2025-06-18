@@ -3,9 +3,9 @@ from src.command_action import CommandAction
 
 class HelpCommand(CommandAction):
     command_name: list[str] = ['help']
-    Description = 'Show list of available commands.'
-    Usage = 'help'
-    Author = 'Songju Na'
+    description = 'Show list of available commands.'
+    usage = 'help'
+    author = 'Songju Na'
     alias = ['h']
 
     def __init__(self, *args, **kwargs):

@@ -1,6 +1,7 @@
 from src.command_action import CommandAction
 from src.ssd import VirtualSSD
 
+
 def resolve_command(name):
     handler = CommandAction.registry.get(name)
     if handler:
@@ -10,6 +11,7 @@ def resolve_command(name):
         if name in getattr(cls, 'alias', []):
             return cls
     return None
+
 
 def main():
     ssd_driver = VirtualSSD()
@@ -30,7 +32,6 @@ def main():
             handler = resolve_command(command)
 
             if not handler:
-
                 print(f"[{command.upper()}] INVALID COMMAND")
                 continue
 
