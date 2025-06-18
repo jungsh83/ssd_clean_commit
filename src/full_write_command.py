@@ -11,7 +11,7 @@ class FullWriteCommand(CommandAction):
         self._value = None
 
     def run(self) -> None:
-        if self.validate() is False:
+        if not self.validate():
             raise ValueError(self.ERROR_UNVALIDATED)
 
         for address in range(100):
@@ -34,3 +34,5 @@ class FullWriteCommand(CommandAction):
         for bit in self._value.strip(self.VALUE_PREFIX):
             if not 'A' <= bit <= 'F' and not '0' <= bit <= '9':
                 return False
+
+        return True

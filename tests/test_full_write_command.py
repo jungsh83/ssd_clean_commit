@@ -28,7 +28,7 @@ def test_full_write_command_유효성검사_value_에러(test_value, mock_ssd):
     with pytest.raises(ValueError, match=FullWriteCommand.ERROR_UNVALIDATED):
         full_write_cmd.run()
 
-    assert full_write_cmd.validate() is False
+    assert not full_write_cmd.validate()
     mock_ssd.write.assert_not_called()
 
 
@@ -38,7 +38,7 @@ def test_full_write_command_유효성검사_Param개수_부족(mock_ssd):
     with pytest.raises(ValueError, match=FullWriteCommand.ERROR_UNVALIDATED):
         full_write_cmd.run()
 
-    assert full_write_cmd.validate() is False
+    assert not full_write_cmd.validate()
     mock_ssd.write.assert_not_called()
 
 
@@ -52,5 +52,5 @@ def test_full_write_command_유효성검사_Param개수_초과(test_value, error
     with pytest.raises(ValueError, match=FullWriteCommand.ERROR_UNVALIDATED):
         full_write_cmd.run()
 
-    assert full_write_cmd.validate() is False
+    assert not full_write_cmd.validate()
     mock_ssd.write.assert_not_called()
