@@ -21,10 +21,10 @@ def test_read_command_성공(test_address, test_value, mock_ssd):
     assert read_value == f'LBA {test_address}: {test_value}'
 
 
-@pytest.mark.parametrize('test_address', [100, 999, 0.1, -1])
+@pytest.mark.parametrize('test_address', [100, 999, 0.1, -1, 'c'])
 def test_read_command_유효성체크_LBA에러(test_address, mock_ssd):
     read_cmd = ReadCommand(mock_ssd, test_address)
 
-    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED_ADDRESS):
+    with pytest.raises(ValueError, match=ReadCommand.ERROR_UNVALIDATED):
         read_cmd.run()
     mock_ssd.read.assert_not_called()
