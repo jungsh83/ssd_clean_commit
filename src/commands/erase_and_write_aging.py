@@ -1,6 +1,8 @@
 import random
 from src.commands.command_action import CommandAction, InvalidArgumentException
 
+DEFAULT_METHOD = "0x00000000"
+
 
 class EraseAndWriteAging(CommandAction):
     command_name: str = "4_EraseAndWriteAging"
@@ -22,15 +24,21 @@ class EraseAndWriteAging(CommandAction):
 
         for _ in range(30):
             for start_lba in range(2, 100, 3):
-                self._ssd_driver.write(start_lba, self.generate_test_value())
-                self._ssd_driver.write(start_lba, self.generate_test_value())
-                self._ssd_driver.erase(start_lba, 3)
-
-                for lba in range(start_lba, start_lba+3):
-                    if not self.read_compare(lba, "0x00000000"):
-                        return "FAIL"
+                if not self.run_single_test(start_lba):
+                    return "FAIL"
 
         return "PASS"
+
+    def run_single_test(self, start_lba) -> bool:
+        self._ssd_driver.write(start_lba, self.generate_test_value())
+        self._ssd_driver.write(start_lba, self.generate_test_value())
+        self._ssd_driver.erase(start_lba, 3)
+
+        for lba in range(start_lba, start_lba + 3):
+            if not self.read_compare(lba, DEFAULT_METHOD):
+                return False
+
+        return True
 
     def generate_test_value(self):
         return f"0x{random.randint(1111111, 4444444):08X}"
