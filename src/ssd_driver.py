@@ -27,6 +27,12 @@ class SSDDriver:
         :raise 'ERROR" return 받으면 ReadException 처리
         """
 
+        out = self.read_ssd(lba)
+        if out == "ERROR":
+            raise ReadException("ERROR")
+        return out
+
+    def read_ssd(self, lba):
         # system call
         cp = subprocess.run(
             [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.READ_TOKEN, str(lba)],
@@ -39,9 +45,6 @@ class SSDDriver:
         # read output_file
         out = self.OUTPUT_TXT_PATH.read_text().strip()
 
-        if out == "ERROR":
-            raise ReadException("ERROR")
-
         return out
 
     def write(self, lba: int, value: str) -> None:
@@ -53,6 +56,14 @@ class SSDDriver:
         :raise 'ERROR" return 받으면 WriteException 처리
         """
 
+        out = self.write_ssd(lba, value)
+
+        if out == "ERROR":
+            raise WriteException("ERROR")
+
+        return
+
+    def write_ssd(self, lba, value):
         # system call
         cp = subprocess.run(
             [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.WRITE_TOKEN, str(lba), str(value)],
@@ -61,11 +72,8 @@ class SSDDriver:
         )
         if cp.returncode != VALID_RETURN_CODE:
             raise WriteException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
-
         # read output_file
         out = self.OUTPUT_TXT_PATH.read_text().strip()
+        return out
 
-        if out == "ERROR":
-            raise WriteException("ERROR")
 
-        return
