@@ -1,5 +1,5 @@
 from src.commands.command_action import CommandAction, InvalidArgumentException
-from src.ssd import VirtualSSD
+from src.ssd_file_manager import SSDFileManager
 
 
 class FullReadCommand(CommandAction):
@@ -18,7 +18,7 @@ class FullReadCommand(CommandAction):
     def _dump_all(self) -> list[str]:
         return [
             f"{lba} {self._ssd_driver.read(lba)}"
-            for lba in range(VirtualSSD.LBA_COUNT)
+            for lba in range(SSDFileManager.LBA_COUNT)
         ]
 
     def run(self) -> str:
