@@ -24,14 +24,10 @@ class EraseRangeCommand(CommandAction):
         start_lba, end_lba = self._get_lba_range()
         size = self._get_size(start_lba, end_lba)
 
-        while size:
-            cmd_size = self.MAX_ERASE_LEN_ON_SSD_DRIVER if size > self.MAX_ERASE_LEN_ON_SSD_DRIVER \
-                else size
-
-            self._ssd_driver.erase(start_lba, cmd_size)
-
-            size -= cmd_size
-            start_lba += cmd_size
+        total_size = size
+        for offset in range(0, total_size, self.MAX_ERASE_LEN_ON_SSD_DRIVER):
+            cmd_size = min(self.MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
+            self._ssd_driver.erase(start_lba + offset, cmd_size)
 
     def _get_lba_range(self) -> (int, int):
         start_lba, end_lba = int(self._start_lba), int(self._end_lba)
