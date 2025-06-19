@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from dataclasses import dataclass
 
 
@@ -24,6 +26,9 @@ class Command:
 
 
 class CommandBuffer:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    COMMAND_BUFFER_DIR_PATH = Path(os.path.join(BASE_DIR, 'buffer'))
+
     def __init__(self):
         self._command_buffers = self.read_all()
 
@@ -86,8 +91,6 @@ class CommandBuffer:
         pass
 
     def initialize(self):
-        # 디렉토리가 없을 경우 디렉토리 생성 ../buffer
-        # 파일이 없을 경우 파일 생성 ../buffer/1_empty ~ ../buffer/5_empty
         init_command_buffers = [
             Command(order=1),
             Command(order=2),
@@ -95,4 +98,19 @@ class CommandBuffer:
             Command(order=4),
             Command(order=5)
         ]
-        pass
+
+
+        # 디렉토리가 없을 경우 디렉토리 생성 ../buffer
+        self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
+        if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
+            print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
+            for command in init_command_buffers:
+                filename = str(command)
+                command_path = self.COMMAND_BUFFER_DIR_PATH / filename
+                command_path.touch()
+            else:
+                self._update_command_buffers_to_file_name()
+
+
+        self._command_buffers = init_command_buffers
+

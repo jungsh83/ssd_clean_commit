@@ -1,33 +1,64 @@
 import pytest
+from pytest_mock import MockerFixture
+
+from src.command_buffer import CommandBuffer, Command
 
 
-def test_command_buffers_객체_생성_성공():
-    ...
+@pytest.fixture
+def command_buffer():
+    command_buffer = CommandBuffer()
+    return command_buffer
 
 
+def test_initialize_성공(mocker: MockerFixture):
+    read_all_patch = mocker.patch("src.command_buffer.CommandBuffer.read_all")
+    read_all_patch.return_value = None
+
+    command_buffer = CommandBuffer()
+
+    command_buffer.initialize()
+
+    assert command_buffer.command_buffers == [Command(order=1, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=2, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=5, command_type='I', lba=-1, value='', size=-1)]
+
+
+@pytest.mark.skip
+def test_command_buffers_객체_생성_성공(command_buffer):
+    assert command_buffer.command_buffers == [Command(order=1, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=2, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                              Command(order=5, command_type='I', lba=-1, value='', size=-1)]
+
+
+@pytest.mark.skip
 def test_fast_read_W에_값이_있을_때():
     ...
 
 
+@pytest.mark.skip
 def test_fast_Read_E에_값이_있을_때():
     ...
 
 
+@pytest.mark.skip
 def test_버퍼에_빈_값이_존재할_때():
     ...
 
 
+@pytest.mark.skip
 def test_버퍼에_빈_값이_없을_때_failed():
     ...
 
 
+@pytest.mark.skip
 def test_append_버퍼에_빈_값이_없을_때():
     ...
 
 
+@pytest.mark.skip
 def test_append_버퍼에_빈_값이_없을_때():
-    ...
-
-
-def test_initialize_성공():
     ...
