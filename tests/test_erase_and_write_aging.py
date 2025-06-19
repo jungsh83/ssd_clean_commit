@@ -65,9 +65,9 @@ def test_수행_성공시_read_write_erase_횟수_확인(ssd_driver):
     EraseAndWriteAging(ssd_driver).run()
 
     # assert
-    assert ssd_driver.erase.call_count == 1 + 30 * 33
-    assert ssd_driver.write.call_count == 30 * 33 * 2
-    assert ssd_driver.read.call_count == 30 * 33 * 3
+    assert ssd_driver.erase.call_count == 1 + 30 * 49
+    assert ssd_driver.write.call_count == 30 * 49 * 2
+    assert ssd_driver.read.call_count == 30 * 49 * 3
 
 
 def test_수행_실패(ssd_driver_fail):
