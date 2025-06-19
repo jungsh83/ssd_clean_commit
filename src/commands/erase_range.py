@@ -4,7 +4,7 @@ from src.ssd import VirtualSSD
 
 class EraseRangeCommand(CommandAction):
     command_name: str = 'erase_range'
-    _description = 'erase value from range of LBAs'
+    _description = 'erase value from input range of LBAs'
     _usage = 'erase_range <start_LBA: int [0-99]> <end_LBA: int [0-99]>'
     _author = 'Gunam Kwon'
     _alias = []
