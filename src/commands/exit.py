@@ -1,5 +1,7 @@
 from src.commands.command_action import CommandAction, InvalidArgumentException
 import sys
+from src.decorators import log_call
+
 
 class ExitCommand(CommandAction):
     command_name: str = 'exit'
@@ -8,6 +10,11 @@ class ExitCommand(CommandAction):
     _author = 'Songju Na'
     _alias: list[str] = ['quit', 'q']
 
+    @log_call(level="INFO")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @log_call(level="INFO")
     def run(self):
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
