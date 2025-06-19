@@ -1,5 +1,5 @@
 from src.commands.command_action import CommandAction, InvalidArgumentException
-
+from src.decorators import log_call
 
 class HelpCommand(CommandAction):
     command_name: str = 'help'
@@ -8,9 +8,11 @@ class HelpCommand(CommandAction):
     _author = 'Songju Na'
     _alias: list[str] = ['h']
 
+    @log_call(level="INFO")
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    @log_call(level="INFO")
     def run(self):
         if not self.validate():
             raise InvalidArgumentException(
