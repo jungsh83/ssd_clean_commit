@@ -1,5 +1,4 @@
 from src.commands.command_action import CommandAction, InvalidArgumentException
-from src.ssd import VirtualSSD
 
 
 class FlushCommand(CommandAction):
