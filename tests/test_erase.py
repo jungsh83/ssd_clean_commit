@@ -10,20 +10,19 @@ def ssd_driver_mock(mocker):
     return mocker.Mock(spec=SSDDriver)
 
 
-@pytest.mark.parametrize("lba, size, expected_start_lba, expected_end_lba, expected_size", [
-    ('98', '10', 98, 99, 2),
-    ('50', '100', 50, 99, 50),
-    ('0', '999', 0, 99, 100),
-    ('10', '-10', 1, 10, 10),
-    ('5', '-2', 4, 5, 2),
-    ('5', '1', 5, 5, 1),
-    ('5', '-1', 5, 5, 1),
-    ('50', '-100', 0, 50, 51),
-    ('85', '100', 85, 99, 15),
-    ('5', '0', 5, -1, 0)
+@pytest.mark.parametrize("lba, size, expected_start_lba, expected_end_lba", [
+    ('98', '10', 98, 99),
+    ('50', '100', 50, 99),
+    ('0', '999', 0, 99),
+    ('10', '-10', 1, 10),
+    ('5', '-2', 4, 5),
+    ('5', '1', 5, 5),
+    ('5', '-1', 5, 5),
+    ('50', '-100', 0, 50),
+    ('85', '100', 85, 99),
+    ('5', '0', 5, -1)
 ])
-def test_erase_command_성공(lba, size, expected_start_lba, expected_end_lba,
-                          expected_size, ssd_driver_mock):
+def test_erase_command_start_end_확인(lba, size, expected_start_lba, expected_end_lba, ssd_driver_mock):
     erase_cmd = EraseCommand(ssd_driver_mock, lba, size)
 
     erase_cmd.run()
@@ -31,6 +30,26 @@ def test_erase_command_성공(lba, size, expected_start_lba, expected_end_lba,
 
     assert erase_cmd.validate()
     assert (start_lba, end_lba) == (expected_start_lba, expected_end_lba)
+
+
+@pytest.mark.parametrize("lba, size, expected_size", [
+    ('98', '10', 2),
+    ('50', '100', 50),
+    ('0', '999', 100),
+    ('10', '-10', 10),
+    ('5', '-2', 2),
+    ('5', '1', 1),
+    ('5', '-1', 1),
+    ('50', '-100', 51),
+    ('85', '100', 15),
+    ('5', '0', 0)
+])
+def test_erase_command_size_계산(lba, size, expected_size, ssd_driver_mock):
+    erase_cmd = EraseCommand(ssd_driver_mock, lba, size)
+
+    erase_cmd.run()
+    start_lba, end_lba = erase_cmd._calculate_lba_range()
+
     assert erase_cmd._calculate_size(start_lba, end_lba) == expected_size
 
 
