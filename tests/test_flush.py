@@ -10,7 +10,11 @@ def mock_ssd_driver(mocker):
 
 
 def test_flush_command_성공(mock_ssd_driver):
-    ...
+    flush_cmd = FlushCommand(mock_ssd_driver)
+
+    flush_cmd.run()
+
+    mock_ssd_driver.flush.assert_called_once()
 
 
 @pytest.mark.parametrize("error_arg", ['100', '-1', "가나다", "0.1"])
