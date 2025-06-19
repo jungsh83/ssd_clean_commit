@@ -1,4 +1,4 @@
-from ssd_command_action import SSDCommand, InvalidArgumentException
+from src.ssd_commands.ssd_command_action import SSDCommand, InvalidArgumentException
 
 
 class ReadCommand(SSDCommand):
@@ -10,6 +10,7 @@ class ReadCommand(SSDCommand):
 
     def validate(self) -> bool:
         if len(self._arguments) != 1:
+
             return False
         if not str(self._arguments[0]).isdigit():
             return False
@@ -17,15 +18,15 @@ class ReadCommand(SSDCommand):
         self._lba = int(self._arguments[0])
         return True
 
-    def run(self) -> str:
+    def run(self) -> None:
         if not self.validate():
-            raise InvalidArgumentException("Invalid arguments for read command")
+            self._ssd_file_manager.error()
+            return
 
         buffered_value = self._command_buffer.fast_read(self._lba)
 
         if buffered_value is not None:
             self._ssd_file_manager.write_output(buffered_value)
-            return f"[READ] LBA {self._lba} : {buffered_value}"
+            return
 
-        value = self._ssd_file_manager.read(self._lba)
-        return f"[READ] LBA {self._lba} : {value}"
+        self._ssd_file_manager.read(self._lba)
