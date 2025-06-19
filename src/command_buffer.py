@@ -108,6 +108,7 @@ class CommandBuffer:
 
         if not files_in_dir:
             self.initialize()
+            files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
 
         for filepath in files_in_dir:
             try:
@@ -158,7 +159,7 @@ class CommandBuffer:
         return None
 
     def initialize(self):
-        init_command_buffers = [
+        self._command_buffers = [
             Command(order=1),
             Command(order=2),
             Command(order=3),
@@ -171,7 +172,7 @@ class CommandBuffer:
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
         if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
             print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
-            for command in init_command_buffers:
+            for command in self._command_buffers:
                 filename = str(command)
                 command_path = self.COMMAND_BUFFER_DIR_PATH / filename
                 command_path.touch()
@@ -179,5 +180,5 @@ class CommandBuffer:
             self._update_command_buffers_to_file_name()
 
 
-        self._command_buffers = init_command_buffers
+
 

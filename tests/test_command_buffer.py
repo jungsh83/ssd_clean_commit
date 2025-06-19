@@ -75,7 +75,7 @@ def test_fast_Read_값이_없을_때(command_buffer):
     command_buffer.append(Command(command_type='E', lba=3, size=1))
     assert command_buffer.fast_read(4) is None
 
-@pytest.mark.skip
+
 def test_command_buffers_fast_read_성공_파일_없는_상태():
     files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
     for file in files_in_dir:
