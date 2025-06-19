@@ -50,3 +50,21 @@ def test_erase_range_파라미터_유효성오류(start_lba, end_lba, mock_ssd_d
     erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
 
     assert not erase_range_cmd.validate()
+
+
+@pytest.mark.parametrize("start_lba, end_lba, error_arg", [
+    ('100', '1', 1),
+    ('-1', '10', 1),
+    ('가나다', '10', 1),
+    ('5', '가다', 1)
+])
+def test_erase_range_파라미터_초과(start_lba, end_lba, error_arg, mock_ssd_driver):
+    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba, error_arg)
+
+    assert not erase_range_cmd.validate()
+
+
+def test_erase_range_파라미터_부족(mock_ssd_driver):
+    erase_range_cmd = EraseRangeCommand(mock_ssd_driver)
+
+    assert not erase_range_cmd.validate()
