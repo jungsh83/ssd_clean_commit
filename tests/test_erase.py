@@ -73,6 +73,21 @@ def test_erase_command_size_계산(lba, size, expected_size, ssd_driver_mock):
     assert erase_cmd._calculate_size(start_lba, end_lba) == expected_size
 
 
+@pytest.mark.parametrize("lba, size", [
+    ('100', '10'),
+    ('-1', '10'),
+    ('가나다', '10'),
+    ('5', "가다"),
+])
+def test_erase_command_유효성_검사(lba, size, ssd_driver_mock):
+    erase_cmd = EraseCommand(ssd_driver_mock, lba, size)
+
+    with pytest.raises(InvalidArgumentException):
+        erase_cmd.run()
+
+    assert not erase_cmd.validate()
+
+
 @pytest.mark.parametrize("lba, size, error_argument", [
     (100, 10, 1),
     (-1, 10, 2),

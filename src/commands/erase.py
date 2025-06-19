@@ -5,7 +5,7 @@ from src.ssd import VirtualSSD
 class EraseCommand(CommandAction):
     command_name: str = 'erase'
     _description = 'Erase value from LBA with size'
-    _usage = 'erase [LBA] [SIZE]'
+    _usage = 'erase <LBA: int [0-99]> <SIZE: int ["-2,147,483,648" - "2,147,483,647"]'
     _author = 'Gunam Kwon'
     _alias: list[str] = []
 
@@ -35,11 +35,24 @@ class EraseCommand(CommandAction):
 
         return "Done"
 
+    def _is_int_string(self, s: str) -> bool:
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+
     def validate(self) -> bool:
         if len(self._arguments) != self.VALID_ARGUMENT_LEN:
             return False
 
         self._input_lba, self._input_size = self._arguments
+
+        if not self._is_int_string(self._input_lba) or not self._is_int_string(self._input_size):
+            return False
+
+        if not VirtualSSD.LBA_START_INDEX <= int(self._input_lba) < VirtualSSD.LBA_COUNT:
+            return False
 
         return True
 
