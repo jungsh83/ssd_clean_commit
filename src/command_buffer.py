@@ -136,7 +136,7 @@ class CommandBuffer:
             elif target_command.command_type == 'E':
                 lbas = set([i for i in range(target_command.lba, target_command.lba + target_command.size)])
                 lbas.add(target_command.lba)
-            for overwrite_index in range(target_index+1, 5):
+            for overwrite_index in range(target_index + 1, 5):
                 overwrite_command = self.command_buffers[overwrite_index]
                 if overwrite_command.command_type == 'W':
                     if overwrite_command.lba in lbas:
@@ -148,7 +148,8 @@ class CommandBuffer:
             if lbas:
                 new_order += 1
                 result.append(
-                    Command(order=new_order, command_type=target_command.command_type, lba=target_command.lba, value=target_command.value,
+                    Command(order=new_order, command_type=target_command.command_type, lba=target_command.lba,
+                            value=target_command.value,
                             size=target_command.size))
 
         #
@@ -172,8 +173,62 @@ class CommandBuffer:
         self._command_buffers = result
 
     def _merge_erase(self):
-        # 머지할 커맨드를 찾아서 머지, 꼭 작은 order에 머지해야 함
-        pass
+        result: list[Command] = []
+        new_order = 0
+        merged_command_orders: set[int] = set()
+        for target_index, target_command in enumerate(self.command_buffers):
+            if target_command.command_type != 'E':
+                new_order += 1
+                result.append(
+                    Command(order=new_order, command_type=target_command.command_type, lba=target_command.lba,
+                            value=target_command.value,
+                            size=target_command.size))
+                continue
+            elif target_command.order in merged_command_orders:
+                continue
+            new_lba = target_command.lba
+            new_size = target_command.size
+            for overwrite_index in range(target_index + 1, 5):
+                overwrite_command = self.command_buffers[overwrite_index]
+                if overwrite_command.command_type != 'E':
+                    continue
+                if target_command.lba < overwrite_command.lba + overwrite_command.size and \
+                        target_command.lba + target_command.size > overwrite_command.lba:
+
+                    new_lba = min(target_command.lba, overwrite_command.lba)
+                    new_size = max(target_command.lba + target_command.size,
+                                   overwrite_command.lba + overwrite_command.size) \
+                               - new_lba
+                    merged_command_orders.add(overwrite_command.order)
+
+            new_order += 1
+            while new_size > 10:
+                result.append(
+                    Command(order=new_order, command_type=target_command.command_type, lba=new_lba,
+                            value=target_command.value,
+                            size=10))
+                new_lba += 10
+                new_size -= 10
+            result.append(
+                Command(order=new_order, command_type=target_command.command_type, lba=new_lba,
+                        value=target_command.value,
+                        size=new_size))
+
+        for i in range(new_order + 1, 6):
+            result.append(Command(order=i))
+
+        as_is_count = 0
+        for command in self.command_buffers:
+            if command.command_type == 'E':
+                as_is_count += 1
+
+        to_be_count = 0
+        for command in result:
+            if command.command_type == 'E':
+                to_be_count += 1
+
+        if as_is_count > to_be_count:
+            self._command_buffers = result
 
     def _update_command_buffers_to_file_name(self):
         # self._command_buffers의 내용을 파일명으로 작성하기
