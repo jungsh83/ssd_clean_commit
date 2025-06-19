@@ -13,7 +13,7 @@ def mock_ssd_driver(mocker):
     ('5', '10', 5, 10),
     ('10', '5', 5, 10),
 ])
-def test_erase_range_체크(start_lba, end_lba, expected_erase_start, expected_erase_end, mock_ssd_driver):
+def test_erase_range_범위_확인(start_lba, end_lba, expected_erase_start, expected_erase_end, mock_ssd_driver):
     erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
 
     validate_ret = erase_range_cmd.validate()
