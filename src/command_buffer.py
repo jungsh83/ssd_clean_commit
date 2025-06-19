@@ -125,7 +125,32 @@ class CommandBuffer:
 
     def _update_command_buffers_to_file_name(self):
         # self._command_buffers의 내용을 파일명으로 작성하기
-        pass
+        # 1. 현재 슬롯에 해당하는 파일 찾기
+        current_files = list(self.COMMAND_BUFFER_DIR_PATH.iterdir())
+        old_file_path = None
+
+        for new_command in self.command_buffers:
+            for file_path in current_files:
+                if file_path.is_file():
+                    try:
+                        parsed_command = Command.from_filename(file_path.name)
+                        if parsed_command.order == new_command.order:
+                            old_file_path = file_path
+                            break
+                    except Exception:
+                        continue  # 유효하지 않은 파일명은 무시
+
+            if not old_file_path:
+                return False  # 업데이트 실패
+
+            new_filename = str(new_command)
+            new_file_path = self.COMMAND_BUFFER_DIR_PATH / new_filename
+
+            try:
+                old_file_path.rename(new_file_path)
+            except Exception:
+                raise CommandBufferException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
+        return None
 
     def initialize(self):
         init_command_buffers = [
