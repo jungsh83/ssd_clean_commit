@@ -1,7 +1,7 @@
 import pytest
 
-from src.commands.command_action import InvalidArgumentException
-from src.commands.full_write import FullWriteCommand
+from src.shell_commands.command_action import InvalidArgumentException
+from src.shell_commands.full_write import FullWriteCommand
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 

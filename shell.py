@@ -1,4 +1,4 @@
-from src.commands.command_action import CommandAction
+from src.shell_commands.command_action import CommandAction
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 import sys
@@ -47,7 +47,7 @@ def shell_mode(ssd_driver=SSDDriver()):
                 print(f"[{resolved_command.upper()}] {result}")
 
             if resolved_command == 'exit':
-                sys.exit(EXIT_SUCCESS)
+                break
 
         except Exception as e:
             print(f"[ERROR] {str(e)}")
