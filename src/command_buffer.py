@@ -75,7 +75,6 @@ class CommandBuffer:
         return False
 
     def _append_command(self, new_command):
-        # 비어 있는 슬롯 찾기
         insert_order = 0
         for command in self.command_buffers:
             if command.command_type == 'I':
@@ -108,7 +107,6 @@ class CommandBuffer:
     def read_all(self):
         result: list[Command] = []
 
-        # 디렉토리 내 모든 파일 순회
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
 
         if not files_in_dir:
@@ -122,7 +120,6 @@ class CommandBuffer:
             except Exception as e:
                 raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
 
-        # 명령어 순서(order)에 따라 정렬하여 반환
         result.sort(key=lambda cmd: cmd.order)
         return result
 
@@ -152,21 +149,6 @@ class CommandBuffer:
                             value=target_command.value,
                             size=target_command.size))
 
-        #
-        # for command in self.command_buffers:
-        #     if new_command.command_type == 'W':
-        #         if command.command_type == 'W' and command.lba == new_command.lba and command.value == new_command.value:
-        #             continue
-        #     if new_command.command_type == 'E':
-        #         if command.command_type == 'E' and new_command.lba <= command.lba and command.lba + command.size <= new_command.lba + new_command.size:
-        #             continue
-        #         elif command.command_type == 'W' and new_command.lba <= command.lba <= new_command.lba + new_command.size:
-        #             continue
-        #     new_order += 1
-        #     result.append(
-        #         Command(order=new_order, command_type=command.command_type, lba=command.lba, value=command.value,
-        #                 size=command.size))
-        #
         for i in range(new_order + 1, 6):
             result.append(Command(order=i))
 
@@ -232,8 +214,6 @@ class CommandBuffer:
             self._command_buffers = result
 
     def _update_command_buffers_to_file_name(self):
-        # self._command_buffers의 내용을 파일명으로 작성하기
-        # 1. 현재 슬롯에 해당하는 파일 찾기
         current_files = list(self.COMMAND_BUFFER_DIR_PATH.iterdir())
         old_file_path = None
 
@@ -246,10 +226,10 @@ class CommandBuffer:
                             old_file_path = file_path
                             break
                     except Exception:
-                        continue  # 유효하지 않은 파일명은 무시
+                        continue
 
             if not old_file_path:
-                return False  # 업데이트 실패
+                return False
 
             new_filename = str(new_command)
             new_file_path = self.COMMAND_BUFFER_DIR_PATH / new_filename
@@ -269,7 +249,6 @@ class CommandBuffer:
             Command(order=5)
         ]
 
-        # 디렉토리가 없을 경우 디렉토리 생성 ../buffer
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
         if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
             print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
