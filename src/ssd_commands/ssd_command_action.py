@@ -5,7 +5,7 @@ class InvalidArgumentException(Exception):
     __module__ = 'builtins'
 
 
-class SSDCommandAction(ABC):
+class SSDCommand(ABC):
     registry = {}
 
     def __init__(self, ssd_file_manager, *args):
