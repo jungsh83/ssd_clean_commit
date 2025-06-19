@@ -25,7 +25,6 @@ def test_initialize_성공(mocker: MockerFixture):
                                               Command(order=5, command_type='I', lba=-1, value='', size=-1)]
 
 
-@pytest.mark.skip
 def test_command_buffers_객체_생성_성공(command_buffer):
     assert command_buffer.command_buffers == [Command(order=1, command_type='I', lba=-1, value='', size=-1),
                                               Command(order=2, command_type='I', lba=-1, value='', size=-1),
@@ -43,10 +42,14 @@ def test_fast_read_W에_값이_있을_때():
 def test_fast_Read_E에_값이_있을_때():
     ...
 
-
 @pytest.mark.skip
-def test_버퍼에_빈_값이_존재할_때():
-    ...
+def test_버퍼에_빈_값이_존재할_때(command_buffer):
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    assert command_buffer.read_all() == [Command(order=1, command_type='W', lba=3, value='0x00000001', size=-1),
+                                         Command(order=2, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=5, command_type='I', lba=-1, value='', size=-1)]
 
 
 @pytest.mark.skip

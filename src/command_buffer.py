@@ -24,6 +24,30 @@ class Command:
             return f"{self.order}_{self.command_type}_{self.lba}_{self.size}"
         return f"ERROR"
 
+    @classmethod
+    def from_filename(cls, filename: str):
+        parts = filename.split('_')
+        if len(parts) < 2:
+            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+
+        order = int(parts[0])
+        command_type = parts[1]
+
+        if command_type == 'empty':
+            return cls(order=order)
+
+        if len(parts) < 4:
+            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+
+        if command_type == 'W':
+            return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3])
+
+        elif command_type == 'E':
+            return cls(order=order, command_type=command_type, lba=int(parts[2]), size=int(parts[3]))
+
+        else:
+            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+
 
 class CommandBuffer:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -73,9 +97,22 @@ class CommandBuffer:
 
     def read_all(self):
         result: list[Command] = []
-        # 파일 리스트 읽어서 result에 담아서 return 하기
-        # 디렉토리나 파일이 없을 경우 initialize() 호출
-        self.initialize()
+
+        # 디렉토리 내 모든 파일 순회
+        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+
+        if not files_in_dir:
+            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
+
+        for filepath in files_in_dir:
+            try:
+                command = Command.from_filename(filepath.name)
+                result.append(command)
+            except Exception as e:
+                raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
+
+        # 명령어 순서(order)에 따라 정렬하여 반환
+        result.sort(key=lambda cmd: cmd.order)
         return result
 
     def _ignore_command(self):
