@@ -1,4 +1,3 @@
-# src/decorators.py
 import inspect
 from functools import wraps
 from src.logger import LoggerSingleton

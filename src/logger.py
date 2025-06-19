@@ -1,6 +1,3 @@
-# src/my_logger.py
-import os
-import sys
 import inspect
 from datetime import datetime
 from pathlib import Path
@@ -18,18 +15,23 @@ class _CustomLogger:
         self._patch_print()
 
     def _rotate_if_needed(self):
-        if self.LOG_FILE.exists() and self.LOG_FILE.stat().st_size > self.MAX_SIZE:
-            now = datetime.now()
-            timestamp = now.strftime("until_%y%m%d_%Hh_%Mm_%Ss")
-            rotated_path = self.LOG_DIR / f"{timestamp}.log"
+        if not (self.LOG_FILE.exists() and self.LOG_FILE.stat().st_size > self.MAX_SIZE):
+            return
 
-            for f in self.LOG_DIR.glob("until_*.log"):
-                zip_path = f.with_suffix(".zip")
-                if zip_path.exists():
-                    zip_path.unlink()
-                f.rename(zip_path)
+        rotated_path = self._generate_rotated_path()
+        self._compress_existing_backups()
+        self.LOG_FILE.rename(rotated_path)
 
-            self.LOG_FILE.rename(rotated_path)
+    def _generate_rotated_path(self) -> Path:
+        timestamp = datetime.now().strftime("until_%y%m%d_%Hh_%Mm_%Ss")
+        return self.LOG_DIR / f"{timestamp}.log"
+
+    def _compress_existing_backups(self):
+        for f in self.LOG_DIR.glob("until_*.log"):
+            zip_path = f.with_suffix(".zip")
+            if zip_path.exists():
+                zip_path.unlink()
+            f.rename(zip_path)
 
     def _patch_print(self):
         builtin_print = print
@@ -37,10 +39,8 @@ class _CustomLogger:
         def patched_print(*args, **kwargs):
             message = " ".join(str(arg) for arg in args)
 
-            # 로그로 남기고
             self.info(message)
 
-            # 실제 출력도 수행
             builtin_print(*args, **kwargs)
 
         __builtins__['print'] = patched_print
