@@ -53,6 +53,10 @@ class SSDFileManager:
             pass  # 명령 성공 시 빈 파일 생성
 
     def erase(self, lba: int, size: int) -> None:
+        if not (0 <= lba < self.LBA_COUNT) or not (1 <= size <= 10) or (lba + size > self.LBA_COUNT):
+            self._write_error()
+            return
+
         data = self._load_nand()
         for i in range(lba, lba + size):
             data[i] = self.DEFAULT_VAL

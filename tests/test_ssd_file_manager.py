@@ -192,17 +192,17 @@ def test_erase_정상작동하면해당범위가0으로바뀜(ssd_file_manager):
     assert lines[5] == "0x00000000"
     assert lines[6] == "0x00000000"
 
-@pytest.mark.skip
+
 def test_erase_범위를벗어나면_ERROR출력(ssd_file_manager):
-    ssd_file_manager.erase(95, 10)  # 95~104 → 초과
+    ssd_file_manager.erase(95, 6)
     assert open(OUTPUT_PATH).read().strip() == "ERROR"
 
-@pytest.mark.skip
+
 def test_erase_size가10초과면_ERROR출력(ssd_file_manager):
     ssd_file_manager.erase(0, 11)
     assert open(OUTPUT_PATH).read().strip() == "ERROR"
 
-@pytest.mark.skip
+
 def test_erase_lba가음수면_ERROR출력(ssd_file_manager):
     ssd_file_manager.erase(-1, 2)
     assert open(OUTPUT_PATH).read().strip() == "ERROR"
