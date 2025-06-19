@@ -1,7 +1,9 @@
 import subprocess
 from pathlib import Path
+from winreg import FlushKey
 
 VALID_RETURN_CODE = 0
+
 
 class ReadException(Exception):
     __module__ = "builtins"
@@ -11,12 +13,21 @@ class WriteException(Exception):
     __module__ = "builtins"
 
 
+class EraseException(Exception):
+    __module__ = "builtins"
+
+class FlushException(Exception):
+    __module__ = "builtins"
+
+
 class SSDDriver:
     VENV_PYTHON_PATH = Path(__file__).parent.parent / ".venv/Scripts/python.exe"
     COMMAND_PATH = Path(__file__).parent / "ssd.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
     READ_TOKEN = 'R'
     WRITE_TOKEN = 'W'
+    ERASE_TOKEN = 'E'
+    FLUSH_TOKEN = 'F'
 
     def read(self, lba: int) -> str:
         """
@@ -76,4 +87,44 @@ class SSDDriver:
         out = self.OUTPUT_TXT_PATH.read_text().strip()
         return out
 
+    def erase(self, lba, size):
+        out = self.erase_ssd(lba, size)
 
+        if out == "ERROR":
+            raise EraseException("ERROR")
+
+        return
+
+    def erase_ssd(self, lba, size):
+        # system call
+        cp = subprocess.run(
+            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.ERASE_TOKEN, str(lba), str(size)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if cp.returncode != VALID_RETURN_CODE:
+            raise EraseException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
+
+        # read output_file
+        out = self.OUTPUT_TXT_PATH.read_text().strip()
+        return out
+
+    def flush(self):
+        """
+        Flush는 실행 후 결과 확인이 없음으로 Test 코드를 추가하지 않습니다.
+        :return:
+        """
+        self.flush_ssd()
+        return
+
+    def flush_ssd(self):
+        # system call
+        cp = subprocess.run(
+            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.FLUSH_TOKEN],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if cp.returncode != VALID_RETURN_CODE:
+            raise FlushException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
+
+        return ""
