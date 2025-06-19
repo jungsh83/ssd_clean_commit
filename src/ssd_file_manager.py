@@ -3,19 +3,32 @@ import sys
 
 
 class SSDFileManager:
+    _instance = None  # 싱글톤 인스턴스 저장 변수
+
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     NAND_PATH = os.path.join(BASE_DIR, 'data', 'ssd_nand.txt')
     OUTPUT_PATH = os.path.join(BASE_DIR, 'data', 'ssd_output.txt')
 
     LBA_START_INDEX = 0
-    LBA_COUNT = 100  # LBA 0~99
+    LBA_COUNT = 100
     DEFAULT_VAL = "0x00000000"
     ERROR_TEXT = 'ERROR'
     COMMAND_READ = "R"
     COMMAND_WRITE = "W"
 
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(SSDFileManager, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
         self._initialize_nand_if_needed()
+        self._initialized = True
+
+    @classmethod
+    def _reset_instance(cls):
+        """테스트 전용: 싱글톤 인스턴스를 리셋"""
+        cls._instance = None
 
     def _initialize_nand_if_needed(self):
         os.makedirs(os.path.dirname(self.NAND_PATH), exist_ok=True)
@@ -34,7 +47,7 @@ class SSDFileManager:
 
     def read(self, lba: int) -> str:
         if not self.LBA_START_INDEX <= lba < self.LBA_COUNT:
-            self._write_error()
+            self.error()
             return self.ERROR_TEXT
 
         value = self._load_nand()[lba]
@@ -44,26 +57,26 @@ class SSDFileManager:
 
     def write(self, lba: int, value: str) -> None:
         if not self._is_valid_lba(lba) or not self._is_valid_value(value):
-            self._write_error()
+            self.error()
             return
         data = self._load_nand()
         data[lba] = value
         self._save_nand(data)
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
-            pass  # 명령 성공 시 빈 파일 생성
+            pass
 
     def erase(self, lba: int, size: int) -> None:
         if not (0 <= lba < self.LBA_COUNT) or not (1 <= size <= 10) or (lba + size > self.LBA_COUNT):
-            self._write_error()
+            self.error()
             return
 
         data = self._load_nand()
         for i in range(lba, lba + size):
             data[i] = self.DEFAULT_VAL
         self._save_nand(data)
-
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             pass
+
 
     def _is_valid_lba(self, lba: int) -> bool:
         return 0 <= lba < self.LBA_COUNT
@@ -76,7 +89,7 @@ class SSDFileManager:
         hex_part = value[2:]
         return all(c in "0123456789ABCDEF" for c in hex_part)
 
-    def _write_error(self):
+    def error(self):
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(self.ERROR_TEXT)
 
@@ -87,7 +100,7 @@ def main(args: list[str]):
     if len(args) == 2 and args[0] == ssd.COMMAND_READ:
         lba_str = args[1]
         if not lba_str.isdigit():
-            ssd._write_error()
+            ssd.error()
             return
         lba = int(lba_str)
         ssd.read(lba)
@@ -95,13 +108,13 @@ def main(args: list[str]):
     elif len(args) == 3 and args[0] == ssd.COMMAND_WRITE:
         lba_str, value = args[1], args[2]
         if not lba_str.isdigit():
-            ssd._write_error()
+            ssd.error()
             return
         lba = int(lba_str)
         ssd.write(lba, value)
 
     else:
-        ssd._write_error()
+        ssd.error()
 
 
 if __name__ == "__main__":

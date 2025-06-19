@@ -24,8 +24,12 @@ def clean_files():
 
 @pytest.fixture
 def ssd_file_manager():
+    SSDFileManager._reset_instance()
+    # 파일도 삭제
+    for path in [SSDFileManager.NAND_PATH, SSDFileManager.OUTPUT_PATH]:
+        if os.path.exists(path):
+            os.remove(path)
     return SSDFileManager()
-
 
 # 1) 정상 LBA를 읽는 경우
 def test_정상_LBA_0_를_읽는_경우(ssd_file_manager):
