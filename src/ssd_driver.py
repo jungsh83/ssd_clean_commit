@@ -22,13 +22,20 @@ class FlushException(Exception):
 
 
 class SSDDriver:
+    _instance = None
+
     VENV_PYTHON_PATH = Path(__file__).parent.parent / ".venv/Scripts/python.exe"
-    COMMAND_PATH = Path(__file__).parent / "ssd.py"
+    COMMAND_PATH = Path(__file__).parent / "ssd_file_manager.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
     READ_TOKEN = 'R'
     WRITE_TOKEN = 'W'
     ERASE_TOKEN = 'E'
     FLUSH_TOKEN = 'F'
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def read(self, lba: int) -> str:
         """

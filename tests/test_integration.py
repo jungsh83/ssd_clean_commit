@@ -32,7 +32,7 @@ def simulate_shell(inputs, monkeypatch):
 def test_통합테스트_정상명령어(monkeypatch, capsys, operation, expected):
     simulate_shell([operation, 'exit'], monkeypatch)
 
-    shell.main(SSDDriver())
+    shell.shell_mode(SSDDriver())
 
     captured = capsys.readouterr()
 
@@ -53,7 +53,7 @@ def test_통합테스트_정상명령어(monkeypatch, capsys, operation, expecte
 def test_통합테스트_argument_개수틀림(monkeypatch, capsys, operation, expected):
     simulate_shell([operation, 'exit'], monkeypatch)
 
-    shell.main(SSDDriver())
+    shell.shell_mode(SSDDriver())
 
     captured = capsys.readouterr()
 
@@ -71,7 +71,7 @@ def test_통합테스트_argument_개수틀림(monkeypatch, capsys, operation, e
 def test_통합테스트_argument_형식틀림(monkeypatch, capsys, operation, expected):
     simulate_shell([operation, 'exit'], monkeypatch)
 
-    shell.main(SSDDriver())
+    shell.shell_mode(SSDDriver())
 
     captured = capsys.readouterr()
 
