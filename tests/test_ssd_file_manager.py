@@ -7,7 +7,7 @@ import sys
 # ───────── 경로 상수 (클래스와 동일) ─────────────────────────────────
 NAND_PATH = SSDFileManager.NAND_PATH
 OUTPUT_PATH = SSDFileManager.OUTPUT_PATH
-SSD_PY = os.path.join(SSDFileManager.BASE_DIR, 'src', 'ssd_file_manager.py')
+SSD_PY = os.path.join(SSDFileManager.BASE_DIR, 'src', 'ssd.py')
 
 
 # ───────── 픽스처: 테스트 전후 파일 정리 ────────────────────────────
