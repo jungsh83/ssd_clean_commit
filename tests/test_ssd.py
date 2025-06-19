@@ -242,3 +242,13 @@ def test_erase_size0이면_아무것도_안지움(ssd_file_manager):
     with open(OUTPUT_PATH, encoding='utf-8') as f:
         content = f.read()
     assert content == ''
+
+def test_write_output_정상동작_파일생성_및_내용확인(ssd_file_manager):
+    test_value = "0xDEADBEEF"
+
+    ssd_file_manager.write_output(test_value)
+
+    assert os.path.exists(OUTPUT_PATH)
+    with open(OUTPUT_PATH, encoding='utf-8') as f:
+        content = f.read().strip()
+    assert content == test_value
