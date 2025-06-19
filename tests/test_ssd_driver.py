@@ -13,7 +13,7 @@ def mk_read(lba):
     if not (0 <= lba < 100):
         return "ERROR"
     else:
-        return data_dict.get(lba, "0x00000000")
+        return data_dict.get(lba, DEFAULT_VALUE)
 
 
 def mk_write(lba, value):
@@ -30,7 +30,7 @@ def mk_erase(lba, size):
             return "ERROR"
 
     for i in range(lba, lba + size):
-        data_dict[i] = "0x00000000"
+        data_dict[i] = DEFAULT_VALUE
 
     return ""
 
