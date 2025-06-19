@@ -31,7 +31,7 @@ def test_shell_없는_명령어_입력_시_invalid_command_확인(monkeypatch, c
     mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mocker.Mock())
     simulate_shell(["foobar", "exit"], monkeypatch)
 
-    shell.main()
+    shell.shell_mode()
 
     captured = capsys.readouterr()
     assert "[FOOBAR] INVALID COMMAND" in captured.out
@@ -46,7 +46,7 @@ def test_shell_일반적인_명령어(monkeypatch, capsys, mock_handler_and_driv
 
     simulate_shell(["write arg1 arg2", "exit"], monkeypatch)
 
-    shell.main()
+    shell.shell_mode()
 
     captured = capsys.readouterr()
     assert "[WRITE] Done" in captured.out
@@ -68,7 +68,7 @@ def test_shell_help_명령어_목록_출력(monkeypatch, capsys, mocker):
     mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mocker.Mock())
     simulate_shell(["help", "exit"], monkeypatch)
 
-    shell.main()
+    shell.shell_mode()
     captured = capsys.readouterr()
 
     assert "▶ help" in captured.out
@@ -88,7 +88,7 @@ def test_shell_exception_뜨면_안멈추고_메시지_띄우는지(monkeypatch,
 
     simulate_shell(["explode", "exit"], monkeypatch)
 
-    shell.main()
+    shell.shell_mode()
 
     captured = capsys.readouterr()
     assert "[ERROR] boom" in captured.out
