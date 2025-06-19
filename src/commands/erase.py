@@ -11,6 +11,7 @@ class EraseCommand(CommandAction):
 
     VALID_ARGUMENT_LEN = 2
     INVALID_LBA = -1  # Erase Size 0일 경우, 사용
+    MAX_ERASE_LEN_ON_SSD_DRIVER = 10
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
@@ -24,7 +25,13 @@ class EraseCommand(CommandAction):
         start_lba, end_lba = self._calculate_lba_range()
         size = self._calculate_size(start_lba, end_lba)
 
-        # TODO: size 10칸 이상인 경우 고려
+        if size == 0:
+            self._ssd_driver.erase(start_lba, size)
+        else:
+            total_size = size
+            for offset in range(0, total_size, self.MAX_ERASE_LEN_ON_SSD_DRIVER):
+                cmd_size = min(self.MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
+                self._ssd_driver.erase(start_lba + offset, cmd_size)
 
         return "Done"
 

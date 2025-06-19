@@ -10,6 +10,26 @@ def ssd_driver_mock(mocker):
     return mocker.Mock(spec=SSDDriver)
 
 
+@pytest.mark.parametrize("lba, size, expected_call_count", [
+    ('5', '0', 1),
+    ('98', '10', 1),
+    ('50', '100', 5),
+    ('0', '999', 10),
+    ('10', '-10', 1),
+    ('5', '-2', 1),
+    ('5', '1', 1),
+    ('5', '-1', 1),
+    ('50', '-100', 6),
+    ('85', '100', 2)
+])
+def test_erase_command_call_count_확인(lba, size, expected_call_count, ssd_driver_mock):
+    erase_cmd = EraseCommand(ssd_driver_mock, lba, size)
+
+    erase_cmd.run()
+
+    assert ssd_driver_mock.erase.call_count == expected_call_count
+
+
 @pytest.mark.parametrize("lba, size, expected_start_lba, expected_end_lba", [
     ('98', '10', 98, 99),
     ('50', '100', 50, 99),
