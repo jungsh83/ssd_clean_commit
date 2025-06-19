@@ -23,7 +23,6 @@ class SSDFileManager:
 
     def __init__(self):
         self._initialize_nand_if_needed()
-        self._initialized = True
 
     @classmethod
     def _reset_instance(cls):
@@ -66,7 +65,7 @@ class SSDFileManager:
             pass
 
     def erase(self, lba: int, size: int) -> None:
-        if not (0 <= lba < self.LBA_COUNT) or not (1 <= size <= 10) or (lba + size > self.LBA_COUNT):
+        if not self._is_valid_lba(lba) or not (0 <= size <= 10) or (lba + size > self.LBA_COUNT):
             self.error()
             return
 
@@ -76,7 +75,6 @@ class SSDFileManager:
         self._save_nand(data)
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             pass
-
 
     def _is_valid_lba(self, lba: int) -> bool:
         return 0 <= lba < self.LBA_COUNT

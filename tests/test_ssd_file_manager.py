@@ -31,6 +31,7 @@ def ssd_file_manager():
             os.remove(path)
     return SSDFileManager()
 
+
 # 1) 정상 LBA를 읽는 경우
 def test_정상_LBA_0_를_읽는_경우(ssd_file_manager):
     assert ssd_file_manager.read(0) == "0x00000000"
@@ -230,6 +231,7 @@ def test_erase_정상작동하면_output은_빈파일이다(ssd_file_manager):
         content = f.read()
     assert content == ''
 
+
 def test_erase_size0이면_아무것도_안지움(ssd_file_manager):
     ssd_file_manager.write(5, "0xA1B2C3D4")
     ssd_file_manager.write(6, "0xDEADBEEF")
@@ -237,3 +239,6 @@ def test_erase_size0이면_아무것도_안지움(ssd_file_manager):
     lines = open(NAND_PATH).read().splitlines()
     assert lines[5] == "0xA1B2C3D4"
     assert lines[6] == "0xDEADBEEF"
+    with open(OUTPUT_PATH, encoding='utf-8') as f:
+        content = f.read()
+    assert content == ''
