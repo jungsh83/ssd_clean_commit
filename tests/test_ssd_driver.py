@@ -15,7 +15,7 @@ def mk_read(lba):
 
 def mk_write(lba, value):
     if not (0 <= lba < 100):
-        data_dict[lba] = "ERROR"
+        raise WriteException()
     else:
         data_dict[lba] = value
 
