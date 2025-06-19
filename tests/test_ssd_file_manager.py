@@ -21,6 +21,7 @@ def clean_files():
         if os.path.exists(path):
             os.remove(path)
 
+
 @pytest.fixture
 def ssd_file_manager():
     return SSDFileManager()
@@ -170,6 +171,7 @@ def test_cli_W_정상동작시_output파일은_빈파일이다():
         content = f.read()
     assert content == ''
 
+
 def test_write_value가_16진수형식이_아니면_ERROR(ssd_file_manager):
     ssd_file_manager.write(5, "0xZZZZZZZZ")  # 유효하지 않은 hex 문자
 
@@ -206,3 +208,20 @@ def test_erase_size가10초과면_ERROR출력(ssd_file_manager):
 def test_erase_lba가음수면_ERROR출력(ssd_file_manager):
     ssd_file_manager.erase(-1, 2)
     assert open(OUTPUT_PATH).read().strip() == "ERROR"
+
+
+def test_erase_정상작동하면_output은_빈파일이다(ssd_file_manager):
+    ssd_file_manager.erase(0, 11)
+    assert open(OUTPUT_PATH).read().strip() == "ERROR"
+    ssd_file_manager.write(5, "0xA1B2C3D4")
+    ssd_file_manager.write(6, "0xDEADBEEF")
+    ssd_file_manager.erase(5, 2)
+    lines = open(NAND_PATH).read().splitlines()
+    assert lines[5] == "0x00000000"
+    assert lines[6] == "0x00000000"
+
+    assert os.path.exists(OUTPUT_PATH)
+
+    with open(OUTPUT_PATH, encoding='utf-8') as f:
+        content = f.read()
+    assert content == ''

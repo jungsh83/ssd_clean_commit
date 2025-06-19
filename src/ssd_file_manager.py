@@ -62,6 +62,9 @@ class SSDFileManager:
             data[i] = self.DEFAULT_VAL
         self._save_nand(data)
 
+        with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            pass
+
     def _is_valid_lba(self, lba: int) -> bool:
         return 0 <= lba < self.LBA_COUNT
 
