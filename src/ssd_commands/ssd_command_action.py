@@ -8,8 +8,9 @@ class InvalidArgumentException(Exception):
 class SSDCommand(ABC):
     registry = {}
 
-    def __init__(self, ssd_file_manager, *args):
+    def __init__(self, ssd_file_manager, command_buffer, *args):
         self._ssd_file_manager = ssd_file_manager
+        self._command_buffer = command_buffer
         self._arguments = args
 
     def __init_subclass__(cls, **kwargs):
