@@ -16,8 +16,10 @@ def mock_ssd_driver(mocker):
 def test_erase_range_체크(start_lba, end_lba, expected_erase_start, expected_erase_end, mock_ssd_driver):
     erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
 
+    validate_ret = erase_range_cmd.validate()
     start_lba, end_lba = erase_range_cmd._get_lba_range()
 
+    assert validate_ret
     assert (start_lba, end_lba) == (expected_erase_start, expected_erase_end)
 
 
@@ -30,9 +32,11 @@ def test_erase_range_체크(start_lba, end_lba, expected_erase_start, expected_e
 def test_erase_range_size_확인(start_lba, end_lba, expected_size, mock_ssd_driver):
     erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
 
+    validate_ret = erase_range_cmd.validate()
     start_lba, end_lba = erase_range_cmd._get_lba_range()
     size = erase_range_cmd._get_size(start_lba, end_lba)
 
+    assert validate_ret
     assert size == expected_size
 
 
@@ -42,5 +46,7 @@ def test_erase_range_size_확인(start_lba, end_lba, expected_size, mock_ssd_dri
     ('가나다', '10'),
     ('5', '가다')
 ])
-def test_erase_range_파라미터_유효성오류(start_lba, end_lba):
-    ...
+def test_erase_range_파라미터_유효성오류(start_lba, end_lba, mock_ssd_driver):
+    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+
+    assert not erase_range_cmd.validate()
