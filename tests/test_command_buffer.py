@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.command_buffer import CommandBuffer, Command
+from src.command_buffer import CommandBuffer, Command, CommandBufferException
 
 
 @pytest.fixture
@@ -58,16 +58,13 @@ def test_버퍼에_빈_값이_존재할_때_append_성공(command_buffer):
                                          Command(order=5, command_type='I', lba=-1, value='', size=-1)]
 
 
-@pytest.mark.skip
-def test_버퍼에_빈_값이_없을_때_failed():
-    ...
+def test_버퍼에_빈_값이_없을_때_failed(command_buffer):
+    command_buffer.initialize()
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
 
-
-@pytest.mark.skip
-def test_append_버퍼에_빈_값이_없을_때():
-    ...
-
-
-@pytest.mark.skip
-def test_append_버퍼에_빈_값이_없을_때():
-    ...
+    with pytest.raises(CommandBufferException):
+        command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))

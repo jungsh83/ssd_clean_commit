@@ -84,6 +84,9 @@ class CommandBuffer:
             else:
                 insert_order += 1
 
+        if insert_order >= 5:
+            raise CommandBufferException("남아 있는 Buffer Slot이 없습니다.")
+
         self._command_buffers[insert_order] = new_command
 
     def append(self, command: Command):
@@ -92,8 +95,10 @@ class CommandBuffer:
             self._ignore_command()
             self._merge_erase()
             self._update_command_buffers_to_file_name()
+        except CommandBufferException as e:
+            raise e
         except Exception:
-            raise CommandBufferException
+            raise CommandBufferException("Buffer 처리 실패하였습니다.")
 
     def read_all(self):
         result: list[Command] = []
