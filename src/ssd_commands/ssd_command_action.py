@@ -1,3 +1,5 @@
+from src.ssd_file_manager import SSDFileManager
+from src.command_buffer import CommandBuffer
 from abc import ABC, abstractmethod
 
 
@@ -8,16 +10,10 @@ class InvalidArgumentException(Exception):
 class SSDCommand(ABC):
     registry = {}
 
-    def __init__(self, ssd_file_manager, command_buffer, *args):
+    def __init__(self, ssd_file_manager:SSDFileManager, command_buffer:CommandBuffer, *args):
         self._ssd_file_manager = ssd_file_manager
         self._command_buffer = command_buffer
         self._arguments = args
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        if hasattr(cls, 'command_name'):
-            for name in cls.command_name:
-                SSDCommand.registry[name] = cls
 
     @abstractmethod
     def run(self) -> str:
