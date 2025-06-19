@@ -28,7 +28,7 @@ def execute_command(command: str, args: list[str], ssd_driver):
     return resolved_name, result
 
 
-def main(ssd_driver=SSDDriver()):
+def shell_mode(ssd_driver=SSDDriver()):
     while True:
         try:
             user_input = input("Shell> ").strip()
@@ -51,7 +51,7 @@ def main(ssd_driver=SSDDriver()):
             print(f"[ERROR] {str(e)}")
 
 
-def run_from_file(file_path: str, ssd_driver=SSDDriver()):
+def runner_mode(file_path: str, ssd_driver=SSDDriver()):
     path = Path(file_path)
     if not path.exists():
         print(f"[ERROR] File not found: {file_path}")
@@ -104,6 +104,6 @@ def run_from_file(file_path: str, ssd_driver=SSDDriver()):
 if __name__ == "__main__":
     ssd_driver = SSDDriver()
     if len(sys.argv) == 2 and sys.argv[1].endswith(".txt"):
-        run_from_file(sys.argv[1], ssd_driver)
+        runner_mode(sys.argv[1], ssd_driver)
     else:
-        main(ssd_driver)
+        shell_mode(ssd_driver)
