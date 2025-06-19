@@ -2,7 +2,7 @@ import os
 import sys
 
 
-class VirtualSSD:
+class SSDFileManager:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     NAND_PATH = os.path.join(BASE_DIR, 'data', 'ssd_nand.txt')
     OUTPUT_PATH = os.path.join(BASE_DIR, 'data', 'ssd_output.txt')
@@ -52,6 +52,12 @@ class VirtualSSD:
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             pass  # 명령 성공 시 빈 파일 생성
 
+    def erase(self, lba: int, size: int) -> None:
+        data = self._load_nand()
+        for i in range(lba, lba + size):
+            data[i] = self.DEFAULT_VAL
+        self._save_nand(data)
+
     def _is_valid_lba(self, lba: int) -> bool:
         return 0 <= lba < self.LBA_COUNT
 
@@ -69,7 +75,7 @@ class VirtualSSD:
 
 
 def main(args: list[str]):
-    ssd = VirtualSSD()
+    ssd = SSDFileManager()
 
     if len(args) == 2 and args[0] == ssd.COMMAND_READ:
         lba_str = args[1]
