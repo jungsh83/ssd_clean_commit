@@ -38,14 +38,16 @@ def test_command_buffers_객체_생성_성공(command_buffer):
                                               Command(order=5, command_type='I', lba=-1, value='', size=-1)]
 
 
-@pytest.mark.skip
-def test_fast_read_W에_값이_있을_때():
-    ...
+def test_fast_read_W에_값이_있을_때(command_buffer):
+    command_buffer.initialize()
+    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    assert command_buffer.fast_read(3) == '0x00000001'
 
 
 @pytest.mark.skip
 def test_fast_Read_E에_값이_있을_때():
-    ...
+    command_buffer.append(Command(command_type='E', lba=3, size=1))
+    assert command_buffer.fast_read(3) == '0x00000000'
 
 
 def test_버퍼에_빈_값이_존재할_때_append_성공(command_buffer):
