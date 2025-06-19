@@ -1,6 +1,6 @@
 import os
 import sys
-from ssd_file_manager import SSDFileManager
+from src.ssd_file_manager import SSDFileManager
 
 
 def main(args: list[str]):

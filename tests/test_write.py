@@ -1,7 +1,7 @@
 import pytest
 
-from src.commands.command_action import InvalidArgumentException
-from src.commands.write import WriteCommand
+from src.shell_commands.command_action import InvalidArgumentException
+from src.shell_commands.write import WriteCommand
 from src.ssd_driver import SSDDriver
 
 

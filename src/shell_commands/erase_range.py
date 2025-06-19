@@ -1,5 +1,5 @@
-from src.commands.command_action import CommandAction, InvalidArgumentException
-from src.ssd import VirtualSSD
+from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.data_dict import *
 
 
 class EraseRangeCommand(CommandAction):
@@ -49,8 +49,8 @@ class EraseRangeCommand(CommandAction):
         if not self._start_lba.isdigit() or not self._end_lba.isdigit():
             return False
 
-        if (not VirtualSSD.LBA_START_INDEX <= int(self._start_lba) < VirtualSSD.LBA_COUNT or
-                not VirtualSSD.LBA_START_INDEX <= int(self._end_lba) < VirtualSSD.LBA_COUNT):
+        if (not LBA_START_INDEX <= int(self._start_lba) < LBA_COUNT or
+                not LBA_START_INDEX <= int(self._end_lba) < LBA_COUNT):
             return False
 
         return True
