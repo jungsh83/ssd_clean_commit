@@ -16,11 +16,14 @@ class WriteException(Exception):
 class EraseException(Exception):
     __module__ = "builtins"
 
+
 class FlushException(Exception):
     __module__ = "builtins"
 
 
 class SSDDriver:
+    _instance = None
+
     VENV_PYTHON_PATH = Path(__file__).parent.parent / ".venv/Scripts/python.exe"
     COMMAND_PATH = Path(__file__).parent / "ssd.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
@@ -28,6 +31,11 @@ class SSDDriver:
     WRITE_TOKEN = 'W'
     ERASE_TOKEN = 'E'
     FLUSH_TOKEN = 'F'
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def read(self, lba: int) -> str:
         """
@@ -38,24 +46,9 @@ class SSDDriver:
         :raise 'ERROR" return 받으면 ReadException 처리
         """
 
-        out = self.read_ssd(lba)
+        out = self.get_external_output(ReadException, self.READ_TOKEN, str(lba))
         if out == "ERROR":
             raise ReadException("ERROR")
-        return out
-
-    def read_ssd(self, lba):
-        # system call
-        cp = subprocess.run(
-            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.READ_TOKEN, str(lba)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        if cp.returncode != VALID_RETURN_CODE:
-            raise ReadException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
-
-        # read output_file
-        out = self.OUTPUT_TXT_PATH.read_text().strip()
-
         return out
 
     def write(self, lba: int, value: str) -> None:
@@ -67,64 +60,36 @@ class SSDDriver:
         :raise 'ERROR" return 받으면 WriteException 처리
         """
 
-        out = self.write_ssd(lba, value)
-
+        out = self.get_external_output(WriteException, self.WRITE_TOKEN, str(lba), str(value))
         if out == "ERROR":
             raise WriteException("ERROR")
 
         return
 
-    def write_ssd(self, lba, value):
-        # system call
-        cp = subprocess.run(
-            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.WRITE_TOKEN, str(lba), str(value)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        if cp.returncode != VALID_RETURN_CODE:
-            raise WriteException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
-        # read output_file
-        out = self.OUTPUT_TXT_PATH.read_text().strip()
-        return out
-
     def erase(self, lba, size):
-        out = self.erase_ssd(lba, size)
-
+        out = self.get_external_output(EraseException, self.ERASE_TOKEN, str(lba), str(size))
         if out == "ERROR":
             raise EraseException("ERROR")
 
         return
-
-    def erase_ssd(self, lba, size):
-        # system call
-        cp = subprocess.run(
-            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.ERASE_TOKEN, str(lba), str(size)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        if cp.returncode != VALID_RETURN_CODE:
-            raise EraseException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
-
-        # read output_file
-        out = self.OUTPUT_TXT_PATH.read_text().strip()
-        return out
 
     def flush(self):
         """
         Flush는 실행 후 결과 확인이 없음으로 Test 코드를 추가하지 않습니다.
         :return:
         """
-        self.flush_ssd()
+        self.get_external_output(FlushException, self.FLUSH_TOKEN)
         return
 
-    def flush_ssd(self):
-        # system call
+    def get_external_output(self, except_class, action_token, *args):
         cp = subprocess.run(
-            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, self.FLUSH_TOKEN],
+            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, action_token] + list(args),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
         if cp.returncode != VALID_RETURN_CODE:
-            raise FlushException(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
+            raise except_class(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
 
-        return ""
+        # read output_file
+        out = self.OUTPUT_TXT_PATH.read_text().strip()
+        return out
