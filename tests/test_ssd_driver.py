@@ -59,6 +59,9 @@ def ssd_driver(mocker: MockerFixture):
     ssd_driver = SSDDriver()
     return ssd_driver
 
+def test_singleton(ssd_driver):
+    new_ssd_driver = SSDDriver()
+    assert ssd_driver is new_ssd_driver
 
 def test_read_성공(ssd_driver: SSDDriver):
     assert ssd_driver.read(0) == DEFAULT_VALUE
