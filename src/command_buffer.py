@@ -107,7 +107,7 @@ class CommandBuffer:
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
 
         if not files_in_dir:
-            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
+            self.initialize()
 
         for filepath in files_in_dir:
             try:
@@ -175,8 +175,8 @@ class CommandBuffer:
                 filename = str(command)
                 command_path = self.COMMAND_BUFFER_DIR_PATH / filename
                 command_path.touch()
-            else:
-                self._update_command_buffers_to_file_name()
+        else:
+            self._update_command_buffers_to_file_name()
 
 
         self._command_buffers = init_command_buffers
