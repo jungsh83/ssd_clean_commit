@@ -47,7 +47,7 @@ def shell_mode(ssd_driver=SSDDriver()):
                 print(f"[{resolved_command.upper()}] {result}")
 
             if resolved_command == 'exit':
-                sys.exit(EXIT_SUCCESS)
+                break
 
         except Exception as e:
             print(f"[ERROR] {str(e)}")
