@@ -2,7 +2,7 @@ import pytest
 import tempfile
 from pathlib import Path
 
-from src.shell import runner_mode
+from shell import runner_mode
 from src.shell_commands.command_action import CommandAction
 
 
