@@ -150,10 +150,21 @@ def test_merge_erase_처리_case1(command_buffer):
 
 def test_merge_erase_처리_case2(command_buffer):
     command_buffer.append(Command(command_type='E', lba=0, size=7))
-    command_buffer.append(Command(command_type='E', lba=8, size=7))
+    command_buffer.append(Command(command_type='E', lba=7, size=7))
 
     assert command_buffer.read_all() == [Command(order=1, command_type='E', lba=0, value='', size=7),
-                                         Command(order=2, command_type='E', lba=8, value='', size=7),
+                                         Command(order=2, command_type='E', lba=7, value='', size=7),
+                                         Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=5, command_type='I', lba=-1, value='', size=-1)]
+
+def test_merge_erase_처리_case3(command_buffer):
+    command_buffer.append(Command(command_type='E', lba=0, size=7))
+    command_buffer.append(Command(command_type='E', lba=7, size=7))
+    command_buffer.append(Command(command_type='E', lba=14, size=4))
+
+    assert command_buffer.read_all() == [Command(order=1, command_type='E', lba=0, value='', size=10),
+                                         Command(order=2, command_type='E', lba=10, value='', size=8),
                                          Command(order=3, command_type='I', lba=-1, value='', size=-1),
                                          Command(order=4, command_type='I', lba=-1, value='', size=-1),
                                          Command(order=5, command_type='I', lba=-1, value='', size=-1)]

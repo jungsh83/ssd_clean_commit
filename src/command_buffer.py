@@ -192,23 +192,24 @@ class CommandBuffer:
                 overwrite_command = self.command_buffers[overwrite_index]
                 if overwrite_command.command_type != 'E':
                     continue
-                if target_command.lba < overwrite_command.lba + overwrite_command.size and \
-                        target_command.lba + target_command.size > overwrite_command.lba:
+                if new_lba <= overwrite_command.lba + overwrite_command.size and \
+                        new_lba + new_size >= overwrite_command.lba:
 
-                    new_lba = min(target_command.lba, overwrite_command.lba)
-                    new_size = max(target_command.lba + target_command.size,
+                    new_lba = min(new_lba, overwrite_command.lba)
+                    new_size = max(new_lba + new_size,
                                    overwrite_command.lba + overwrite_command.size) \
                                - new_lba
                     merged_command_orders.add(overwrite_command.order)
 
-            new_order += 1
             while new_size > 10:
+                new_order += 1
                 result.append(
                     Command(order=new_order, command_type=target_command.command_type, lba=new_lba,
                             value=target_command.value,
                             size=10))
                 new_lba += 10
                 new_size -= 10
+            new_order += 1
             result.append(
                 Command(order=new_order, command_type=target_command.command_type, lba=new_lba,
                         value=target_command.value,
