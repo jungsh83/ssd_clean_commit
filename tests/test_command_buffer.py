@@ -126,3 +126,13 @@ def test_ignore_command_처리_case2(command_buffer):
                                          Command(order=3, command_type='I', lba=-1, value='', size=-1),
                                          Command(order=4, command_type='I', lba=-1, value='', size=-1),
                                          Command(order=5, command_type='I', lba=-1, value='', size=-1)]
+
+def test_ignore_command_처리_case3(command_buffer):
+    command_buffer.append(Command(command_type='E', lba=1, size=3))
+    command_buffer.append(Command(command_type='W', lba=2, value='0x12341234'))
+
+    assert command_buffer.read_all() == [Command(order=1, command_type='E', lba=1, value='', size=3),
+                                         Command(order=2, command_type='W', lba=2, value='0x12341234', size=-1),
+                                         Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=5, command_type='I', lba=-1, value='', size=-1)]
