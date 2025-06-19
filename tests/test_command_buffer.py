@@ -49,6 +49,10 @@ def test_fast_Read_E에_값이_있을_때(command_buffer):
     command_buffer.append(Command(command_type='E', lba=3, size=1))
     assert command_buffer.fast_read(3) == '0x00000000'
 
+def test_fast_Read_값이_없을_때(command_buffer):
+    command_buffer.initialize()
+    command_buffer.append(Command(command_type='E', lba=3, size=1))
+    assert command_buffer.fast_read(4) is None
 
 def test_버퍼에_빈_값이_존재할_때_append_성공(command_buffer):
     command_buffer.initialize()
