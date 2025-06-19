@@ -5,19 +5,24 @@ from src.commands.erase_and_write_aging import EraseAndWriteAging
 
 data_dict = {}
 
+
 def mk_read(lba):
     return data_dict.get(lba, "0x00000000")
+
 
 def mk_read_fail(lba):
     if lba == 2: return "ERROR"
     return data_dict.get(lba, "0x00000000")
 
+
 def mk_write(lba, value):
     data_dict[lba] = value
 
+
 def mk_erase(lba, size):
-    for i in range(lba, lba+size):
+    for i in range(lba, lba + size):
         data_dict[i] = "0x00000000"
+
 
 @pytest.fixture
 def ssd_driver(mocker: MockerFixture):
@@ -28,6 +33,7 @@ def ssd_driver(mocker: MockerFixture):
 
     return mk
 
+
 @pytest.fixture
 def ssd_driver_fail(mocker: MockerFixture):
     mk = mocker.Mock()
@@ -37,6 +43,7 @@ def ssd_driver_fail(mocker: MockerFixture):
 
     return mk
 
+
 def test_validate_수행_성공(ssd_driver):
     # act & assert
     assert EraseAndWriteAging(ssd_driver).validate()
@@ -45,6 +52,7 @@ def test_validate_수행_성공(ssd_driver):
 def test_validate_수행_실패(ssd_driver):
     # act & assert
     assert not EraseAndWriteAging(ssd_driver, 1, "0x12345678").validate()
+
 
 def test_수행_성공(ssd_driver):
     assert EraseAndWriteAging(ssd_driver).run() == "PASS"
