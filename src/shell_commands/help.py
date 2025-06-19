@@ -1,9 +1,9 @@
-from src.commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.command_action import CommandAction, InvalidArgumentException
 from src.decorators import log_call
 
 class HelpCommand(CommandAction):
     command_name: str = 'help'
-    _description = 'Show list of available commands.'
+    _description = 'Show list of available shell_commands.'
     _usage = 'help'
     _author = 'Songju Na'
     _alias: list[str] = ['h']

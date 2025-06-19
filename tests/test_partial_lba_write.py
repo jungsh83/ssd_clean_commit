@@ -1,8 +1,8 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.commands.command_action import InvalidArgumentException
-from src.commands.partial_lba_write import PartialLBAWriteCommand
+from src.shell_commands.command_action import InvalidArgumentException
+from src.shell_commands.partial_lba_write import PartialLBAWriteCommand
 
 
 def create_test_value():

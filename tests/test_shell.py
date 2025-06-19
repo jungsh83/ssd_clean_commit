@@ -3,7 +3,7 @@ import pytest
 
 from src import shell
 
-from src.commands.command_action import CommandAction
+from src.shell_commands.command_action import CommandAction
 from src.ssd_driver import SSDDriver
 
 
