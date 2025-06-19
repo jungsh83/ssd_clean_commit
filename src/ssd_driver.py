@@ -54,7 +54,6 @@ class SSDDriver:
         """
 
         out = self.write_ssd(lba, value)
-
         if out == "ERROR":
             raise WriteException("ERROR")
 
@@ -62,7 +61,6 @@ class SSDDriver:
 
     def erase(self, lba, size):
         out = self.erase_ssd(lba, size)
-
         if out == "ERROR":
             raise EraseException("ERROR")
 
@@ -88,14 +86,15 @@ class SSDDriver:
     def flush_ssd(self):
         return self.get_external_output(FlushException, self.FLUSH_TOKEN)
 
-    def get_external_output(self, except_class, *args):
+    def get_external_output(self, except_class, action_token, *args):
         cp = subprocess.run(
-            [self.VENV_PYTHON_PATH, self.COMMAND_PATH] + list(args),
+            [self.VENV_PYTHON_PATH, self.COMMAND_PATH, action_token] + list(args),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
         if cp.returncode != VALID_RETURN_CODE:
             raise except_class(f"Non-zero exit code has been returned.\nError Message: {cp.stderr}")
+
         # read output_file
         out = self.OUTPUT_TXT_PATH.read_text().strip()
         return out
