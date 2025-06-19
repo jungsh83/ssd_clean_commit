@@ -44,8 +44,8 @@ def test_fast_read_W에_값이_있을_때(command_buffer):
     assert command_buffer.fast_read(3) == '0x00000001'
 
 
-@pytest.mark.skip
-def test_fast_Read_E에_값이_있을_때():
+def test_fast_Read_E에_값이_있을_때(command_buffer):
+    command_buffer.initialize()
     command_buffer.append(Command(command_type='E', lba=3, size=1))
     assert command_buffer.fast_read(3) == '0x00000000'
 
