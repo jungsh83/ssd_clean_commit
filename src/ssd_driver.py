@@ -39,7 +39,7 @@ class SSDDriver:
         :raise 'ERROR" return 받으면 ReadException 처리
         """
 
-        out = self.read_ssd(lba)
+        out = self.get_external_output(ReadException, self.READ_TOKEN, str(lba))
         if out == "ERROR":
             raise ReadException("ERROR")
         return out
@@ -53,14 +53,14 @@ class SSDDriver:
         :raise 'ERROR" return 받으면 WriteException 처리
         """
 
-        out = self.write_ssd(lba, value)
+        out = self.get_external_output(WriteException, self.WRITE_TOKEN, str(lba), str(value))
         if out == "ERROR":
             raise WriteException("ERROR")
 
         return
 
     def erase(self, lba, size):
-        out = self.erase_ssd(lba, size)
+        out = self.get_external_output(EraseException, self.ERASE_TOKEN, str(lba), str(size))
         if out == "ERROR":
             raise EraseException("ERROR")
 
@@ -71,20 +71,8 @@ class SSDDriver:
         Flush는 실행 후 결과 확인이 없음으로 Test 코드를 추가하지 않습니다.
         :return:
         """
-        self.flush_ssd()
+        self.get_external_output(FlushException, self.FLUSH_TOKEN)
         return
-
-    def read_ssd(self, lba):
-        return self.get_external_output(ReadException, self.READ_TOKEN, str(lba))
-
-    def write_ssd(self, lba, value):
-        return self.get_external_output(WriteException, self.WRITE_TOKEN, str(lba), str(value))
-
-    def erase_ssd(self, lba, size):
-        return self.get_external_output(EraseException, self.ERASE_TOKEN, str(lba), str(size))
-
-    def flush_ssd(self):
-        return self.get_external_output(FlushException, self.FLUSH_TOKEN)
 
     def get_external_output(self, except_class, action_token, *args):
         cp = subprocess.run(
