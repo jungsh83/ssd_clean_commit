@@ -95,11 +95,34 @@ def test_버퍼에_빈_값이_존재할_때_append_성공(command_buffer):
 
 def test_버퍼에_빈_값이_없을_때_failed(command_buffer):
     command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
-    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
-    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
-    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
-    command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+    command_buffer.append(Command(command_type='W', lba=4, value='0x00000002'))
+    command_buffer.append(Command(command_type='W', lba=5, value='0x00000003'))
+    command_buffer.append(Command(command_type='W', lba=6, value='0x00000004'))
+    command_buffer.append(Command(command_type='W', lba=7, value='0x00000005'))
 
     with pytest.raises(CommandBufferException):
-        command_buffer.append(Command(command_type='W', lba=3, value='0x00000001'))
+        command_buffer.append(Command(command_type='W', lba=8, value='0x00000006'))
 
+
+def test_ignore_command_처리_case1(command_buffer):
+    command_buffer.append(Command(command_type='E', lba=18, size=3))
+    command_buffer.append(Command(command_type='W', lba=21, value='0x12341234'))
+    command_buffer.append(Command(command_type='E', lba=18, size=5))
+
+    assert command_buffer.read_all() == [Command(order=1, command_type='E', lba=18, value='', size=5),
+                                         Command(order=2, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=5, command_type='I', lba=-1, value='', size=-1)]
+
+
+def test_ignore_command_처리_case2(command_buffer):
+    command_buffer.append(Command(command_type='E', lba=1, size=2))
+    command_buffer.append(Command(command_type='W', lba=1, value='0x12341234'))
+    command_buffer.append(Command(command_type='W', lba=2, value='0x12341234'))
+
+    assert command_buffer.read_all() == [Command(order=1, command_type='W', lba=1, value='0x12341234', size=-1),
+                                         Command(order=2, command_type='W', lba=2, value='0x12341234', size=-1),
+                                         Command(order=3, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=4, command_type='I', lba=-1, value='', size=-1),
+                                         Command(order=5, command_type='I', lba=-1, value='', size=-1)]

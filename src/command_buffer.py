@@ -87,11 +87,16 @@ class CommandBuffer:
         if insert_order >= 5:
             raise CommandBufferException("남아 있는 Buffer Slot이 없습니다.")
 
+        new_command.order = insert_order + 1
         self._command_buffers[insert_order] = new_command
 
     def append(self, command: Command):
         try:
-            self._append_command(command)
+            new_command = command
+            if command.command_type == 'W' and command.value == '0x00000000':
+                new_command = Command(command_type='E', lba=command.lba, size=1)
+
+            self._append_command(new_command)
             self._ignore_command()
             self._merge_erase()
             self._update_command_buffers_to_file_name()
@@ -122,8 +127,49 @@ class CommandBuffer:
         return result
 
     def _ignore_command(self):
-        # 삭제될 커맨드를 찾아서 삭제
-        pass
+        result: list[Command] = []
+        new_order = 0
+        for target_index, target_command in enumerate(self.command_buffers):
+            lbas: set[int] = set()
+            if target_command.command_type == 'W':
+                lbas.add(target_command.lba)
+            elif target_command.command_type == 'E':
+                lbas = set([i for i in range(target_command.lba, target_command.lba + target_command.size)])
+                lbas.add(target_command.lba)
+            for overwrite_index in range(target_index+1, 5):
+                overwrite_command = self.command_buffers[overwrite_index]
+                if overwrite_command.command_type == 'W':
+                    if overwrite_command.lba in lbas:
+                        lbas.remove(overwrite_command.lba)
+                elif overwrite_command.command_type == 'E':
+                    for overwrite_lba in range(overwrite_command.lba, overwrite_command.lba + overwrite_command.size):
+                        if overwrite_lba in lbas:
+                            lbas.remove(overwrite_lba)
+            if lbas:
+                new_order += 1
+                result.append(
+                    Command(order=new_order, command_type=target_command.command_type, lba=target_command.lba, value=target_command.value,
+                            size=target_command.size))
+
+        #
+        # for command in self.command_buffers:
+        #     if new_command.command_type == 'W':
+        #         if command.command_type == 'W' and command.lba == new_command.lba and command.value == new_command.value:
+        #             continue
+        #     if new_command.command_type == 'E':
+        #         if command.command_type == 'E' and new_command.lba <= command.lba and command.lba + command.size <= new_command.lba + new_command.size:
+        #             continue
+        #         elif command.command_type == 'W' and new_command.lba <= command.lba <= new_command.lba + new_command.size:
+        #             continue
+        #     new_order += 1
+        #     result.append(
+        #         Command(order=new_order, command_type=command.command_type, lba=command.lba, value=command.value,
+        #                 size=command.size))
+        #
+        for i in range(new_order + 1, 6):
+            result.append(Command(order=i))
+
+        self._command_buffers = result
 
     def _merge_erase(self):
         # 머지할 커맨드를 찾아서 머지, 꼭 작은 order에 머지해야 함
@@ -167,7 +213,6 @@ class CommandBuffer:
             Command(order=5)
         ]
 
-
         # 디렉토리가 없을 경우 디렉토리 생성 ../buffer
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
         if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
@@ -178,7 +223,3 @@ class CommandBuffer:
                 command_path.touch()
         else:
             self._update_command_buffers_to_file_name()
-
-
-
-
