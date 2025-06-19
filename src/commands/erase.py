@@ -1,0 +1,62 @@
+from src.commands.command_action import CommandAction, InvalidArgumentException
+from src.ssd import VirtualSSD
+
+
+class EraseCommand(CommandAction):
+    command_name: str = 'erase'
+    _description = 'Erase value from LBA with size'
+    _usage = 'erase [LBA] [SIZE]'
+    _author = 'Gunam Kwon'
+    _alias: list[str] = []
+
+    VALID_ARGUMENT_LEN = 2
+    INVALID_LBA = -1  # Erase Size 0일 경우, 사용
+
+    def __init__(self, ssd_driver, *args):
+        super().__init__(ssd_driver, *args)
+        self._input_lba: str = None
+        self._input_size: str = None
+
+    def run(self):
+        if not self.validate():
+            raise InvalidArgumentException(self._get_exception_string())
+
+        start_lba, end_lba = self._calculate_lba_range()
+        size = self._calculate_size(start_lba, end_lba)
+
+        # TODO: size 10칸 이상인 경우 고려
+
+        return "Done"
+
+    def validate(self) -> bool:
+        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
+            return False
+
+        self._input_lba, self._input_size = self._arguments
+
+        return True
+
+    def _get_exception_string(self) -> None:
+        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
+
+    def _calculate_lba_range(self) -> (int, int):
+        lba, size = int(self._input_lba), int(self._input_size)
+
+        if size == 0:
+            start_lba, end_lba = lba, self.INVALID_LBA
+        elif size > 0:
+            start_lba = lba
+            end_lba = (lba + size - 1) if lba + size <= VirtualSSD.LBA_COUNT \
+                else (VirtualSSD.LBA_COUNT - 1)
+        else:
+            end_lba = lba
+            start_lba = (lba + size + 1) if lba + size >= VirtualSSD.LBA_START_INDEX \
+                else VirtualSSD.LBA_START_INDEX
+
+        return start_lba, end_lba
+
+    def _calculate_size(self, start, end):
+        if end == self.INVALID_LBA:
+            return 0
+
+        return end - start + 1
