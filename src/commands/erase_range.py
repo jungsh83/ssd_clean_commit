@@ -26,6 +26,10 @@ class EraseRangeCommand(CommandAction):
 
         return int(start_lba), int(end_lba)
 
+    @staticmethod
+    def _get_size(start_lba: int, end_lba: int) -> int:
+        return end_lba - start_lba + 1
+
     def validate(self) -> bool:
         return len(self._arguments) == self.VALID_ARGUMENT_LEN
 

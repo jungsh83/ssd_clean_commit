@@ -21,6 +21,21 @@ def test_erase_range_체크(start_lba, end_lba, expected_erase_start, expected_e
     assert (start_lba, end_lba) == (expected_erase_start, expected_erase_end)
 
 
+@pytest.mark.parametrize("start_lba, end_lba, expected_size", [
+    ('5', '10', 6),
+    ('10', '5', 6),
+    ('0', '99', 100),
+    ('99', '0', 100),
+])
+def test_erase_range_size_확인(start_lba, end_lba, expected_size, mock_ssd_driver):
+    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+
+    start_lba, end_lba = erase_range_cmd._get_lba_range()
+    size = erase_range_cmd._get_size(start_lba, end_lba)
+
+    assert size == expected_size
+
+
 @pytest.mark.parametrize("start_lba, end_lba", [
     ('100', '1'),
     ('-1', '10'),
