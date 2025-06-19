@@ -7,7 +7,8 @@ from pathlib import Path
 
 
 class _CustomLogger:
-    LOG_DIR = Path("logs")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    LOG_DIR = BASE_DIR / "logs"
     LOG_FILE = LOG_DIR / "latest.log"
     MAX_SIZE = 10 * 1024  # 10kB
 
