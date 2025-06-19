@@ -2,7 +2,7 @@ import pytest
 
 from src.commands.command_action import InvalidArgumentException
 from src.commands.full_write import FullWriteCommand
-from src.ssd import VirtualSSD
+from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 
 
@@ -18,7 +18,7 @@ def test_full_write_command_성공(mock_ssd_driver):
 
     full_write_cmd.run()
 
-    assert mock_ssd_driver.write.call_count == VirtualSSD.LBA_COUNT
+    assert mock_ssd_driver.write.call_count == SSDFileManager.LBA_COUNT
 
 
 def test_full_write_command_유효성검사_Param개수_부족(mock_ssd_driver):

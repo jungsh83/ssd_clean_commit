@@ -1,5 +1,5 @@
 from src.commands.command_action import CommandAction
-from src.ssd import VirtualSSD
+from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 import sys
 import re

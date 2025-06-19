@@ -13,7 +13,7 @@ def mock_handler_and_driver(mocker):
     mock_handler = mocker.Mock()
     mock_handler_instance = mocker.Mock()
     mock_handler.return_value = mock_handler_instance
-    mocker.patch("src.ssd.VirtualSSD", return_value=mock_driver)
+    mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mock_driver)
 
     return mock_driver, mock_handler, mock_handler_instance
 
@@ -28,7 +28,7 @@ def simulate_shell(inputs, monkeypatch):
 
 
 def test_shell_없는_명령어_입력_시_invalid_command_확인(monkeypatch, capsys, mocker):
-    mocker.patch("src.ssd.VirtualSSD", return_value=mocker.Mock())
+    mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mocker.Mock())
     simulate_shell(["foobar", "exit"], monkeypatch)
 
     shell.shell_mode()
@@ -65,7 +65,7 @@ def test_shell_help_명령어_목록_출력(monkeypatch, capsys, mocker):
 
         def validate(self): return True
 
-    mocker.patch("src.ssd.VirtualSSD", return_value=mocker.Mock())
+    mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mocker.Mock())
     simulate_shell(["help", "exit"], monkeypatch)
 
     shell.shell_mode()
