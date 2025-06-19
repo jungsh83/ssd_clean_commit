@@ -5,6 +5,8 @@ import sys
 import re
 from pathlib import Path
 
+EXIT_SUCCESS = 0
+EXIT_FAILURE = 1
 
 def resolve_command(name):
     handler = CommandAction.registry.get(name)
@@ -45,7 +47,7 @@ def shell_mode(ssd_driver=SSDDriver()):
                 print(f"[{resolved_command.upper()}] {result}")
 
             if resolved_command == 'exit':
-                break
+                sys.exit(EXIT_SUCCESS)
 
         except Exception as e:
             print(f"[ERROR] {str(e)}")
@@ -55,7 +57,7 @@ def runner_mode(file_path: str, ssd_driver=SSDDriver()):
     path = Path(file_path)
     if not path.exists():
         print(f"[ERROR] File not found: {file_path}")
-        sys.exit(1)
+        sys.exit(EXIT_FAILURE)
 
     failed = False
 
@@ -98,7 +100,7 @@ def runner_mode(file_path: str, ssd_driver=SSDDriver()):
                 failed = True
                 break
 
-    sys.exit(1 if failed else 0)
+    sys.exit(EXIT_FAILURE if failed else EXIT_SUCCESS)
 
 
 if __name__ == "__main__":
