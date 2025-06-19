@@ -8,6 +8,17 @@ from src.ssd_driver import SSDDriver
 def mock_ssd_driver(mocker):
     return mocker.Mock(spec=SSDDriver)
 
+@pytest.mark.parametrize("start_lba, end_lba, expected_call_count", [
+    ('5', '10', 1),
+    ('0', '99', 10),
+])
+def test_erase_range_범위_확인(start_lba, end_lba, expected_call_count, mock_ssd_driver):
+    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+
+    erase_range_cmd.run()
+
+    assert mock_ssd_driver.erase.callcount() == expected_call_count
+
 
 @pytest.mark.parametrize("start_lba, end_lba, expected_erase_start, expected_erase_end", [
     ('5', '10', 5, 10),

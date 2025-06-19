@@ -10,6 +10,7 @@ class EraseRangeCommand(CommandAction):
     _alias = []
 
     VALID_ARGUMENT_LEN = 2
+    MAX_ERASE_LEN_ON_SSD_DRIVER = 10
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
@@ -21,6 +22,16 @@ class EraseRangeCommand(CommandAction):
             raise InvalidArgumentException(self.get_exception_string())
 
         start_lba, end_lba = self._get_lba_range()
+        size = self._get_size(start_lba, end_lba)
+
+        while size:
+            cmd_size = self.MAX_ERASE_LEN_ON_SSD_DRIVER if size > self.MAX_ERASE_LEN_ON_SSD_DRIVER \
+                else size
+
+            self._ssd_driver.erase(start_lba, cmd_size)
+
+            size -= cmd_size
+            start_lba += cmd_size
 
     def _get_lba_range(self) -> (int, int):
         start_lba, end_lba = int(self._start_lba), int(self._end_lba)
