@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferException, CommandBufferData
+from src.command_buffer_file_manager import CommandBufferFileManager
 from src.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, MergeEraseStrategy, \
     CommandBufferOptimizeStrategy
 
@@ -12,6 +13,7 @@ class CommandBufferHandler:
 
     def __init__(self):
         self._command_buffers = self.read_all()
+        self._file_manager = CommandBufferFileManager()
 
     @property
     def command_buffers(self):
@@ -55,7 +57,7 @@ class CommandBufferHandler:
             self._append_command(new_command)
             self._optimize(IgnoreCommandStrategy())
             self._optimize(MergeEraseStrategy())
-            self._update_command_buffers_to_file_name()
+            self._file_manager.update_command_buffers_to_file_name( self.command_buffers)
         except CommandBufferException as e:
             raise e
         except Exception:
@@ -87,33 +89,6 @@ class CommandBufferHandler:
         result.sort(key=lambda cmd: cmd.order)
         return result
 
-    def _update_command_buffers_to_file_name(self):
-        current_files = list(self.COMMAND_BUFFER_DIR_PATH.iterdir())
-        old_file_path = None
-
-        for new_command in self.command_buffers:
-            for file_path in current_files:
-                if file_path.is_file():
-                    try:
-                        parsed_command = CommandBufferData.from_filename(file_path.name)
-                        if parsed_command.order == new_command.order:
-                            old_file_path = file_path
-                            break
-                    except Exception:
-                        continue
-
-            if not old_file_path:
-                return False
-
-            new_filename = str(new_command)
-            new_file_path = self.COMMAND_BUFFER_DIR_PATH / new_filename
-
-            try:
-                old_file_path.rename(new_file_path)
-            except Exception:
-                raise CommandBufferException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
-        return None
-
     def initialize(self):
         self._command_buffers = [
             CommandBufferData(order=1),
@@ -131,4 +106,4 @@ class CommandBufferHandler:
                 command_path = self.COMMAND_BUFFER_DIR_PATH / filename
                 command_path.touch()
         else:
-            self._update_command_buffers_to_file_name()
+            self._file_manager.update_command_buffers_to_file_name(self.command_buffers)
