@@ -52,7 +52,13 @@ class Command:
 
         return cls(order=order)
 
+    @property
+    def erase_start_lba(self):
+        return self.lba
 
+    @property
+    def erase_end_lba(self):
+        return self.lba + self.size
 
 class CommandBuffer:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,7 +75,7 @@ class CommandBuffer:
         for command in self.command_buffers:
             if command.command_type == WRITE and command.lba == lba:
                 return command.value
-            elif command.command_type == ERASE and (command.lba <= lba < command.lba + command.size):
+            elif command.command_type == ERASE and (command.erase_start_lba <= lba < command.erase_end_lba):
                 return ERASE_VALUE
         return None
 
