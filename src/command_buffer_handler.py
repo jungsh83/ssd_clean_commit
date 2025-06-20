@@ -68,34 +68,12 @@ class CommandBufferHandler:
         self._command_buffers = optimizer.optimize(self.command_buffers)
 
     def read_all(self):
-        if self._is_not_initialized():
+        if self._file_manager.is_not_initialized():
             self.initialize()
 
-        result = self._read_command_buffers_from_file_name()
+        result = self._file_manager.read_command_buffers_from_file_name()
 
         result.sort(key=lambda cmd: cmd.order)
-        return result
-
-    def _is_not_initialized(self):
-        if not self.COMMAND_BUFFER_DIR_PATH.exists():
-            return True
-
-        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
-        if not files_in_dir:
-            return True
-
-        return False
-
-    def _read_command_buffers_from_file_name(self):
-        result: list[CommandBufferData] = []
-
-        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
-        for filepath in files_in_dir:
-            try:
-                command = CommandBufferData.from_filename(filepath.name)
-                result.append(command)
-            except Exception as e:
-                raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
         return result
 
     def initialize(self):

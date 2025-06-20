@@ -8,6 +8,42 @@ class CommandBufferFileManager:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     COMMAND_BUFFER_DIR_PATH = Path(os.path.join(BASE_DIR, 'buffer'))
 
+    def initialize_file_name(self, command_buffers):
+        self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
+        if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
+            print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
+            for command in command_buffers:
+                filename = str(command)
+                command_path = self.COMMAND_BUFFER_DIR_PATH / filename
+                command_path.touch()
+        else:
+            self.update_command_buffers_to_file_name(command_buffers)
+
+
+    def is_not_initialized(self):
+        if not self.COMMAND_BUFFER_DIR_PATH.exists():
+            return True
+
+        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+        if not files_in_dir:
+            return True
+
+        return False
+
+
+    def read_command_buffers_from_file_name(self):
+        result: list[CommandBufferData] = []
+
+        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+        for filepath in files_in_dir:
+            try:
+                command = CommandBufferData.from_filename(filepath.name)
+                result.append(command)
+            except Exception as e:
+                raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
+        return result
+
+
     def update_command_buffers_to_file_name(self, command_buffers):
         current_files = list(self.COMMAND_BUFFER_DIR_PATH.iterdir())
         old_file_path = None
@@ -34,15 +70,3 @@ class CommandBufferFileManager:
             except Exception:
                 raise CommandBufferException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
         return None
-
-
-    def initialize_file_name(self, command_buffers):
-        self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
-        if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
-            print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
-            for command in command_buffers:
-                filename = str(command)
-                command_path = self.COMMAND_BUFFER_DIR_PATH / filename
-                command_path.touch()
-        else:
-            self.update_command_buffers_to_file_name(command_buffers)
