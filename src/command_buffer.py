@@ -2,6 +2,10 @@ import os
 from pathlib import Path
 from dataclasses import dataclass
 
+ERASE = 'E'
+WRITE = 'W'
+EMPTY = 'I'
+
 
 class CommandBufferException(Exception):
     __module__ = 'builtins'
@@ -10,17 +14,17 @@ class CommandBufferException(Exception):
 @dataclass
 class Command:
     order: int = -1
-    command_type: str = "I"
+    command_type: str = EMPTY
     lba: int = -1
     value: str = ""
     size: int = -1
 
     def __str__(self):
-        if self.command_type == 'I':
+        if self.command_type == EMPTY:
             return f"{self.order}_empty"
-        elif self.command_type == 'W':
+        elif self.command_type == WRITE:
             return f"{self.order}_{self.command_type}_{self.lba}_{self.value}"
-        elif self.command_type == 'E':
+        elif self.command_type == ERASE:
             return f"{self.order}_{self.command_type}_{self.lba}_{self.size}"
         return f"ERROR"
 
@@ -39,10 +43,10 @@ class Command:
         if len(parts) < 4:
             raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
 
-        if command_type == 'W':
+        if command_type == WRITE:
             return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3])
 
-        elif command_type == 'E':
+        elif command_type == ERASE:
             return cls(order=order, command_type=command_type, lba=int(parts[2]), size=int(parts[3]))
 
         else:
@@ -62,22 +66,22 @@ class CommandBuffer:
 
     def fast_read(self, lba: int) -> str | None:
         for command in self.command_buffers:
-            if command.command_type == 'W' and command.lba == lba:
+            if command.command_type == WRITE and command.lba == lba:
                 return command.value
-            elif command.command_type == 'E' and (command.lba <= lba < command.lba + command.size):
+            elif command.command_type == ERASE and (command.lba <= lba < command.lba + command.size):
                 return "0x00000000"
         return None
 
     def is_empty_buffer_slot_existing(self) -> bool:
         for command in self.command_buffers:
-            if command.command_type == 'I':
+            if command.command_type == EMPTY:
                 return True
         return False
 
     def _append_command(self, new_command):
         insert_order = 0
         for command in self.command_buffers:
-            if command.command_type == 'I':
+            if command.command_type == EMPTY:
                 new_command.order = command.order
                 break
             else:
@@ -92,8 +96,8 @@ class CommandBuffer:
     def append(self, command: Command):
         try:
             new_command = command
-            if command.command_type == 'W' and command.value == '0x00000000':
-                new_command = Command(command_type='E', lba=command.lba, size=1)
+            if command.command_type == WRITE and command.value == '0x00000000':
+                new_command = Command(command_type=ERASE, lba=command.lba, size=1)
 
             self._append_command(new_command)
             self._ignore_command()
@@ -131,17 +135,17 @@ class CommandBuffer:
         new_order = 0
         for target_index, target_command in enumerate(self.command_buffers):
             lbas: set[int] = set()
-            if target_command.command_type == 'W':
+            if target_command.command_type == WRITE:
                 lbas.add(target_command.lba)
-            elif target_command.command_type == 'E':
+            elif target_command.command_type == ERASE:
                 lbas = set([i for i in range(target_command.lba, target_command.lba + target_command.size)])
                 lbas.add(target_command.lba)
             for overwrite_index in range(target_index + 1, 5):
                 overwrite_command = self.command_buffers[overwrite_index]
-                if overwrite_command.command_type == 'W':
+                if overwrite_command.command_type == WRITE:
                     if overwrite_command.lba in lbas:
                         lbas.remove(overwrite_command.lba)
-                elif overwrite_command.command_type == 'E':
+                elif overwrite_command.command_type == ERASE:
                     for overwrite_lba in range(overwrite_command.lba, overwrite_command.lba + overwrite_command.size):
                         if overwrite_lba in lbas:
                             lbas.remove(overwrite_lba)
@@ -162,7 +166,7 @@ class CommandBuffer:
         new_order = 0
         merged_command_orders: set[int] = set()
         for target_index, target_command in enumerate(self.command_buffers):
-            if target_command.command_type != 'E':
+            if target_command.command_type != ERASE:
                 new_order += 1
                 result.append(
                     Command(order=new_order, command_type=target_command.command_type, lba=target_command.lba,
@@ -175,7 +179,7 @@ class CommandBuffer:
             new_size = target_command.size
             for overwrite_index in range(target_index + 1, 5):
                 overwrite_command = self.command_buffers[overwrite_index]
-                if overwrite_command.command_type != 'E':
+                if overwrite_command.command_type != ERASE:
                     continue
                 if new_lba <= overwrite_command.lba + overwrite_command.size and \
                         new_lba + new_size >= overwrite_command.lba:
@@ -205,12 +209,12 @@ class CommandBuffer:
 
         as_is_count = 0
         for command in self.command_buffers:
-            if command.command_type == 'E':
+            if command.command_type == ERASE:
                 as_is_count += 1
 
         to_be_count = 0
         for command in result:
-            if command.command_type == 'E':
+            if command.command_type == ERASE:
                 to_be_count += 1
 
         if as_is_count > to_be_count:
