@@ -34,23 +34,22 @@ class Command:
         if len(parts) < 2:
             raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
 
-        order = int(parts[0])
         command_type = parts[1]
-
-        if command_type == 'empty':
-            return cls(order=order)
-
-        if len(parts) < 4:
+        if command_type != 'empty' and len(parts) < 4:
             raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
 
+        if command_type not in ['empty', WRITE, ERASE]:
+            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+
+        order = int(parts[0])
         if command_type == WRITE:
             return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3])
 
         elif command_type == ERASE:
             return cls(order=order, command_type=command_type, lba=int(parts[2]), size=int(parts[3]))
 
-        else:
-            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+        return cls(order=order)
+
 
 
 class CommandBuffer:
