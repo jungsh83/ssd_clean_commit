@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 
 from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferException, CommandBufferData
-from src.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, MergeEraseStrategy
+from src.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, MergeEraseStrategy, \
+    CommandBufferOptimizeStrategy
 
 
 class CommandBufferHandler:
@@ -52,16 +53,17 @@ class CommandBufferHandler:
                 new_command = CommandBufferData(command_type=ERASE, lba=command.lba, size=1)
 
             self._append_command(new_command)
-            optimizer = CommandBufferOptimizer(IgnoreCommandStrategy())
-            self._command_buffers = optimizer.optimize(self.command_buffers)
-            optimizer = CommandBufferOptimizer(MergeEraseStrategy())
-            self._command_buffers = optimizer.optimize(self.command_buffers)
-
+            self._optimize(IgnoreCommandStrategy())
+            self._optimize(MergeEraseStrategy())
             self._update_command_buffers_to_file_name()
         except CommandBufferException as e:
             raise e
         except Exception:
             raise CommandBufferException("Buffer 처리 실패하였습니다.")
+
+    def _optimize(self, strategy: CommandBufferOptimizeStrategy):
+        optimizer = CommandBufferOptimizer(strategy)
+        self._command_buffers = optimizer.optimize(self.command_buffers)
 
     def read_all(self):
         result: list[CommandBufferData] = []
