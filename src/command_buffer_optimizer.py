@@ -42,6 +42,7 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
 
         return result
 
+
 class MergeEraseStrategy(CommandBufferOptimizeStrategy):
 
     def optimize(self, command_buffers):
@@ -66,7 +67,6 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
                     continue
                 if new_lba <= overwrite_command.lba + overwrite_command.size and \
                         new_lba + new_size >= overwrite_command.lba:
-
                     new_lba = min(new_lba, overwrite_command.lba)
                     new_size = max(new_lba + new_size,
                                    overwrite_command.lba + overwrite_command.size) \
@@ -104,7 +104,6 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
             return command_buffers
 
         return result
-
 
 
 class CommandBufferOptimizer:

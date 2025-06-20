@@ -19,7 +19,6 @@ class CommandBufferFileManager:
         else:
             self.update_command_buffers_to_file_name(command_buffers)
 
-
     def is_not_initialized(self):
         if not self.COMMAND_BUFFER_DIR_PATH.exists():
             return True
@@ -29,7 +28,6 @@ class CommandBufferFileManager:
             return True
 
         return False
-
 
     def read_command_buffers_from_file_name(self):
         result: list[CommandBufferData] = []
@@ -42,7 +40,6 @@ class CommandBufferFileManager:
             except Exception as e:
                 raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
         return result
-
 
     def update_command_buffers_to_file_name(self, command_buffers):
         current_files = list(self.COMMAND_BUFFER_DIR_PATH.iterdir())
