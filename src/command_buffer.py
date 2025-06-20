@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from dataclasses import dataclass
 
+ERASE_VALUE = "0x00000000"
+
 ERASE = 'empty'
 WRITE = 'W'
 EMPTY = 'I'
@@ -68,7 +70,7 @@ class CommandBuffer:
             if command.command_type == WRITE and command.lba == lba:
                 return command.value
             elif command.command_type == ERASE and (command.lba <= lba < command.lba + command.size):
-                return "0x00000000"
+                return ERASE_VALUE
         return None
 
     def is_empty_buffer_slot_existing(self) -> bool:
@@ -95,7 +97,7 @@ class CommandBuffer:
     def append(self, command: Command):
         try:
             new_command = command
-            if command.command_type == WRITE and command.value == '0x00000000':
+            if command.command_type == WRITE and command.value == ERASE_VALUE:
                 new_command = Command(command_type=ERASE, lba=command.lba, size=1)
 
             self._append_command(new_command)
