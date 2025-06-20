@@ -5,3 +5,5 @@ data/ssd_nand.txt
 ssd_output.txt
 logs
 shell_script.txt
+.coverage
+htmlcov
