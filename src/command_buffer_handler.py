@@ -12,8 +12,8 @@ class CommandBufferHandler:
     COMMAND_BUFFER_DIR_PATH = Path(os.path.join(BASE_DIR, 'buffer'))
 
     def __init__(self):
-        self._command_buffers = self.read_all()
         self._file_manager = CommandBufferFileManager()
+        self._command_buffers = self.read_all()
 
     @property
     def command_buffers(self):
@@ -68,25 +68,25 @@ class CommandBufferHandler:
         self._command_buffers = optimizer.optimize(self.command_buffers)
 
     def read_all(self):
-        result: list[CommandBufferData] = []
+        result = self._read_command_buffers_from_file_name()
 
+        result.sort(key=lambda cmd: cmd.order)
+        return result
+
+    def _read_command_buffers_from_file_name(self):
+        result: list[CommandBufferData] = []
         if not self.COMMAND_BUFFER_DIR_PATH.exists():
             self.initialize()
-
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
-
         if not files_in_dir:
             self.initialize()
             files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
-
         for filepath in files_in_dir:
             try:
                 command = CommandBufferData.from_filename(filepath.name)
                 result.append(command)
             except Exception as e:
                 raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
-
-        result.sort(key=lambda cmd: cmd.order)
         return result
 
     def initialize(self):
@@ -97,13 +97,4 @@ class CommandBufferHandler:
             CommandBufferData(order=4),
             CommandBufferData(order=5)
         ]
-
-        self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
-        if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
-            print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
-            for command in self._command_buffers:
-                filename = str(command)
-                command_path = self.COMMAND_BUFFER_DIR_PATH / filename
-                command_path.touch()
-        else:
-            self._file_manager.update_command_buffers_to_file_name(self.command_buffers)
+        self._file_manager.initialize_file_name(self.command_buffers)
