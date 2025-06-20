@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from dataclasses import dataclass
 
-ERASE = 'E'
+ERASE = 'empty'
 WRITE = 'W'
 EMPTY = 'I'
 
@@ -21,7 +21,7 @@ class Command:
 
     def __str__(self):
         if self.command_type == EMPTY:
-            return f"{self.order}_empty"
+            return f"{self.order}_{self.command_type}"
         elif self.command_type == WRITE:
             return f"{self.order}_{self.command_type}_{self.lba}_{self.value}"
         elif self.command_type == ERASE:
@@ -35,10 +35,10 @@ class Command:
             raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
 
         command_type = parts[1]
-        if command_type != 'empty' and len(parts) < 4:
+        if command_type != EMPTY and len(parts) < 4:
             raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
 
-        if command_type not in ['empty', WRITE, ERASE]:
+        if command_type not in [EMPTY, WRITE, ERASE]:
             raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
 
         order = int(parts[0])
