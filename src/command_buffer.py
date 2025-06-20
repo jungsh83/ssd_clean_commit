@@ -107,6 +107,9 @@ class CommandBuffer:
     def read_all(self):
         result: list[Command] = []
 
+        if not self.COMMAND_BUFFER_DIR_PATH.exists():
+            self.initialize()
+
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
 
         if not files_in_dir:
