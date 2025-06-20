@@ -57,7 +57,7 @@ class CommandBufferHandler:
             self._append_command(new_command)
             self._optimize(IgnoreCommandStrategy())
             self._optimize(MergeEraseStrategy())
-            self._file_manager.update_command_buffers_to_file_name( self.command_buffers)
+            self._file_manager.update_command_buffers_to_file_name(self.command_buffers)
         except CommandBufferException as e:
             raise e
         except Exception:
@@ -68,19 +68,28 @@ class CommandBufferHandler:
         self._command_buffers = optimizer.optimize(self.command_buffers)
 
     def read_all(self):
+        if self._is_not_initialized():
+            self.initialize()
+
         result = self._read_command_buffers_from_file_name()
 
         result.sort(key=lambda cmd: cmd.order)
         return result
 
-    def _read_command_buffers_from_file_name(self):
-        result: list[CommandBufferData] = []
+    def _is_not_initialized(self):
         if not self.COMMAND_BUFFER_DIR_PATH.exists():
-            self.initialize()
+            return True
+
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
         if not files_in_dir:
-            self.initialize()
-            files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+            return True
+
+        return False
+
+    def _read_command_buffers_from_file_name(self):
+        result: list[CommandBufferData] = []
+
+        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
         for filepath in files_in_dir:
             try:
                 command = CommandBufferData.from_filename(filepath.name)
