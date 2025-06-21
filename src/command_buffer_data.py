@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 ERASE_VALUE = "0x00000000"
+WRITE_SIZE = 1
 ERASE = 'empty'
 WRITE = 'W'
 EMPTY = 'I'
@@ -42,10 +43,10 @@ class CommandBufferData:
 
         order = int(parts[0])
         if command_type == WRITE:
-            return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3])
+            return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3], size=WRITE_SIZE)
 
         elif command_type == ERASE:
-            return cls(order=order, command_type=command_type, lba=int(parts[2]), size=int(parts[3]))
+            return cls(order=order, command_type=command_type, lba=int(parts[2]), value=ERASE_VALUE, size=int(parts[3]))
 
         return cls(order=order)
 
