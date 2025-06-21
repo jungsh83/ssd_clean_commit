@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 ERASE_VALUE = "0x00000000"
 WRITE_SIZE = 1
-ERASE = 'empty'
+ERASE = 'E'
 WRITE = 'W'
-EMPTY = 'I'
+EMPTY = 'empty'
 
 
 class CommandBufferException(Exception):
