@@ -2,7 +2,7 @@ import pytest
 from pytest_mock import MockerFixture
 from pathlib import Path
 
-from src.command_buffer_handler import CommandBufferHandler
+from src.command_buffer_handler import CommandBufferHandler, CommandBufferHandlerException
 from src.command_buffer_data import ERASE, WRITE, EMPTY, ERASE_VALUE, WRITE_SIZE, CommandBufferDataException, CommandBufferData
 
 
@@ -120,7 +120,7 @@ def test_버퍼에_빈_값이_없을_때_failed(command_buffer):
     command_buffer.append(CommandBufferData(command_type=WRITE, lba=6, value='0x00000004'))
     command_buffer.append(CommandBufferData(command_type=WRITE, lba=7, value='0x00000005'))
 
-    with pytest.raises(CommandBufferDataException):
+    with pytest.raises(CommandBufferHandlerException):
         command_buffer.append(CommandBufferData(command_type=WRITE, lba=8, value='0x00000006'))
 
 

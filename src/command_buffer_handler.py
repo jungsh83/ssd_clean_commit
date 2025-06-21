@@ -47,7 +47,6 @@ class CommandBufferHandler:
         if insert_order >= 5:
             raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
 
-        new_command.order = insert_order + 1
         self._command_buffers[insert_order] = new_command
 
     def append(self, command: CommandBufferData):
