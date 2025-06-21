@@ -22,7 +22,7 @@ class CommandBufferHandler:
         return self._command_buffers
 
     def fast_read(self, lba: int) -> str | None:
-        for command in reversed(self.command_buffers):
+        for command in reversed(self._command_buffers):
             if command.command_type == EMPTY:
                 continue
             if command.start_lba <= lba < command.end_lba:
@@ -30,14 +30,14 @@ class CommandBufferHandler:
         return None
 
     def is_empty_buffer_slot_existing(self) -> bool:
-        for command in self.command_buffers:
+        for command in self._command_buffers:
             if command.command_type == EMPTY:
                 return True
         return False
 
     def _append_command(self, new_command):
         insert_order = 0
-        for command in self.command_buffers:
+        for command in self._command_buffers:
             if command.command_type == EMPTY:
                 new_command.order = command.order
                 break
@@ -58,7 +58,7 @@ class CommandBufferHandler:
             self._append_command(new_command)
             self._optimize(IgnoreCommandStrategy())
             self._optimize(MergeEraseStrategy())
-            self._file_manager.update_command_buffers_to_file_name(self.command_buffers)
+            self._file_manager.update_command_buffers_to_file_name(self._command_buffers)
         except CommandBufferDataException as e:
             raise e
         except Exception:
@@ -66,7 +66,7 @@ class CommandBufferHandler:
 
     def _optimize(self, strategy: CommandBufferOptimizeStrategy):
         optimizer = CommandBufferOptimizer(strategy)
-        self._command_buffers = optimizer.optimize(self.command_buffers)
+        self._command_buffers = optimizer.optimize(self._command_buffers)
 
     def read_all(self):
         if self._file_manager.is_not_initialized():
@@ -85,4 +85,4 @@ class CommandBufferHandler:
             CommandBufferData(order=4),
             CommandBufferData(order=5)
         ]
-        self._file_manager.initialize_file_name(self.command_buffers)
+        self._file_manager.initialize_file_name(self._command_buffers)
