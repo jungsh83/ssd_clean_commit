@@ -20,13 +20,11 @@ class CommandBufferHandler:
         return self._command_buffers
 
     def fast_read(self, lba: int) -> str | None:
-        for command in self.command_buffers:
+        for command in reversed(self.command_buffers):
             if command.command_type == EMPTY:
                 continue
-            if command.command_type == WRITE and command.lba == lba:
+            if command.start_lba <= lba < command.end_lba:
                 return command.value
-            elif command.command_type == ERASE and (command.start_lba <= lba < command.end_lba):
-                return ERASE_VALUE
         return None
 
     def is_empty_buffer_slot_existing(self) -> bool:
