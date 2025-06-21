@@ -32,7 +32,7 @@ class CommandBufferData:
         return f"ERROR"
 
     @classmethod
-    def from_filename(cls, filename: str):
+    def create_command_buffer_data_from_filename(cls, filename: str):
         if cls.is_invalid(filename):
             raise CommandBufferDataException(filename)
 
