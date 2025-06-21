@@ -54,7 +54,7 @@ class CommandBufferHandler:
         try:
             new_command = command
             if command.command_type == WRITE and command.value == ERASE_VALUE:
-                new_command = CommandBufferData(command_type=ERASE, lba=command.lba, size=1)
+                new_command = CommandBufferData.create_erase_command(lba=command.lba, size=1)
 
             self._append_command(new_command)
             self._optimize(IgnoreCommandStrategy())
