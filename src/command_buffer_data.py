@@ -62,9 +62,9 @@ class CommandBufferData:
         return False
 
     @property
-    def erase_start_lba(self):
+    def start_lba(self):
         return self.lba
 
     @property
-    def erase_end_lba(self):
+    def end_lba(self):
         return self.lba + self.size

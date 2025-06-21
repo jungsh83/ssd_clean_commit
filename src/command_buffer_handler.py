@@ -23,7 +23,7 @@ class CommandBufferHandler:
         for command in self.command_buffers:
             if command.command_type == WRITE and command.lba == lba:
                 return command.value
-            elif command.command_type == ERASE and (command.erase_start_lba <= lba < command.erase_end_lba):
+            elif command.command_type == ERASE and (command.start_lba <= lba < command.end_lba):
                 return ERASE_VALUE
         return None
 
