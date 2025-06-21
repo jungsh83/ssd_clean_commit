@@ -6,6 +6,8 @@ from src.command_buffer_file_manager import CommandBufferFileManager
 from src.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, MergeEraseStrategy, \
     CommandBufferOptimizeStrategy
 
+class CommandBufferHandlerException(Exception):
+    pass
 
 class CommandBufferHandler:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,7 +45,7 @@ class CommandBufferHandler:
                 insert_order += 1
 
         if insert_order >= 5:
-            raise CommandBufferDataException("남아 있는 Buffer Slot이 없습니다.")
+            raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
 
         new_command.order = insert_order + 1
         self._command_buffers[insert_order] = new_command
@@ -61,7 +63,7 @@ class CommandBufferHandler:
         except CommandBufferDataException as e:
             raise e
         except Exception:
-            raise CommandBufferDataException("Buffer 처리 실패하였습니다.")
+            raise CommandBufferHandlerException("Buffer 처리 실패하였습니다.")
 
     def _optimize(self, strategy: CommandBufferOptimizeStrategy):
         optimizer = CommandBufferOptimizer(strategy)
