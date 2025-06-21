@@ -32,6 +32,14 @@ class CommandBufferData:
         return f"ERROR"
 
     @classmethod
+    def create_write_command(cls, lba, value):
+        return cls(command_type=WRITE, lba=lba, value=value, size=WRITE_SIZE)
+
+    @classmethod
+    def create_erase_command(cls, lba, size):
+        return cls(command_type=ERASE, lba=lba, value=ERASE_VALUE, size=size)
+
+    @classmethod
     def create_command_buffer_data_from_filename(cls, filename: str):
         if cls.is_invalid(filename):
             raise CommandBufferDataException(filename)
@@ -40,12 +48,14 @@ class CommandBufferData:
         order = int(parts[0])
         command_type = parts[1]
         if command_type == WRITE:
-            return cls(order=order, command_type=WRITE, lba=int(parts[2]), value=parts[3], size=WRITE_SIZE)
-
+            command_buffer_data = cls.create_write_command(int(parts[2]), parts[3])
         elif command_type == ERASE:
-            return cls(order=order, command_type=ERASE, lba=int(parts[2]), value=ERASE_VALUE, size=int(parts[3]))
+            command_buffer_data = cls.create_erase_command(int(parts[2]), int(parts[3]))
+        else:
+            command_buffer_data = cls()
 
-        return cls(order=order, command_type=EMPTY)
+        command_buffer_data.order = order
+        return command_buffer_data
 
     @classmethod
     def is_invalid(cls, filename):
