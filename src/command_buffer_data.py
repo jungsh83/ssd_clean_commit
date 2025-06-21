@@ -33,18 +33,12 @@ class CommandBufferData:
 
     @classmethod
     def from_filename(cls, filename: str):
+        if cls.is_invalid(filename):
+            raise CommandBufferDataException(filename)
+
         parts = filename.split('_')
-        if len(parts) < 2:
-            raise CommandBufferDataException(filename)
-
-        command_type = parts[1]
-        if command_type != EMPTY and len(parts) < 4:
-            raise CommandBufferDataException(filename)
-
-        if command_type not in [EMPTY, WRITE, ERASE]:
-            raise CommandBufferDataException(filename)
-
         order = int(parts[0])
+        command_type = parts[1]
         if command_type == WRITE:
             return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3], size=WRITE_SIZE)
 
@@ -52,6 +46,20 @@ class CommandBufferData:
             return cls(order=order, command_type=command_type, lba=int(parts[2]), value=ERASE_VALUE, size=int(parts[3]))
 
         return cls(order=order)
+
+    @classmethod
+    def is_invalid(cls, filename):
+        parts = filename.split('_')
+
+        if len(parts) < 2:
+            return True
+        command_type = parts[1]
+        if command_type != EMPTY and len(parts) < 4:
+            return True
+        if command_type not in [EMPTY, WRITE, ERASE]:
+            return True
+
+        return False
 
     @property
     def erase_start_lba(self):

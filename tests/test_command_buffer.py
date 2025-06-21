@@ -70,21 +70,21 @@ def test_fast_Read_값이_없을_때(command_buffer):
     command_buffer.append(CommandBufferData(command_type=ERASE, lba=3, size=1))
     assert command_buffer.fast_read(4) is None
 
-def test_command_buffers_인자수_부족_2개미만():
+def test_command_buffers_인자수_부족_2개미만(command_buffer):
     files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
     files_in_dir[0].rename("../buffer/test")
     with pytest.raises(CommandBufferDataException):
-        command_buffer = CommandBufferHandler()
+        new_command_buffer = CommandBufferHandler()
 
     files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
     for file in files_in_dir:
         file.unlink(missing_ok=True)
 
-def test_command_buffers_WRITE_인자수_부족_4개_미만():
+def test_command_buffers_WRITE_인자수_부족_4개_미만(command_buffer):
     files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
     files_in_dir[0].rename("../buffer/1_W_3")
     with pytest.raises(CommandBufferDataException):
-        command_buffer = CommandBufferHandler()
+        new_command_buffer = CommandBufferHandler()
 
     files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
     for file in files_in_dir:
