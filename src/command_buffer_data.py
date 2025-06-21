@@ -16,11 +16,11 @@ class CommandBufferDataException(Exception):
 
 @dataclass
 class CommandBufferData:
-    order: int = -1
+    order: int = 0
     command_type: str = EMPTY
-    lba: int = -1
-    value: str = ""
-    size: int = -1
+    lba: int | None = None
+    value: str | None = None
+    size: int | None = None
 
     def __str__(self):
         if self.command_type == EMPTY:
