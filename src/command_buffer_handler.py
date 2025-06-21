@@ -21,6 +21,8 @@ class CommandBufferHandler:
 
     def fast_read(self, lba: int) -> str | None:
         for command in self.command_buffers:
+            if command.command_type == EMPTY:
+                continue
             if command.command_type == WRITE and command.lba == lba:
                 return command.value
             elif command.command_type == ERASE and (command.start_lba <= lba < command.end_lba):
