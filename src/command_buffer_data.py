@@ -7,7 +7,7 @@ WRITE = 'W'
 EMPTY = 'empty'
 
 
-class CommandBufferException(Exception):
+class CommandBufferDataException(Exception):
     __module__ = 'builtins'
 
     def __init__(self, value):
@@ -35,14 +35,14 @@ class CommandBufferData:
     def from_filename(cls, filename: str):
         parts = filename.split('_')
         if len(parts) < 2:
-            raise CommandBufferException(filename)
+            raise CommandBufferDataException(filename)
 
         command_type = parts[1]
         if command_type != EMPTY and len(parts) < 4:
-            raise CommandBufferException(filename)
+            raise CommandBufferDataException(filename)
 
         if command_type not in [EMPTY, WRITE, ERASE]:
-            raise CommandBufferException(filename)
+            raise CommandBufferDataException(filename)
 
         order = int(parts[0])
         if command_type == WRITE:

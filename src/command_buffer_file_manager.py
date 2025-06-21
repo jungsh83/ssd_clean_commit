@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from src.command_buffer_data import CommandBufferData, CommandBufferException
+from src.command_buffer_data import CommandBufferData, CommandBufferDataException
 
 
 class CommandBufferFileManager:
@@ -38,7 +38,7 @@ class CommandBufferFileManager:
                 command = CommandBufferData.from_filename(filepath.name)
                 result.append(command)
             except Exception as e:
-                raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
+                raise CommandBufferDataException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
         return result
 
     def update_command_buffers_to_file_name(self, command_buffers):
@@ -65,5 +65,5 @@ class CommandBufferFileManager:
             try:
                 old_file_path.rename(new_file_path)
             except Exception:
-                raise CommandBufferException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
+                raise CommandBufferDataException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
         return None
