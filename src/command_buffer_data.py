@@ -22,6 +22,10 @@ class CommandBufferData:
     value: str | None = None
     size: int | None = None
 
+    def __post_init__(self):
+        self.value = ERASE_VALUE if self.command_type == ERASE else self.value
+        self.size = WRITE_SIZE if self.command_type == WRITE else self.size
+
     def __str__(self):
         if self.command_type == EMPTY:
             return f"{self.order}_{self.command_type}"
@@ -33,11 +37,11 @@ class CommandBufferData:
 
     @classmethod
     def create_write_command(cls, lba, value):
-        return cls(command_type=WRITE, lba=lba, value=value, size=WRITE_SIZE)
+        return cls(command_type=WRITE, lba=lba, value=value)
 
     @classmethod
     def create_erase_command(cls, lba, size):
-        return cls(command_type=ERASE, lba=lba, value=ERASE_VALUE, size=size)
+        return cls(command_type=ERASE, lba=lba, size=size)
 
     @classmethod
     def create_command_buffer_data_from_filename(cls, filename: str):
