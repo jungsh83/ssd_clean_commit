@@ -10,6 +10,9 @@ EMPTY = 'empty'
 class CommandBufferException(Exception):
     __module__ = 'builtins'
 
+    def __init__(self, value):
+        message = f"CommandBuffer 형식이 올바르지 않습니다: {value}"
+        super().__init__(message)
 
 @dataclass
 class CommandBufferData:
@@ -32,14 +35,14 @@ class CommandBufferData:
     def from_filename(cls, filename: str):
         parts = filename.split('_')
         if len(parts) < 2:
-            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+            raise CommandBufferException(filename)
 
         command_type = parts[1]
         if command_type != EMPTY and len(parts) < 4:
-            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+            raise CommandBufferException(filename)
 
         if command_type not in [EMPTY, WRITE, ERASE]:
-            raise CommandBufferException(f"CommandBuffer 형식이 올바르지 않습니다: {filename}")
+            raise CommandBufferException(filename)
 
         order = int(parts[0])
         if command_type == WRITE:
