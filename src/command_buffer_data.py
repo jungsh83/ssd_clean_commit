@@ -40,12 +40,12 @@ class CommandBufferData:
         order = int(parts[0])
         command_type = parts[1]
         if command_type == WRITE:
-            return cls(order=order, command_type=command_type, lba=int(parts[2]), value=parts[3], size=WRITE_SIZE)
+            return cls(order=order, command_type=WRITE, lba=int(parts[2]), value=parts[3], size=WRITE_SIZE)
 
         elif command_type == ERASE:
-            return cls(order=order, command_type=command_type, lba=int(parts[2]), value=ERASE_VALUE, size=int(parts[3]))
+            return cls(order=order, command_type=ERASE, lba=int(parts[2]), value=ERASE_VALUE, size=int(parts[3]))
 
-        return cls(order=order)
+        return cls(order=order, command_type=EMPTY)
 
     @classmethod
     def is_invalid(cls, filename):
