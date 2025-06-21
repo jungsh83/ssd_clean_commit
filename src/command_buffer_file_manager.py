@@ -34,11 +34,8 @@ class CommandBufferFileManager:
 
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
         for filepath in files_in_dir:
-            try:
-                command = CommandBufferData.create_command_buffer_data_from_filename(filepath.name)
-                result.append(command)
-            except Exception as e:
-                raise CommandBufferDataException(f"CommandBuffer 형식이 올바르지 않습니다: {files_in_dir}")
+            command = CommandBufferData.create_command_buffer_data_from_filename(filepath.name)
+            result.append(command)
         return result
 
     def update_command_buffers_to_file_name(self, command_buffers):
@@ -48,14 +45,10 @@ class CommandBufferFileManager:
         for new_command in command_buffers:
             for file_path in current_files:
                 if file_path.is_file():
-                    try:
-                        parsed_command = CommandBufferData.create_command_buffer_data_from_filename(file_path.name)
-                        if parsed_command.order == new_command.order:
-                            old_file_path = file_path
-                            break
-                    except Exception:
-                        continue
-
+                    parsed_command = CommandBufferData.create_command_buffer_data_from_filename(file_path.name)
+                    if parsed_command.order == new_command.order:
+                        old_file_path = file_path
+                        break
             if not old_file_path:
                 return False
 
