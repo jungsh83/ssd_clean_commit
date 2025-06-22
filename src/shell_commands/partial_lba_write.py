@@ -1,6 +1,6 @@
 import random
 
-from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 
 START_TEST_VALUE = 10000000
 

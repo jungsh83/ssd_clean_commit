@@ -1,4 +1,4 @@
-from src.shell_commands.shll_command_action import ShellCommandAction
+from src.shell_commands.shell_command_action import ShellCommandAction
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 import sys

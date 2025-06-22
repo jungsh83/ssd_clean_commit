@@ -3,7 +3,7 @@ import tempfile
 from pathlib import Path
 
 from shell import runner_mode
-from src.shell_commands.shll_command_action import ShellCommandAction
+from src.shell_commands.shell_command_action import ShellCommandAction
 
 
 class DummyShellCommand(ShellCommandAction):

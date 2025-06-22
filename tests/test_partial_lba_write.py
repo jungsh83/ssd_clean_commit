@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.shell_commands.shll_command_action import InvalidArgumentException
+from src.shell_commands.shell_command_action import InvalidArgumentException
 from src.shell_commands.partial_lba_write import PartialLBAWriteShellCommand
 
 
