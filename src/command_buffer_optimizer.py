@@ -54,16 +54,8 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
             if self._is_skipped_target(merged_command_orders, source_command):
                 continue
 
-            new_start_lba = source_command.start_lba
-            new_end_lba = source_command.end_lba
-            for overwrite_command in old_command_buffers[source_index + 1:]:
-                if self._is_skipped_target(merged_command_orders, overwrite_command):
-                    continue
-
-                if new_start_lba <= overwrite_command.end_lba and new_end_lba >= overwrite_command.start_lba:
-                    new_start_lba = min(new_start_lba, overwrite_command.start_lba)
-                    new_end_lba = max(new_end_lba, overwrite_command.end_lba)
-                    merged_command_orders.add(overwrite_command.order)
+            new_end_lba, new_start_lba = self.calculate_start_and_end_lba(merged_command_orders, old_command_buffers,
+                                                                          source_command, source_index)
 
             new_order = self._append_erase_chunk(new_order, new_command_buffers, new_start_lba, new_end_lba)
 
@@ -73,6 +65,19 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
             return old_command_buffers
 
         return new_command_buffers
+
+    def calculate_start_and_end_lba(self, merged_command_orders, old_command_buffers, source_command, source_index):
+        new_start_lba = source_command.start_lba
+        new_end_lba = source_command.end_lba
+        for overwrite_command in old_command_buffers[source_index + 1:]:
+            if self._is_skipped_target(merged_command_orders, overwrite_command):
+                continue
+
+            if new_start_lba <= overwrite_command.end_lba and new_end_lba >= overwrite_command.start_lba:
+                new_start_lba = min(new_start_lba, overwrite_command.start_lba)
+                new_end_lba = max(new_end_lba, overwrite_command.end_lba)
+                merged_command_orders.add(overwrite_command.order)
+        return new_end_lba, new_start_lba
 
     def _is_skipped_target(self, merged_command_orders, command) -> bool:
         if command.command_type == EMPTY:
