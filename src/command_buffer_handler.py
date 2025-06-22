@@ -38,21 +38,16 @@ class CommandBufferHandler:
         return False
 
     def _append_command(self, new_command):
-        insert_order = self._get_empty_slot()
+        if not self.is_empty_buffer_slot_existing():
+            raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
 
-        new_command.order = insert_order + 1
-        self._command_buffers[insert_order] = new_command
-
-    def _get_empty_slot(self):
-        insert_order = 0
         for command in self._command_buffers:
             if command.command_type == EMPTY:
+                command.command_type = new_command.command_type
+                command.lba = new_command.lba
+                command.value = new_command.value
+                command.size = new_command.size
                 break
-            else:
-                insert_order += 1
-        if insert_order >= 5:
-            raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
-        return insert_order
 
     def append(self, command: CommandBufferData):
         try:
