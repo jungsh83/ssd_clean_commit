@@ -36,25 +36,17 @@ class CommandBufferFileManager:
             result.append(command)
         return result
 
-    def update_command_buffers_to_file_name(self, command_buffers):
-        current_files = list(self.COMMAND_BUFFER_DIR_PATH.iterdir())
-        old_file_path = None
+    def update_command_buffers_to_file_name(self, new_command_buffers):
 
-        for new_command in command_buffers:
-            for file_path in current_files:
-                if file_path.is_file():
-                    parsed_command = CommandBufferData.create_command_buffer_data_from_filename(file_path.name)
-                    if parsed_command.order == new_command.order:
-                        old_file_path = file_path
-                        break
-            if not old_file_path:
-                return False
+        files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+        for current_file_path in files_in_dir:
+            current_command = CommandBufferData.create_command_buffer_data_from_filename(current_file_path.name)
 
-            new_filename = str(new_command)
-            new_file_path = self.COMMAND_BUFFER_DIR_PATH / new_filename
-
-            try:
-                old_file_path.rename(new_file_path)
-            except Exception:
-                raise CommandBufferDataException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
-        return None
+            for new_command in new_command_buffers:
+                if new_command.order == current_command.order:
+                    new_filename = str(new_command)
+                    new_file_path = self.COMMAND_BUFFER_DIR_PATH / new_filename
+                    try:
+                        current_file_path.rename(new_file_path)
+                    except Exception:
+                        raise CommandBufferDataException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
