@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 
-from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferDataException, CommandBufferData
+from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferDataException, CommandBufferData, \
+    MAX_SIZE_OF_COMMAND_BUFFERS
 from src.command_buffer_file_manager import CommandBufferFileManager
 from src.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, MergeEraseStrategy, \
     CommandBufferOptimizeStrategy
@@ -69,7 +70,7 @@ class CommandBufferHandler:
         return result
 
     def initialize(self):
-        self._command_buffers = [CommandBufferData(order=order) for order in range (1, 6)]
+        self._command_buffers = [CommandBufferData(order=index + 1) for index in range(MAX_SIZE_OF_COMMAND_BUFFERS)]
 
         if self._file_manager.is_not_initialized():
             self._file_manager.initialize_file(self._command_buffers)

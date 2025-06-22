@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferData
+from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferData, MAX_SIZE_OF_COMMAND_BUFFERS
 
 
 class CommandBufferOptimizeStrategy(ABC):
@@ -25,8 +25,9 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
                 source_command.order = new_order
                 result.append(source_command)
 
-        for empty_order in range(new_order + 1, 6):
-            result.append(CommandBufferData(order=empty_order))
+        for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
+            new_order += 1
+            result.append(CommandBufferData(order=new_order))
 
         return result
 
@@ -76,8 +77,9 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
             new_order += 1
             result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=new_end_lba  - new_start_lba))
 
-        for i in range(new_order + 1, 6):
-            result.append(CommandBufferData(order=i))
+        for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
+            new_order += 1
+            result.append(CommandBufferData(order=new_order))
 
         if self._erase_count(command_buffers) <= self._erase_count(result):
             return command_buffers

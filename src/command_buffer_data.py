@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+MAX_SIZE_OF_COMMAND_BUFFERS = 5
 ERASE_VALUE = "0x00000000"
 WRITE_SIZE = 1
 ERASE = 'E'
@@ -13,6 +14,7 @@ class CommandBufferDataException(Exception):
     def __init__(self, value):
         message = f"CommandBuffer 형식이 올바르지 않습니다: {value}"
         super().__init__(message)
+
 
 @dataclass
 class CommandBufferData:
