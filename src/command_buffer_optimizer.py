@@ -43,20 +43,20 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
 
 class MergeEraseStrategy(CommandBufferOptimizeStrategy):
 
-    def optimize(self, command_buffers: list[CommandBufferData]):
-        result: list[CommandBufferData] = []
+    def optimize(self, old_command_buffers: list[CommandBufferData]):
+        new_command_buffers: list[CommandBufferData] = []
         new_order = 0
         merged_command_orders: set[int] = set()
-        for source_index, source_command in enumerate(command_buffers):
+        for source_index, source_command in enumerate(old_command_buffers):
             if source_command.command_type == WRITE:
-                new_order = self._append_write(new_order, result, source_command)
+                new_order = self._append_write(new_order, new_command_buffers, source_command)
 
             if self._is_skipped_target(merged_command_orders, source_command):
                 continue
 
             new_start_lba = source_command.start_lba
             new_end_lba = source_command.end_lba
-            for overwrite_command in command_buffers[source_index + 1:]:
+            for overwrite_command in old_command_buffers[source_index + 1:]:
                 if self._is_skipped_target(merged_command_orders, overwrite_command):
                     continue
 
@@ -65,14 +65,14 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
                     new_end_lba = max(new_end_lba, overwrite_command.end_lba)
                     merged_command_orders.add(overwrite_command.order)
 
-            new_order = self._append_erase_chunk(new_order, result, new_start_lba, new_end_lba)
+            new_order = self._append_erase_chunk(new_order, new_command_buffers, new_start_lba, new_end_lba)
 
-        self._append_empty(new_order, result)
+        self._append_empty(new_order, new_command_buffers)
 
-        if self._erase_count(command_buffers) <= self._erase_count(result):
-            return command_buffers
+        if self._erase_count(old_command_buffers) <= self._erase_count(new_command_buffers):
+            return old_command_buffers
 
-        return result
+        return new_command_buffers
 
     def _is_skipped_target(self, merged_command_orders, command) -> bool:
         if command.command_type == EMPTY:
