@@ -13,7 +13,7 @@ class CommandBufferOptimizeStrategy(ABC):
 class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
 
     def optimize(self, current_command_buffers: list[CommandBufferData]):
-        result: list[CommandBufferData] = []
+        new_command_buffers: list[CommandBufferData] = []
         new_order = 0
         for source_index, source_command in enumerate(current_command_buffers):
             unvisited = self._get_update_range(source_command)
@@ -21,15 +21,22 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
                 visited = self._get_update_range(overwrite_command)
                 unvisited.difference_update(visited)
             if unvisited:
-                new_order += 1
-                source_command.order = new_order
-                result.append(source_command)
+                new_order = self._append_unoverwritten_command(new_command_buffers, new_order, source_command)
 
+        self._append_empty(new_command_buffers, new_order)
+
+        return new_command_buffers
+
+    def _append_unoverwritten_command(self, new_command_buffers, new_order, source_command):
+        new_order += 1
+        source_command.order = new_order
+        new_command_buffers.append(source_command)
+        return new_order
+
+    def _append_empty(self, new_command_buffers, new_order):
         for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
             new_order += 1
-            result.append(CommandBufferData(order=new_order))
-
-        return result
+            new_command_buffers.append(CommandBufferData(order=new_order))
 
     def _get_update_range(self, command):
         result: set[int] = set()
