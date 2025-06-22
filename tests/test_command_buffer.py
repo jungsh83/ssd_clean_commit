@@ -194,6 +194,17 @@ def test_merge_erase_처리_case3(command_buffer):
                                          CommandBufferData(order=5, command_type=EMPTY, lba=None, value=None, size=None)]
 
 
+def test_merge_erase_after_transform_처리_case3(command_buffer):
+    command_buffer.append(CommandBufferData(command_type=ERASE, lba=0, size=7))
+    command_buffer.append(CommandBufferData(command_type=ERASE, lba=7, size=7))
+    command_buffer.append(CommandBufferData(command_type=WRITE, lba=14, value=ERASE_VALUE))
+
+    assert command_buffer.read_all() == [CommandBufferData(order=1, command_type=ERASE, lba=0, value=ERASE_VALUE, size=10),
+                                         CommandBufferData(order=2, command_type=ERASE, lba=10, value=ERASE_VALUE, size=5),
+                                         CommandBufferData(order=3, command_type=EMPTY, lba=None, value=None, size=None),
+                                         CommandBufferData(order=4, command_type=EMPTY, lba=None, value=None, size=None),
+                                         CommandBufferData(order=5, command_type=EMPTY, lba=None, value=None, size=None)]
+
 def test_ignore_command와_merge_erase_동시_처리(command_buffer):
     command_buffer.append(CommandBufferData(command_type=WRITE, lba=15, size=0xABCDABCD))
     command_buffer.append(CommandBufferData(command_type=ERASE, lba=0, size=7))

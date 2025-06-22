@@ -44,10 +44,17 @@ class CommandBufferHandler:
         return False
 
     def append(self, new_command: CommandBufferData):
+        new_command = self._transform_command(new_command)
         self._append_command(new_command)
         self._optimize(IgnoreCommandStrategy())
         self._optimize(MergeEraseStrategy())
         self._apply_changes()
+
+    def _transform_command(self, command):
+        new_command = command
+        if command.command_type == WRITE and command.value == ERASE_VALUE:
+            new_command = CommandBufferData(command_type=ERASE, lba=command.lba, size=1)
+        return new_command
 
     def _append_command(self, new_command):
         if not self.is_empty_buffer_slot_existing():
