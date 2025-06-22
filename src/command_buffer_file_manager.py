@@ -8,14 +8,12 @@ class CommandBufferFileManager:
     BASE_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     COMMAND_BUFFER_DIR_PATH = BASE_DIR / 'buffer'
 
-    def initialize_file_name(self, command_buffers):
+    def initialize_file(self, command_buffers):
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
-        if not any(self.COMMAND_BUFFER_DIR_PATH.iterdir()):
-            print("디렉토리가 비어있어 초기 'empty' 파일들을 생성합니다.")
-            for command in command_buffers:
-                filename = str(command)
-                command_path = self.COMMAND_BUFFER_DIR_PATH / filename
-                command_path.touch()
+        for command in command_buffers:
+            filename = str(command)
+            command_path = self.COMMAND_BUFFER_DIR_PATH / filename
+            command_path.touch()
 
     def is_not_initialized(self):
         if not self.COMMAND_BUFFER_DIR_PATH.exists():

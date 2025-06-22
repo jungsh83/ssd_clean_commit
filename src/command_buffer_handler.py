@@ -72,6 +72,6 @@ class CommandBufferHandler:
         self._command_buffers = [CommandBufferData(order=order) for order in range (1, 6)]
 
         if self._file_manager.is_not_initialized():
-            self._file_manager.initialize_file_name(self._command_buffers)
+            self._file_manager.initialize_file(self._command_buffers)
 
         self._file_manager.update_command_buffers_to_file_name(self.command_buffers)
