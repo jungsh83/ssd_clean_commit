@@ -38,7 +38,8 @@ class WriteCommandAction(SSDCommand):
         if len(self._arguments) != 2:
             return False
 
-        self.lba, self.value = self._arguments
+        self.lba = int(self._arguments[0])
+        self.value = self._arguments[1]
 
         if not self._ssd_file_manager._is_valid_lba(self.lba):
             return False
