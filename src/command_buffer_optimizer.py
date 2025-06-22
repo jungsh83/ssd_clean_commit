@@ -22,13 +22,11 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
                 unvisited.difference_update(visited)
             if unvisited:
                 new_order += 1
-                result.append(
-                    CommandBufferData(order=new_order, command_type=target_command.command_type, lba=target_command.lba,
-                                      value=target_command.value,
-                                      size=target_command.size))
+                target_command.order = new_order
+                result.append(target_command)
 
-        for i in range(new_order + 1, 6):
-            result.append(CommandBufferData(order=i))
+        for empty_order in range(new_order + 1, 6):
+            result.append(CommandBufferData(order=empty_order))
 
         return result
 
