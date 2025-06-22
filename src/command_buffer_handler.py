@@ -1,6 +1,3 @@
-import os
-from pathlib import Path
-
 from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferDataException, CommandBufferData, \
     MAX_SIZE_OF_COMMAND_BUFFERS
 from src.command_buffer_file_manager import CommandBufferFileManager
@@ -13,8 +10,6 @@ class CommandBufferHandlerException(Exception):
 
 
 class CommandBufferHandler:
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    COMMAND_BUFFER_DIR_PATH = Path(os.path.join(BASE_DIR, 'buffer'))
 
     def __init__(self):
         self._file_manager = CommandBufferFileManager()
