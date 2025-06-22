@@ -1,7 +1,7 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 
 
-class WriteCommand(CommandAction):
+class WriteShellCommand(ShellCommandAction):
     command_name: str = 'write'
     _description = 'write value to LBA'
     _usage = 'write <LBA: int [0-99]> <value: hex32bit, e.g. 0x12345678>'

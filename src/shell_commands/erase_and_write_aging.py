@@ -1,10 +1,10 @@
 import random
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 
 DEFAULT_METHOD = "0x00000000"
 
 
-class EraseAndWriteAging(CommandAction):
+class EraseAndWriteAging(ShellCommandAction):
     command_name: str = "4_EraseAndWriteAging"
     _description = 'Execute test scenario: Erase and Write Aging'
     _usage = "'4_EraseAndWriteAging' or '4_'"

@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.shell_commands.write_read_aging import WriteReadAgingCommand
+from src.shell_commands.write_read_aging import WriteReadAgingShellCommand
 
 data_dict = {}
 
@@ -38,22 +38,22 @@ def ssd_driver_fail(mocker: MockerFixture):
 
 def test_validate_수행_성공(ssd_driver):
     # act & assert
-    assert WriteReadAgingCommand(ssd_driver).validate()
+    assert WriteReadAgingShellCommand(ssd_driver).validate()
 
 
 def test_validate_수행_실패(ssd_driver):
     # act & assert
-    assert not WriteReadAgingCommand(ssd_driver, 1, "0x12345678").validate()
+    assert not WriteReadAgingShellCommand(ssd_driver, 1, "0x12345678").validate()
 
 
 def test_수행_성공(ssd_driver):
     # act & assert
-    assert WriteReadAgingCommand(ssd_driver).run() == "PASS"
+    assert WriteReadAgingShellCommand(ssd_driver).run() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_점검(ssd_driver):
     # act
-    WriteReadAgingCommand(ssd_driver).run()
+    WriteReadAgingShellCommand(ssd_driver).run()
 
     # assert
     assert ssd_driver.write.call_count == 400
@@ -61,12 +61,12 @@ def test_수행_성공시_read_write_횟수_점검(ssd_driver):
 
 
 def test_수행_실패(ssd_driver_fail):
-    assert WriteReadAgingCommand(ssd_driver_fail).run() == "FAIL"
+    assert WriteReadAgingShellCommand(ssd_driver_fail).run() == "FAIL"
 
 
 def test_수행_실패시_read_write_횟수_점검(ssd_driver_fail):
     # act
-    WriteReadAgingCommand(ssd_driver_fail).run()
+    WriteReadAgingShellCommand(ssd_driver_fail).run()
 
     # assert
     assert ssd_driver_fail.write.call_count == 201

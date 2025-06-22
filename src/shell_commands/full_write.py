@@ -1,8 +1,8 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
 
 
-class FullWriteCommand(CommandAction):
+class FullWriteShellCommand(ShellCommandAction):
     command_name: str = 'fullwrite'
     _description = 'write value to all of LBAs'
     _usage = 'fullwrite <value: hex32bit, e.g. 0x12345678>'

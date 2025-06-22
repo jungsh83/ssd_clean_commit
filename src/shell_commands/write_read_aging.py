@@ -1,8 +1,8 @@
 import random
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
 
-class WriteReadAgingCommand(CommandAction):
+class WriteReadAgingShellCommand(ShellCommandAction):
     command_name: str = "3_WriteReadAging"
     _description = 'Execute test scenario: Write Read Aging'
     _usage = "'3_WriteReadAging' or '3_'"

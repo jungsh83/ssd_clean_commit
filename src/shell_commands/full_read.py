@@ -1,8 +1,8 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
 
 
-class FullReadCommand(CommandAction):
+class FullReadShellCommand(ShellCommandAction):
     command_name: str = 'fullread'
     _description = 'read value all of LBAs'
     _usage = 'fullread'

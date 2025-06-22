@@ -1,11 +1,11 @@
 import random
 
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 
 START_TEST_VALUE = 10000000
 
 
-class PartialLBAWriteCommand(CommandAction):
+class PartialLBAWriteShellCommand(ShellCommandAction):
     command_name: str = "2_PartialLBAWrite"
     _description = 'Execute test scenario: Partial LBA Write'
     _usage = "'2_PartialLBAWrite' or '2_'"

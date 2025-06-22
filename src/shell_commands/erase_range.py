@@ -1,8 +1,8 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 from src.data_dict import *
 
 
-class EraseRangeCommand(CommandAction):
+class EraseRangeShellCommand(ShellCommandAction):
     command_name: str = 'erase_range'
     _description = 'erase value from input range of LBAs'
     _usage = 'erase_range <start_LBA: int [0-99]> <end_LBA: int [0-99]>'

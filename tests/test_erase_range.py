@@ -1,6 +1,6 @@
 import pytest
 
-from src.shell_commands.erase_range import EraseRangeCommand
+from src.shell_commands.erase_range import EraseRangeShellCommand
 from src.ssd_driver import SSDDriver
 
 
@@ -17,7 +17,7 @@ def mock_ssd_driver(mocker):
     ('0', '99', 10),
 ])
 def test_erase_range_call_count_확인(start_lba, end_lba, expected_call_count, mock_ssd_driver):
-    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+    erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver, start_lba, end_lba)
 
     erase_range_cmd.run()
 
@@ -29,7 +29,7 @@ def test_erase_range_call_count_확인(start_lba, end_lba, expected_call_count, 
     ('10', '5', 5, 10),
 ])
 def test_erase_range_범위_확인(start_lba, end_lba, expected_erase_start, expected_erase_end, mock_ssd_driver):
-    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+    erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver, start_lba, end_lba)
 
     validate_ret = erase_range_cmd.validate()
     start_lba, end_lba = erase_range_cmd._get_lba_range()
@@ -45,7 +45,7 @@ def test_erase_range_범위_확인(start_lba, end_lba, expected_erase_start, exp
     ('99', '0', 100),
 ])
 def test_erase_range_size_확인(start_lba, end_lba, expected_size, mock_ssd_driver):
-    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+    erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver, start_lba, end_lba)
 
     validate_ret = erase_range_cmd.validate()
     start_lba, end_lba = erase_range_cmd._get_lba_range()
@@ -62,7 +62,7 @@ def test_erase_range_size_확인(start_lba, end_lba, expected_size, mock_ssd_dri
     ('5', '가다')
 ])
 def test_erase_range_파라미터_유효성오류(start_lba, end_lba, mock_ssd_driver):
-    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba)
+    erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver, start_lba, end_lba)
 
     assert not erase_range_cmd.validate()
 
@@ -74,12 +74,12 @@ def test_erase_range_파라미터_유효성오류(start_lba, end_lba, mock_ssd_d
     ('5', '가다', 1)
 ])
 def test_erase_range_파라미터_초과(start_lba, end_lba, error_arg, mock_ssd_driver):
-    erase_range_cmd = EraseRangeCommand(mock_ssd_driver, start_lba, end_lba, error_arg)
+    erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver, start_lba, end_lba, error_arg)
 
     assert not erase_range_cmd.validate()
 
 
 def test_erase_range_파라미터_부족(mock_ssd_driver):
-    erase_range_cmd = EraseRangeCommand(mock_ssd_driver)
+    erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver)
 
     assert not erase_range_cmd.validate()

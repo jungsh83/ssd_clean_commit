@@ -1,9 +1,9 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 import sys
 from src.decorators import log_call
 
 
-class ExitCommand(CommandAction):
+class ExitShellCommand(ShellCommandAction):
     command_name: str = 'exit'
     _description = 'Exit the shell.'
     _usage = 'exit'

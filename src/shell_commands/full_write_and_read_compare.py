@@ -1,8 +1,8 @@
 import random
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shll_command_action import ShellCommandAction, InvalidArgumentException
 
 
-class FullWriteAndReadCompareCommand(CommandAction):
+class FullWriteAndReadCompareShellCommand(ShellCommandAction):
     command_name: str = "1_FullWriteAndReadCompare"
     _description = 'Execute test scenario: Full Write & Read Compare'
     _usage = "'1_FullWriteAndReadCompare' or '1_'"

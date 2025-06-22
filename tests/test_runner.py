@@ -3,10 +3,10 @@ import tempfile
 from pathlib import Path
 
 from shell import runner_mode
-from src.shell_commands.command_action import CommandAction
+from src.shell_commands.shll_command_action import ShellCommandAction
 
 
-class DummyCommand(CommandAction):
+class DummyShellCommand(ShellCommandAction):
     command_name = "1_dummy"
     _alias = []
 
@@ -19,9 +19,9 @@ class DummyCommand(CommandAction):
 
 @pytest.fixture(autouse=True)
 def register_dummy():
-    CommandAction.registry["1_dummy"] = DummyCommand
+    ShellCommandAction.registry["1_dummy"] = DummyShellCommand
     yield
-    CommandAction.registry.pop("1_dummy", None)
+    ShellCommandAction.registry.pop("1_dummy", None)
 
 
 def test_runner_성공(monkeypatch, capsys):
@@ -42,7 +42,7 @@ def test_runner_성공(monkeypatch, capsys):
 
 
 def test_runner_테스트케이스_실패(monkeypatch, capsys):
-    class FailingCommand(CommandAction):
+    class FailingShellCommand(ShellCommandAction):
         command_name = "1_fail"
         _alias = []
 
@@ -52,7 +52,7 @@ def test_runner_테스트케이스_실패(monkeypatch, capsys):
         def run(self):
             return "FAIL"
 
-    CommandAction.registry["1_fail"] = FailingCommand
+    ShellCommandAction.registry["1_fail"] = FailingShellCommand
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".txt") as tmp:
         tmp.write("1_fail\n")
@@ -66,7 +66,7 @@ def test_runner_테스트케이스_실패(monkeypatch, capsys):
     assert "FAIL" in output
 
     Path(tmp_path).unlink()
-    CommandAction.registry.pop("1_fail", None)
+    ShellCommandAction.registry.pop("1_fail", None)
 
 
 def test_runner_mode_유효하지않은_명령어(monkeypatch, capsys):

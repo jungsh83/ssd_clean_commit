@@ -3,7 +3,7 @@ import pytest
 
 import shell
 
-from src.shell_commands.command_action import CommandAction
+from src.shell_commands.shll_command_action import ShellCommandAction
 
 
 @pytest.fixture
@@ -41,7 +41,7 @@ def test_shell_일반적인_명령어(monkeypatch, capsys, mock_handler_and_driv
     mock_driver, mock_handler, mock_handler_instance = mock_handler_and_driver
     mock_handler_instance.run.return_value = "Done"
 
-    CommandAction.registry["write"] = mock_handler
+    ShellCommandAction.registry["write"] = mock_handler
 
     simulate_shell(["write arg1 arg2", "exit"], monkeypatch)
 
@@ -53,7 +53,7 @@ def test_shell_일반적인_명령어(monkeypatch, capsys, mock_handler_and_driv
 
 
 def test_shell_help_명령어_목록_출력(monkeypatch, capsys, mocker):
-    class DummyCommand(CommandAction):
+    class DummyShellCommand(ShellCommandAction):
         command_name = 'dummy'
         description = 'Test Dummy'
         usage = 'dummy <LBA>'
@@ -83,7 +83,7 @@ def test_shell_exception_뜨면_안멈추고_메시지_띄우는지(monkeypatch,
 
     mock_handler_instance.run.side_effect = broken_run
 
-    CommandAction.registry["explode"] = mock_handler
+    ShellCommandAction.registry["explode"] = mock_handler
 
     simulate_shell(["explode", "exit"], monkeypatch)
 
