@@ -1,5 +1,5 @@
 import random
-from src.commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.command_action import CommandAction, InvalidArgumentException
 
 DEFAULT_METHOD = "0x00000000"
 

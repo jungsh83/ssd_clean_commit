@@ -3,5 +3,8 @@
 __pycache__
 data/ssd_nand.txt
 ssd_output.txt
+buffer
 logs
 shell_script.txt
+.coverage
+htmlcov

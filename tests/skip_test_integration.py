@@ -1,9 +1,8 @@
 import builtins
 import pytest
 
-from src import shell
+import shell
 
-from src.commands.command_action import CommandAction
 from src.ssd_driver import SSDDriver
 
 

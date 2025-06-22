@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.commands.erase_and_write_aging import EraseAndWriteAging
+from src.shell_commands.erase_and_write_aging import EraseAndWriteAging
 
 DEFULAT_VALUE = "0x00000000"
 

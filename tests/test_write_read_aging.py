@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.commands.write_read_aging import WriteReadAgingCommand
+from src.shell_commands.write_read_aging import WriteReadAgingCommand
 
 data_dict = {}
 

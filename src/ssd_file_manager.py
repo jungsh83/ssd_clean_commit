@@ -91,3 +91,7 @@ class SSDFileManager:
     def error(self):
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(self.ERROR_TEXT)
+
+    def write_output(self, value: str):
+        with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            f.write(value + '\n')
