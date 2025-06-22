@@ -15,9 +15,7 @@ class CommandBufferFileManager:
         temp_command_buffers = [CommandBufferData(order=index + 1) for index in range(MAX_SIZE_OF_COMMAND_BUFFERS)]
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
         for command in temp_command_buffers:
-            filename = str(command)
-            command_path = self.COMMAND_BUFFER_DIR_PATH / filename
-            command_path.touch()
+            (self.COMMAND_BUFFER_DIR_PATH / str(command)).touch()
 
     def _is_not_initialized(self):
         if not self.COMMAND_BUFFER_DIR_PATH.exists():
@@ -34,8 +32,7 @@ class CommandBufferFileManager:
 
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
         for filepath in files_in_dir:
-            command = CommandBufferData.create_command_buffer_data_from_filename(filepath.name)
-            result.append(command)
+            result.append(CommandBufferData.create_command_buffer_data_from_filename(filepath.name))
         return result
 
     def write_command_buffers_to_file_name(self, new_command_buffers):
@@ -46,9 +43,4 @@ class CommandBufferFileManager:
 
             for new_command in new_command_buffers:
                 if new_command.order == current_command.order:
-                    new_filename = str(new_command)
-                    new_file_path = self.COMMAND_BUFFER_DIR_PATH / new_filename
-                    try:
-                        current_file_path.rename(new_file_path)
-                    except Exception:
-                        raise CommandBufferDataException(f"CommandBuffer 업데이트를 실패했습니다.: {new_file_path}")
+                    current_file_path.rename(self.COMMAND_BUFFER_DIR_PATH / str(new_command))
