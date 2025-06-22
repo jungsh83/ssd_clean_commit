@@ -68,11 +68,11 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
 
         return new_command_buffers
 
-    def _calculate_new_start_and_end_lba(self, merged_command_orders, old_command_buffers, source_command,
+    def _calculate_new_start_and_end_lba(self, merged_command_orders, current_command_buffers, source_command,
                                          source_index):
         new_start_lba = source_command.start_lba
         new_end_lba = source_command.end_lba
-        for overwrite_command in old_command_buffers[source_index + 1:]:
+        for overwrite_command in current_command_buffers[source_index + 1:]:
             if self._is_skipped_target(merged_command_orders, overwrite_command):
                 continue
 
