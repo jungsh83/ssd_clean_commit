@@ -16,8 +16,6 @@ class CommandBufferFileManager:
                 filename = str(command)
                 command_path = self.COMMAND_BUFFER_DIR_PATH / filename
                 command_path.touch()
-        else:
-            self.update_command_buffers_to_file_name(command_buffers)
 
     def is_not_initialized(self):
         if not self.COMMAND_BUFFER_DIR_PATH.exists():
