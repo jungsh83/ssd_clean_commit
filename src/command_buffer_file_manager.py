@@ -1,11 +1,10 @@
-import os
 from pathlib import Path
 
 from src.command_buffer_data import CommandBufferData, CommandBufferDataException
 
 
 class CommandBufferFileManager:
-    BASE_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    BASE_DIR = Path(__file__).parent.parent
     COMMAND_BUFFER_DIR_PATH = BASE_DIR / 'buffer'
 
     def initialize_file(self, command_buffers):
