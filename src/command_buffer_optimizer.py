@@ -14,16 +14,16 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
     def optimize(self, command_buffers):
         result: list[CommandBufferData] = []
         new_order = 0
-        for target_index, target_command in enumerate(command_buffers):
-            unvisited = self._get_update_range(target_command)
-            for overwrite_index in range(target_index + 1, 5):
+        for source_index, source_command in enumerate(command_buffers):
+            unvisited = self._get_update_range(source_command)
+            for overwrite_index in range(source_index + 1, 5):
                 overwrite_command = command_buffers[overwrite_index]
                 visited = self._get_update_range(overwrite_command)
                 unvisited.difference_update(visited)
             if unvisited:
                 new_order += 1
-                target_command.order = new_order
-                result.append(target_command)
+                source_command.order = new_order
+                result.append(source_command)
 
         for empty_order in range(new_order + 1, 6):
             result.append(CommandBufferData(order=empty_order))
