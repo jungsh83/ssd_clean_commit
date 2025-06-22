@@ -6,3 +6,5 @@ ssd_output.txt
 buffer
 logs
 shell_script.txt
+.coverage
+htmlcov
