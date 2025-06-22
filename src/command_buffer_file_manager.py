@@ -1,20 +1,25 @@
 from pathlib import Path
 
-from src.command_buffer_data import CommandBufferData, CommandBufferDataException
+from src.command_buffer_data import MAX_SIZE_OF_COMMAND_BUFFERS, CommandBufferData, CommandBufferDataException
 
 
 class CommandBufferFileManager:
     BASE_DIR = Path(__file__).parent.parent
     COMMAND_BUFFER_DIR_PATH = BASE_DIR / 'buffer'
 
-    def initialize_file(self, command_buffers):
+    def __init__(self):
+        if self._is_not_initialized():
+            self._initialize_file()
+
+    def _initialize_file(self):
+        temp_command_buffers = [CommandBufferData(order=index + 1) for index in range(MAX_SIZE_OF_COMMAND_BUFFERS)]
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
-        for command in command_buffers:
+        for command in temp_command_buffers:
             filename = str(command)
             command_path = self.COMMAND_BUFFER_DIR_PATH / filename
             command_path.touch()
 
-    def is_not_initialized(self):
+    def _is_not_initialized(self):
         if not self.COMMAND_BUFFER_DIR_PATH.exists():
             return True
 
@@ -33,7 +38,7 @@ class CommandBufferFileManager:
             result.append(command)
         return result
 
-    def update_command_buffers_to_file_name(self, new_command_buffers):
+    def write_command_buffers_to_file_name(self, new_command_buffers):
 
         files_in_dir = [file for file in self.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
         for current_file_path in files_in_dir:

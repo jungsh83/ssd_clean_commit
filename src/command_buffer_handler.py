@@ -19,6 +19,16 @@ class CommandBufferHandler:
     def command_buffers(self):
         return self._command_buffers
 
+    def initialize(self):
+        self._command_buffers = [CommandBufferData(order=index + 1) for index in range(MAX_SIZE_OF_COMMAND_BUFFERS)]
+        self._apply_changes()
+
+    def read_all(self):
+        result = self._file_manager.read_command_buffers_from_file_name()
+
+        result.sort(key=lambda cmd: cmd.order)
+        return result
+
     def fast_read(self, lba: int) -> str | None:
         for command in reversed(self._command_buffers):
             if command.command_type == EMPTY:
@@ -33,6 +43,12 @@ class CommandBufferHandler:
                 return True
         return False
 
+    def append(self, new_command: CommandBufferData):
+        self._append_command(new_command)
+        self._optimize(IgnoreCommandStrategy())
+        self._optimize(MergeEraseStrategy())
+        self._apply_changes()
+
     def _append_command(self, new_command):
         if not self.is_empty_buffer_slot_existing():
             raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
@@ -45,29 +61,9 @@ class CommandBufferHandler:
                 command.size = new_command.size
                 break
 
-    def append(self, new_command: CommandBufferData):
-        self._append_command(new_command)
-        self._optimize(IgnoreCommandStrategy())
-        self._optimize(MergeEraseStrategy())
-        self._file_manager.update_command_buffers_to_file_name(self._command_buffers)
-
     def _optimize(self, strategy: CommandBufferOptimizeStrategy):
         optimizer = CommandBufferOptimizer(strategy)
         self._command_buffers = optimizer.optimize(self._command_buffers)
 
-    def read_all(self):
-        if self._file_manager.is_not_initialized():
-            self.initialize()
-
-        result = self._file_manager.read_command_buffers_from_file_name()
-
-        result.sort(key=lambda cmd: cmd.order)
-        return result
-
-    def initialize(self):
-        self._command_buffers = [CommandBufferData(order=index + 1) for index in range(MAX_SIZE_OF_COMMAND_BUFFERS)]
-
-        if self._file_manager.is_not_initialized():
-            self._file_manager.initialize_file(self._command_buffers)
-
-        self._file_manager.update_command_buffers_to_file_name(self.command_buffers)
+    def _apply_changes(self):
+        self._file_manager.write_command_buffers_to_file_name(self._command_buffers)
