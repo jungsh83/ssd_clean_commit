@@ -3,7 +3,7 @@ from pytest_mock import MockFixture
 
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer import CommandBuffer, Command
-from src.ssd_commands.write import WriteCommandAction
+from src.ssd_commands.ssd_write import WriteCommandAction
 
 
 @pytest.fixture
