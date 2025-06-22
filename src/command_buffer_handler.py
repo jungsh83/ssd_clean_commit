@@ -6,8 +6,10 @@ from src.command_buffer_file_manager import CommandBufferFileManager
 from src.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, MergeEraseStrategy, \
     CommandBufferOptimizeStrategy
 
+
 class CommandBufferHandlerException(Exception):
     pass
+
 
 class CommandBufferHandler:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,18 +38,21 @@ class CommandBufferHandler:
         return False
 
     def _append_command(self, new_command):
+        insert_order = self._get_empty_slot()
+
+        new_command.order = insert_order + 1
+        self._command_buffers[insert_order] = new_command
+
+    def _get_empty_slot(self):
         insert_order = 0
         for command in self._command_buffers:
             if command.command_type == EMPTY:
-                new_command.order = command.order
                 break
             else:
                 insert_order += 1
-
         if insert_order >= 5:
             raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
-
-        self._command_buffers[insert_order] = new_command
+        return insert_order
 
     def append(self, command: CommandBufferData):
         try:
