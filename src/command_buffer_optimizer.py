@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 
-from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferData, MAX_SIZE_OF_COMMAND_BUFFERS
+from src.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferData, MAX_SIZE_OF_COMMAND_BUFFERS, \
+    ERASE_CHUNK_SIZE
 
 
 class CommandBufferOptimizeStrategy(ABC):
@@ -69,10 +70,10 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
                     new_end_lba = max(new_end_lba, overwrite_command.end_lba)
                     merged_command_orders.add(overwrite_command.order)
 
-            while new_end_lba - new_start_lba > 10:
+            while new_end_lba - new_start_lba > ERASE_CHUNK_SIZE:
                 new_order += 1
-                result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=10))
-                new_start_lba += 10
+                result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=ERASE_CHUNK_SIZE))
+                new_start_lba += ERASE_CHUNK_SIZE
 
             new_order += 1
             result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=new_end_lba  - new_start_lba))
