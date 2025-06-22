@@ -50,15 +50,10 @@ class CommandBufferHandler:
                 break
 
     def append(self, new_command: CommandBufferData):
-        try:
-            self._append_command(new_command)
-            self._optimize(IgnoreCommandStrategy())
-            self._optimize(MergeEraseStrategy())
-            self._file_manager.update_command_buffers_to_file_name(self._command_buffers)
-        except CommandBufferDataException as e:
-            raise e
-        except Exception:
-            raise CommandBufferHandlerException("Buffer 처리 실패하였습니다.")
+        self._append_command(new_command)
+        self._optimize(IgnoreCommandStrategy())
+        self._optimize(MergeEraseStrategy())
+        self._file_manager.update_command_buffers_to_file_name(self._command_buffers)
 
     def _optimize(self, strategy: CommandBufferOptimizeStrategy):
         optimizer = CommandBufferOptimizer(strategy)
