@@ -70,22 +70,30 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
                     new_end_lba = max(new_end_lba, overwrite_command.end_lba)
                     merged_command_orders.add(overwrite_command.order)
 
-            while new_end_lba - new_start_lba > ERASE_CHUNK_SIZE:
-                new_order += 1
-                result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=ERASE_CHUNK_SIZE))
-                new_start_lba += ERASE_CHUNK_SIZE
+            new_order = self._append_erase_chunk(new_order, result, new_start_lba, new_end_lba)
 
-            new_order += 1
-            result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=new_end_lba  - new_start_lba))
-
-        for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
-            new_order += 1
-            result.append(CommandBufferData(order=new_order))
+        self._append_empty(new_order, result)
 
         if self._erase_count(command_buffers) <= self._erase_count(result):
             return command_buffers
 
         return result
+
+    def _append_empty(self, new_order, result):
+        for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
+            new_order += 1
+            result.append(CommandBufferData(order=new_order))
+
+    def _append_erase_chunk(self, new_order, result, new_start_lba, new_end_lba):
+        while new_end_lba - new_start_lba > ERASE_CHUNK_SIZE:
+            new_order += 1
+            result.append(
+                CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=ERASE_CHUNK_SIZE))
+            new_start_lba += ERASE_CHUNK_SIZE
+        new_order += 1
+        result.append(
+            CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=new_end_lba - new_start_lba))
+        return new_order
 
     def _erase_count(self, command_buffers):
         result = 0
