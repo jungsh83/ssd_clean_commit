@@ -79,20 +79,17 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
         for i in range(new_order + 1, 6):
             result.append(CommandBufferData(order=i))
 
+        if self.erase_count(command_buffers) <= self.erase_count(result):
+            return command_buffers
+
+        return result
+
+    def erase_count(self, command_buffers):
         as_is_count = 0
         for command in command_buffers:
             if command.command_type == ERASE:
                 as_is_count += 1
-
-        to_be_count = 0
-        for command in result:
-            if command.command_type == ERASE:
-                to_be_count += 1
-
-        if as_is_count <= to_be_count:
-            return command_buffers
-
-        return result
+        return as_is_count
 
 
 class CommandBufferOptimizer:
