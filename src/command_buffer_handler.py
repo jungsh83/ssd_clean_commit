@@ -46,8 +46,7 @@ class CommandBufferHandler:
     def append(self, new_command: CommandBufferData):
         new_command = self._transform_command(new_command)
         self._append_command(new_command)
-        self._optimize(IgnoreCommandStrategy())
-        self._optimize(MergeEraseStrategy())
+        self._optimize([IgnoreCommandStrategy(), MergeEraseStrategy()])
         self._apply_changes()
 
     def _transform_command(self, command):
@@ -68,9 +67,10 @@ class CommandBufferHandler:
                 command.size = new_command.size
                 break
 
-    def _optimize(self, strategy: CommandBufferOptimizeStrategy):
-        optimizer = CommandBufferOptimizer(strategy)
-        self._command_buffers = optimizer.optimize(self._command_buffers)
+    def _optimize(self, strategies: list[CommandBufferOptimizeStrategy]):
+        for strategy in strategies:
+            optimizer = CommandBufferOptimizer(strategy)
+            self._command_buffers = optimizer.optimize(self._command_buffers)
 
     def _apply_changes(self):
         self._file_manager.write_command_buffers_to_file_name(self._command_buffers)
