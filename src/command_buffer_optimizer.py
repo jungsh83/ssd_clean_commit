@@ -49,20 +49,17 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
         new_order = 0
         merged_command_orders: set[int] = set()
         for source_index, source_command in enumerate(command_buffers):
-            if source_command.command_type == EMPTY:
-                break
-            elif source_command.command_type == WRITE:
-                new_order += 1
-                result.append(CommandBufferData(order=new_order, command_type=WRITE, lba=source_command.lba, value=source_command.value))
-                continue
-            elif source_command.order in merged_command_orders:
+            if source_command.command_type == WRITE:
+                new_order = self._append_write(new_order, result, source_command)
+
+            if self._is_skipped_target(merged_command_orders, source_command):
                 continue
 
             new_start_lba = source_command.start_lba
             new_end_lba = source_command.end_lba
             for overwrite_index in range(source_index + 1, len(command_buffers)):
                 overwrite_command = command_buffers[overwrite_index]
-                if overwrite_command.command_type != ERASE:
+                if self._is_skipped_target(merged_command_orders, overwrite_command):
                     continue
 
                 if new_start_lba <= overwrite_command.end_lba and new_end_lba >= overwrite_command.start_lba:
@@ -79,12 +76,27 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
 
         return result
 
+    def _is_skipped_target(self, merged_command_orders, command) -> bool:
+        if command.command_type == EMPTY:
+            return True
+        elif command.command_type == WRITE:
+            return True
+        elif command.order in merged_command_orders:
+            return True
+        return False
+
+    def _append_write(self, new_order, result, source_command) -> int:
+        new_order += 1
+        result.append(
+            CommandBufferData(order=new_order, command_type=WRITE, lba=source_command.lba, value=source_command.value))
+        return new_order
+
     def _append_empty(self, new_order, result):
         for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
             new_order += 1
             result.append(CommandBufferData(order=new_order))
 
-    def _append_erase_chunk(self, new_order, result, new_start_lba, new_end_lba):
+    def _append_erase_chunk(self, new_order, result, new_start_lba, new_end_lba) -> int:
         while new_end_lba - new_start_lba > ERASE_CHUNK_SIZE:
             new_order += 1
             result.append(
