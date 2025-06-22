@@ -49,24 +49,27 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
         merged_command_orders: set[int] = set()
         for source_index, source_command in enumerate(old_command_buffers):
             if source_command.command_type == WRITE:
-                new_order = self._append_write(new_order, new_command_buffers, source_command)
+                new_order = self._append_write(new_command_buffers, new_order, source_command)
 
             if self._is_skipped_target(merged_command_orders, source_command):
                 continue
 
-            new_end_lba, new_start_lba = self.calculate_start_and_end_lba(merged_command_orders, old_command_buffers,
-                                                                          source_command, source_index)
+            new_end_lba, new_start_lba = self._calculate_new_start_and_end_lba(merged_command_orders,
+                                                                               old_command_buffers,
+                                                                               source_command, source_index)
 
-            new_order = self._append_erase_chunk(new_order, new_command_buffers, new_start_lba, new_end_lba)
+            new_order = self._append_erase_chunk_with_new_start_and_end_lba(new_command_buffers, new_order,
+                                                                            new_start_lba, new_end_lba)
 
-        self._append_empty(new_order, new_command_buffers)
+        self._append_empty(new_command_buffers, new_order)
 
         if self._erase_count(old_command_buffers) <= self._erase_count(new_command_buffers):
             return old_command_buffers
 
         return new_command_buffers
 
-    def calculate_start_and_end_lba(self, merged_command_orders, old_command_buffers, source_command, source_index):
+    def _calculate_new_start_and_end_lba(self, merged_command_orders, old_command_buffers, source_command,
+                                         source_index):
         new_start_lba = source_command.start_lba
         new_end_lba = source_command.end_lba
         for overwrite_command in old_command_buffers[source_index + 1:]:
@@ -88,25 +91,26 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
             return True
         return False
 
-    def _append_write(self, new_order, result, source_command) -> int:
+    def _append_write(self, new_command_buffers, new_order, source_command) -> int:
         new_order += 1
-        result.append(
+        new_command_buffers.append(
             CommandBufferData(order=new_order, command_type=WRITE, lba=source_command.lba, value=source_command.value))
         return new_order
 
-    def _append_empty(self, new_order, result):
+    def _append_empty(self, new_command_buffers, new_order):
         for _ in range(new_order, MAX_SIZE_OF_COMMAND_BUFFERS):
             new_order += 1
-            result.append(CommandBufferData(order=new_order))
+            new_command_buffers.append(CommandBufferData(order=new_order))
 
-    def _append_erase_chunk(self, new_order, result, new_start_lba, new_end_lba) -> int:
+    def _append_erase_chunk_with_new_start_and_end_lba(self, new_command_buffers, new_order, new_start_lba,
+                                                       new_end_lba) -> int:
         while new_end_lba - new_start_lba > ERASE_CHUNK_SIZE:
             new_order += 1
-            result.append(
+            new_command_buffers.append(
                 CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=ERASE_CHUNK_SIZE))
             new_start_lba += ERASE_CHUNK_SIZE
         new_order += 1
-        result.append(
+        new_command_buffers.append(
             CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=new_end_lba - new_start_lba))
         return new_order
 
