@@ -16,7 +16,7 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
         new_order = 0
         for source_index, source_command in enumerate(command_buffers):
             unvisited = self._get_update_range(source_command)
-            for overwrite_index in range(source_index + 1, 5):
+            for overwrite_index in range(source_index + 1, len(command_buffers)):
                 overwrite_command = command_buffers[overwrite_index]
                 visited = self._get_update_range(overwrite_command)
                 unvisited.difference_update(visited)
@@ -59,7 +59,7 @@ class MergeEraseStrategy(CommandBufferOptimizeStrategy):
 
             new_start_lba = source_command.start_lba
             new_end_lba = source_command.end_lba
-            for overwrite_index in range(source_index + 1, 5):
+            for overwrite_index in range(source_index + 1, len(command_buffers)):
                 overwrite_command = command_buffers[overwrite_index]
                 if overwrite_command.command_type != ERASE:
                     continue
