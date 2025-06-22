@@ -15,22 +15,12 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
         result: list[CommandBufferData] = []
         new_order = 0
         for target_index, target_command in enumerate(command_buffers):
-            lbas: set[int] = set()
-            if target_command.command_type == WRITE:
-                lbas.add(target_command.lba)
-            elif target_command.command_type == ERASE:
-                lbas = set([i for i in range(target_command.lba, target_command.lba + target_command.size)])
-                lbas.add(target_command.lba)
+            unvisited = self._get_update_range(target_command)
             for overwrite_index in range(target_index + 1, 5):
                 overwrite_command = command_buffers[overwrite_index]
-                if overwrite_command.command_type == WRITE:
-                    if overwrite_command.lba in lbas:
-                        lbas.remove(overwrite_command.lba)
-                elif overwrite_command.command_type == ERASE:
-                    for overwrite_lba in range(overwrite_command.lba, overwrite_command.lba + overwrite_command.size):
-                        if overwrite_lba in lbas:
-                            lbas.remove(overwrite_lba)
-            if lbas:
+                visited = self._get_update_range(overwrite_command)
+                unvisited.difference_update(visited)
+            if unvisited:
                 new_order += 1
                 result.append(
                     CommandBufferData(order=new_order, command_type=target_command.command_type, lba=target_command.lba,
@@ -40,6 +30,15 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
         for i in range(new_order + 1, 6):
             result.append(CommandBufferData(order=i))
 
+        return result
+
+    def _get_update_range(self, command):
+        result: set[int] = set()
+        if command.command_type == WRITE:
+            result.add(command.lba)
+        elif command.command_type == ERASE:
+            result = set([i for i in range(command.lba, command.lba + command.size)])
+            result.add(command.lba)
         return result
 
 
