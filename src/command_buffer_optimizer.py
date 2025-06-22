@@ -11,7 +11,7 @@ class CommandBufferOptimizeStrategy(ABC):
 
 class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
 
-    def optimize(self, command_buffers):
+    def optimize(self, command_buffers: list[CommandBufferData]):
         result: list[CommandBufferData] = []
         new_order = 0
         for source_index, source_command in enumerate(command_buffers):
@@ -42,47 +42,39 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
 
 class MergeEraseStrategy(CommandBufferOptimizeStrategy):
 
-    def optimize(self, command_buffers):
+    def optimize(self, command_buffers: list[CommandBufferData]):
         result: list[CommandBufferData] = []
         new_order = 0
         merged_command_orders: set[int] = set()
-        for target_index, target_command in enumerate(command_buffers):
-            if target_command.command_type != ERASE:
+        for source_index, source_command in enumerate(command_buffers):
+            if source_command.command_type == EMPTY:
+                break
+            elif source_command.command_type == WRITE:
                 new_order += 1
-                result.append(
-                    CommandBufferData(order=new_order, command_type=target_command.command_type, lba=target_command.lba,
-                                      value=target_command.value,
-                                      size=target_command.size))
+                result.append(CommandBufferData(order=new_order, command_type=WRITE, lba=source_command.lba, value=source_command.value))
                 continue
-            elif target_command.order in merged_command_orders:
+            elif source_command.order in merged_command_orders:
                 continue
-            new_lba = target_command.lba
-            new_size = target_command.size
-            for overwrite_index in range(target_index + 1, 5):
+
+            new_start_lba = source_command.start_lba
+            new_end_lba = source_command.end_lba
+            for overwrite_index in range(source_index + 1, 5):
                 overwrite_command = command_buffers[overwrite_index]
                 if overwrite_command.command_type != ERASE:
                     continue
-                if new_lba <= overwrite_command.lba + overwrite_command.size and \
-                        new_lba + new_size >= overwrite_command.lba:
-                    new_lba = min(new_lba, overwrite_command.lba)
-                    new_size = max(new_lba + new_size,
-                                   overwrite_command.lba + overwrite_command.size) \
-                               - new_lba
+
+                if new_start_lba <= overwrite_command.end_lba and new_end_lba >= overwrite_command.start_lba:
+                    new_start_lba = min(new_start_lba, overwrite_command.start_lba)
+                    new_end_lba = max(new_end_lba, overwrite_command.end_lba)
                     merged_command_orders.add(overwrite_command.order)
 
-            while new_size > 10:
+            while new_end_lba - new_start_lba > 10:
                 new_order += 1
-                result.append(
-                    CommandBufferData(order=new_order, command_type=target_command.command_type, lba=new_lba,
-                                      value=target_command.value,
-                                      size=10))
-                new_lba += 10
-                new_size -= 10
+                result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=10))
+                new_start_lba += 10
+
             new_order += 1
-            result.append(
-                CommandBufferData(order=new_order, command_type=target_command.command_type, lba=new_lba,
-                                  value=target_command.value,
-                                  size=new_size))
+            result.append(CommandBufferData(order=new_order, command_type=ERASE, lba=new_start_lba, size=new_end_lba  - new_start_lba))
 
         for i in range(new_order + 1, 6):
             result.append(CommandBufferData(order=i))
@@ -107,5 +99,5 @@ class CommandBufferOptimizer:
     def __init__(self, strategy):
         self._strategy = strategy
 
-    def optimize(self, command_buffers):
+    def optimize(self, command_buffers: list[CommandBufferData]):
         return self._strategy.optimize(command_buffers)
