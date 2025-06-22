@@ -1,6 +1,6 @@
 import pytest
 
-from src.shell_commands.erase_range import EraseRangeShellCommand
+from src.shell_commands.action.erase_range import EraseRangeShellCommand
 from src.ssd_driver import SSDDriver
 
 

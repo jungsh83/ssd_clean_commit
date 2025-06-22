@@ -1,6 +1,6 @@
 import pytest
 
-from src.shell_commands.flush import FlushShellCommand
+from src.shell_commands.action.flush import FlushShellCommand
 from src.ssd_driver import SSDDriver
 
 

@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.shell_commands.full_write_and_read_compare import FullWriteAndReadCompareShellCommand
+from src.shell_commands.script.full_write_and_read_compare import FullWriteAndReadCompareShellCommand
 from src.ssd_file_manager import SSDFileManager
 
 data_dict = {}
