@@ -5,8 +5,8 @@ from src.command_buffer_data import CommandBufferData, CommandBufferDataExceptio
 
 
 class CommandBufferFileManager:
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    COMMAND_BUFFER_DIR_PATH = Path(os.path.join(BASE_DIR, 'buffer'))
+    BASE_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    COMMAND_BUFFER_DIR_PATH = BASE_DIR / 'buffer'
 
     def initialize_file_name(self, command_buffers):
         self.COMMAND_BUFFER_DIR_PATH.mkdir(parents=True, exist_ok=True)
