@@ -20,6 +20,7 @@ def command_buffer_without_flush(mocker: MockFixture):
     obj = CommandBuffer()
     return obj
 
+
 @pytest.fixture
 def command_buffer_with_flush(mocker: MockFixture):
     mocker.patch("src.command_buffer.CommandBuffer.read_all").side_effect = mk_read_all
@@ -60,18 +61,25 @@ def test_validate_실패(ssd_file_manager, command_buffer_without_flush, lba, va
 
 @pytest.mark.parametrize(
     "lba, value",
+    [("0", "0x0000000T"), ("101", "0x00000002")]
+)
+def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, value):
+    sut = WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value)
+    assert sut.run() == "FAIL"
+
+
+@pytest.mark.parametrize(
+    "lba, value",
     [("0", "0x00000001"), ("99", "0x00000099")]
 )
 def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush, lba, value):
     sut = WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value)
     assert sut.run() == "PASS"
 
-@pytest.mark.skip
+@pytest.mark.parametrize(
+    "lba, value",
+    [("0", "0x00000001"), ("99", "0x00000099")]
+)
 def test_run_성공_with_flush(ssd_file_manager, command_buffer_with_flush, lba, value):
-    command_buffer_no_flush = CommandBuffer()
-    sut = WriteCommand(ssd_file_manager, CommandBuffer(), lba, value)
-
-    # act
-    sut.run()
-
-    assert cb.read_all() == []
+    sut = WriteCommandAction(ssd_file_manager, CommandBuffer(), lba, value)
+    assert sut.run() == "PASS"
