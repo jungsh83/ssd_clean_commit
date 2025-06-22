@@ -49,12 +49,8 @@ class CommandBufferHandler:
                 command.size = new_command.size
                 break
 
-    def append(self, command: CommandBufferData):
+    def append(self, new_command: CommandBufferData):
         try:
-            new_command = command
-            if command.command_type == WRITE and command.value == ERASE_VALUE:
-                new_command = CommandBufferData.create_erase_command(lba=command.lba, size=1)
-
             self._append_command(new_command)
             self._optimize(IgnoreCommandStrategy())
             self._optimize(MergeEraseStrategy())
