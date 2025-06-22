@@ -37,7 +37,7 @@ class CommandBufferHandler:
                 return command.value
         return None
 
-    def is_empty_buffer_slot_existing(self) -> bool:
+    def is_buffer_available(self) -> bool:
         for command in self._command_buffers:
             if command.command_type == EMPTY:
                 return True
@@ -56,7 +56,7 @@ class CommandBufferHandler:
         return new_command
 
     def _append_command(self, new_command):
-        if not self.is_empty_buffer_slot_existing():
+        if not self.is_buffer_available():
             raise CommandBufferHandlerException("남아 있는 Buffer Slot이 없습니다.")
 
         for command in self._command_buffers:
