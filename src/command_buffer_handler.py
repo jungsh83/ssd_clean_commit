@@ -69,11 +69,5 @@ class CommandBufferHandler:
         return result
 
     def initialize(self):
-        self._command_buffers = [
-            CommandBufferData(order=1),
-            CommandBufferData(order=2),
-            CommandBufferData(order=3),
-            CommandBufferData(order=4),
-            CommandBufferData(order=5)
-        ]
+        self._command_buffers = [CommandBufferData(order=order) for order in range (1, 6)]
         self._file_manager.initialize_file_name(self._command_buffers)
