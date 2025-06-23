@@ -1,29 +1,39 @@
-import os
 import sys
 from src.ssd_file_manager import SSDFileManager
+from src.ssd_commands.ssd_command_action import InvalidArgumentException
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
+from src.ssd_commands.ssd_read import ReadCommand
+from src.ssd_commands.ssd_write import WriteCommandAction
+from src.ssd_commands.ssd_erase import SSDWriteCommand
+from src.ssd_commands.ssd_flush import SSDFlushCommand
+
+SSD_COMMANDS = {
+    'R': ReadCommand,
+    'W': WriteCommandAction,
+    'E': SSDWriteCommand,
+    'F': SSDFlushCommand,
+}
 
 
 def main(args: list[str]):
-    ssd = SSDFileManager()
+    if not args:
+        SSDFileManager().error()
+        return
 
-    if len(args) == 2 and args[0] == ssd.COMMAND_READ:
-        lba_str = args[1]
-        if not lba_str.isdigit():
-            ssd.error()
-            return
-        lba = int(lba_str)
-        ssd.read(lba)
+    command_str = args[0]
+    command_args = args[1:]
 
-    elif len(args) == 3 and args[0] == ssd.COMMAND_WRITE:
-        lba_str, value = args[1], args[2]
-        if not lba_str.isdigit():
-            ssd.error()
-            return
-        lba = int(lba_str)
-        ssd.write(lba, value)
+    command_class = SSD_COMMANDS.get(command_str)
+    if not command_class:
+        SSDFileManager().error()
+        return
 
-    else:
-        ssd.error()
+    command = command_class(SSDFileManager(), CommandBufferHandler(), *command_args)
+
+    try:
+        command.run()
+    except InvalidArgumentException:
+        pass
 
 
 if __name__ == "__main__":
