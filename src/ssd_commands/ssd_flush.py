@@ -1,4 +1,6 @@
-from src.command_buffer_handler import CommandBufferHandler
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
+
+from src.command_buffer.command_buffer_data import WRITE, ERASE
 from src.ssd_commands.ssd_command_action import SSDCommand
 from src.ssd_file_manager import SSDFileManager
 
@@ -12,12 +14,10 @@ class SSDFlushCommand(SSDCommand):
             self._ssd_file_manager.error()
             return "FAIL"
 
-        cmd_buffers = self._command_buffer.read_all()
-
-        for cmd in cmd_buffers:
-            if cmd.command_type == "W":
+        for cmd in self._command_buffer.command_buffers:
+            if cmd.command_type == WRITE:
                 self._ssd_file_manager.write(cmd.lba, cmd.value)
-            elif cmd.command_type == "E":
+            elif cmd.command_type == ERASE:
                 self._ssd_file_manager.erase(cmd.lba, cmd.value)
 
         self._command_buffer.initialize()

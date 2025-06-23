@@ -1,7 +1,7 @@
 import pytest
 
-from src.command_buffer_data import CommandBufferData
-from src.command_buffer_handler import CommandBufferHandler
+from src.command_buffer.command_buffer_data import CommandBufferData
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.ssd_commands.ssd_flush import SSDFlushCommand
 from src.ssd_file_manager import SSDFileManager
 
@@ -23,7 +23,7 @@ def test_flush_성공(mock_buffer_and_manager):
 
         return cmd_data
 
-    mock_cmd_buffer.read_all.return_value = [mock_buffer_data("W", 0, "0x12345678"),
+    mock_cmd_buffer.command_buffers = [mock_buffer_data("W", 0, "0x12345678"),
                                              mock_buffer_data("W", 1, "0x12345678"),
                                              mock_buffer_data("W", 2, "0x12345678"),
                                              mock_buffer_data("E", 3, 5),
