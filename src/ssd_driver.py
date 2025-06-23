@@ -1,6 +1,8 @@
 import subprocess
 from pathlib import Path
 
+from src.decorators import log_call
+
 VALID_RETURN_CODE = 0
 
 
@@ -36,6 +38,7 @@ class SSDDriver:
             cls._instance = super().__new__(cls)
         return cls._instance
 
+    @log_call(level="INFO")
     def read(self, lba: int) -> str:
         """
         지정된 lba 위치의 SSD Data를 읽어 값을 반환 한다.
@@ -50,6 +53,7 @@ class SSDDriver:
             raise ReadException("ERROR")
         return out
 
+    @log_call(level="INFO")
     def write(self, lba: int, value: str) -> None:
         """
         lba 위치에 value 값을  SSD Data에 기록 한다.
@@ -65,6 +69,7 @@ class SSDDriver:
 
         return
 
+    @log_call(level="INFO")
     def erase(self, lba, size):
         out = self.get_external_output(EraseException, self.ERASE_TOKEN, str(lba), str(size))
         if out == "ERROR":
@@ -72,6 +77,7 @@ class SSDDriver:
 
         return
 
+    @log_call(level="INFO")
     def flush(self):
         """
         Flush는 실행 후 결과 확인이 없음으로 Test 코드를 추가하지 않습니다.
