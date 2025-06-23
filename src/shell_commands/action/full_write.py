@@ -1,3 +1,4 @@
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
 
@@ -11,10 +12,12 @@ class FullWriteShellCommand(ShellCommandAction):
 
     VALID_ARGUMENT_LEN = 1
 
+    @log_call(level="INFO")
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._value = None
 
+    @log_call(level="INFO")
     def run(self) -> None:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())

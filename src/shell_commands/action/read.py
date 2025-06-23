@@ -1,3 +1,4 @@
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 
 
@@ -10,10 +11,12 @@ class ReadShellCommand(ShellCommandAction):
 
     VALID_ARGUMENT_LEN = 1
 
+    @log_call(level="INFO")
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._LBA = None
 
+    @log_call(level="INFO")
     def run(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())

@@ -1,3 +1,4 @@
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.data_dict import *
 
@@ -12,11 +13,13 @@ class EraseRangeShellCommand(ShellCommandAction):
     VALID_ARGUMENT_LEN = 2
     MAX_ERASE_LEN_ON_SSD_DRIVER = 10
 
+    @log_call(level="INFO")
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._end_lba = None
         self._start_lba = None
 
+    @log_call(level="INFO")
     def run(self) -> None:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
