@@ -1,4 +1,4 @@
-from src.data_dict import LBA_START_INDEX, LBA_COUNT, VALUE_LENGTH
+from src.data_dict import LBA_START_INDEX, LBA_COUNT, VALUE_LENGTH, ERASE_SIZE_MIN, ERASE_SIZE_MAX
 
 
 def validate_lba(lba: str) -> bool:
@@ -13,3 +13,9 @@ def validate_value(value: str) -> bool:
     if not value.startswith("0x"):
         return False
     return all(c in "0123456789ABCDEF" for c in (value[2:]))
+
+
+def validate_erase_size(size: str) -> bool:
+    if not str(size).isdigit():
+        return False
+    return ERASE_SIZE_MIN <= int(size) <= ERASE_SIZE_MAX
