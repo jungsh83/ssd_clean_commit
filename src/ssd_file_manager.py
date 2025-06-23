@@ -15,7 +15,6 @@ class SSDFileManager:
     ERROR_TEXT = 'ERROR'
     COMMAND_READ = "R"
     COMMAND_WRITE = "W"
-    COMMAND_ERASE = "E"
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
