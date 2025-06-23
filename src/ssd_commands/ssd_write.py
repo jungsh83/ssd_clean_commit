@@ -9,8 +9,8 @@ class WriteCommandAction(SSDCommand):
     def __init__(self, ssd_file_manager: SSDFileManager, command_buffer: CommandBufferHandler, *args):
         super().__init__(ssd_file_manager, command_buffer, *args)
 
-        self.lba = self._arguments[0]
-        self.value = self._arguments[1]
+        self.lba: int|None = None
+        self.value: str|None = None
 
     def run(self) -> str:
         if not self.validate():
