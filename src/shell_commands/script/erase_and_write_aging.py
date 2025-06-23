@@ -1,10 +1,10 @@
 import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
+from src.data_dict import DEFAULT_VAL
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 
 logger = LoggerSingleton.get_logger()
-DEFAULT_METHOD = "0x00000000"
 
 
 class EraseAndWriteAging(ShellCommandAction):
@@ -39,7 +39,7 @@ class EraseAndWriteAging(ShellCommandAction):
         self._ssd_driver.erase(start_lba, 3)
 
         for lba in range(start_lba, start_lba + 3):
-            if not self.read_compare(lba, DEFAULT_METHOD):
+            if not self.read_compare(lba, DEFAULT_VAL):
                 return False
 
         return True
