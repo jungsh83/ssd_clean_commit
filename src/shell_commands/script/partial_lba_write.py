@@ -1,13 +1,13 @@
 import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
+from ..data_dict import START_TEST_VALUE
 
 logger = LoggerSingleton.get_logger()
-START_TEST_VALUE = 10000000
 
 
-class PartialLBAWriteShellCommand(ShellCommandAction):
+class PartialLBAWriteShellCommand(ShellCommand):
     command_name: str = "2_PartialLBAWrite"
     _description = 'Execute test scenario: Partial LBA Write'
     _usage = "'2_PartialLBAWrite' or '2_'"
@@ -18,11 +18,15 @@ class PartialLBAWriteShellCommand(ShellCommandAction):
         super().__init__(ssd_driver, *args)
         self.test_value = START_TEST_VALUE
 
+    def validate(self) -> bool:
+        return self._arguments == ()
+
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
+
         for i in range(30):
             self._bulk_write()
             if self._is_read_compare_failed():
@@ -50,11 +54,11 @@ class PartialLBAWriteShellCommand(ShellCommandAction):
     def _get_test_value(self):
         return f'0x{self.test_value}'
 
-    def _generate_order(self) -> list[int]:
+    @staticmethod
+    def _generate_order() -> list[int]:
         orders = list(range(5))  # [0, 1, 2, 3, 4]
         random.shuffle(orders)
 
         return orders
 
-    def validate(self) -> bool:
-        return self._arguments == ()
+

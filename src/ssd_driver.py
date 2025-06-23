@@ -1,9 +1,8 @@
 import subprocess
 from pathlib import Path
-
 from src.decorators import log_call
-
-VALID_RETURN_CODE = 0
+from winreg import FlushKey
+from .data_dict import VALID_RETURN_CODE
 
 
 class ReadException(Exception):
@@ -26,7 +25,7 @@ class SSDDriver:
     _instance = None
 
     VENV_PYTHON_PATH = Path(__file__).parent.parent / ".venv/Scripts/python.exe"
-    COMMAND_PATH = Path(__file__).parent / "ssd_file_manager.py"
+    COMMAND_PATH = Path(__file__).parent.parent / "ssd.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
     READ_TOKEN = 'R'
     WRITE_TOKEN = 'W'

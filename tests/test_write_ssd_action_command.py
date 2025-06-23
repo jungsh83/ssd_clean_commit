@@ -4,7 +4,7 @@ from pytest_mock import MockFixture
 from src.command_buffer.command_buffer_data import CommandBufferData
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.ssd_file_manager import SSDFileManager
-from src.ssd_commands.ssd_write import WriteCommandAction
+from src.ssd_commands.ssd_write import WriteSSDCommand
 
 
 @pytest.fixture
@@ -36,7 +36,7 @@ def mk_read_all():
     [(0, "0x00000001"), (33, "0x00000002")]
 )
 def test_validate_성공(ssd_file_manager, command_buffer, lba, value):
-    sut = WriteCommandAction(ssd_file_manager, command_buffer, lba, value)
+    sut = WriteSSDCommand(ssd_file_manager, command_buffer, lba, value)
     assert sut.validate()
 
 
@@ -45,5 +45,5 @@ def test_validate_성공(ssd_file_manager, command_buffer, lba, value):
     [(0, "0x0000000T"), (101, "0x00000002")]
 )
 def test_validate_실패(ssd_file_manager, command_buffer, lba, value):
-    sut = WriteCommandAction(ssd_file_manager, command_buffer, lba, value)
+    sut = WriteSSDCommand(ssd_file_manager, command_buffer, lba, value)
     assert not sut.validate()

@@ -1,8 +1,8 @@
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 
 
-class FlushShellCommand(ShellCommandAction):
+class FlushShellCommand(ShellCommand):
     command_name: str = 'flush'
     _description = 'flush buffers'
     _usage = 'flush buffers'
@@ -17,7 +17,7 @@ class FlushShellCommand(ShellCommandAction):
         return self._arguments == ()
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 

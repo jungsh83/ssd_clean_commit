@@ -1,9 +1,9 @@
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-from src.ssd_file_manager import SSDFileManager
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
+from ..data_dict import *
 
 
-class FullReadShellCommand(ShellCommandAction):
+class FullReadShellCommand(ShellCommand):
     command_name: str = 'fullread'
     _description = 'read value all of LBAs'
     _usage = 'fullread'
@@ -20,11 +20,11 @@ class FullReadShellCommand(ShellCommandAction):
     def _dump_all(self) -> list[str]:
         return [
             f"{lba} {self._ssd_driver.read(lba)}"
-            for lba in range(SSDFileManager.LBA_COUNT)
+            for lba in range(LBA_COUNT)
         ]
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 

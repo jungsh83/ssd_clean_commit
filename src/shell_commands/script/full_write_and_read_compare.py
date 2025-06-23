@@ -1,12 +1,12 @@
 import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 
 logger = LoggerSingleton.get_logger()
 
 
-class FullWriteAndReadCompareShellCommand(ShellCommandAction):
+class FullWriteAndReadCompareShellCommand(ShellCommand):
     command_name: str = "1_FullWriteAndReadCompare"
     _description = 'Execute test scenario: Full Write & Read Compare'
     _usage = "'1_FullWriteAndReadCompare' or '1_'"
@@ -17,11 +17,10 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
         return self._arguments == ()
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
 
         if not self.validate():
-            msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
-            raise InvalidArgumentException(msg)
+            raise InvalidArgumentException(f"{self.command_name} takes no arguments, but got '{self._arguments}'")
 
         for i in range(25):
             if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
@@ -37,11 +36,11 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
 
         return True
 
-    def generate_test_value(self):
+    @staticmethod
+    def generate_test_value():
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, test_value) -> bool:
-
         real_value = self._ssd_driver.read(lba)
         if real_value == test_value:
             return True
