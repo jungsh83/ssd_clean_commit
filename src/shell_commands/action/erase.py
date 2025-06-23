@@ -1,5 +1,6 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
+from ..data_dict import *
 
 
 class EraseShellCommand(ShellCommandAction):
@@ -9,14 +10,10 @@ class EraseShellCommand(ShellCommandAction):
     _author = 'Gunam Kwon'
     _alias: list[str] = []
 
-    VALID_ARGUMENT_LEN = 2
-    INVALID_LBA = -1  # Erase Size 0일 경우, 사용
-    MAX_ERASE_LEN_ON_SSD_DRIVER = 10
-
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._input_lba: str = None
-        self._input_size: str = None
+        self._input_lba: str = ''
+        self._input_size: str = ''
 
     def run(self):
         if not self.validate():
@@ -29,21 +26,14 @@ class EraseShellCommand(ShellCommandAction):
             self._ssd_driver.erase(start_lba, size)
         else:
             total_size = size
-            for offset in range(0, total_size, self.MAX_ERASE_LEN_ON_SSD_DRIVER):
-                cmd_size = min(self.MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
+            for offset in range(0, total_size, MAX_ERASE_LEN_ON_SSD_DRIVER):
+                cmd_size = min(MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
                 self._ssd_driver.erase(start_lba + offset, cmd_size)
 
         return "Done"
 
-    def _is_int_string(self, s: str) -> bool:
-        try:
-            int(s)
-            return True
-        except ValueError:
-            return False
-
     def validate(self) -> bool:
-        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
+        if len(self._arguments) != VALID_ARGUMENT_RANGE:
             return False
 
         self._input_lba, self._input_size = self._arguments
@@ -56,14 +46,14 @@ class EraseShellCommand(ShellCommandAction):
 
         return True
 
-    def _get_exception_string(self) -> None:
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
+    def _get_exception_string(self) -> str:
+        return f"{self.command_name} takes {VALID_ARGUMENT_RANGE} arguments, but got {self._arguments}."
 
     def _calculate_lba_range(self) -> (int, int):
         lba, size = int(self._input_lba), int(self._input_size)
 
         if size == 0:
-            start_lba, end_lba = lba, self.INVALID_LBA
+            start_lba, end_lba = lba, INVALID_LBA
         elif size > 0:
             start_lba = lba
             end_lba = min(lba + size - 1, SSDFileManager.LBA_COUNT - 1)
@@ -73,8 +63,17 @@ class EraseShellCommand(ShellCommandAction):
 
         return start_lba, end_lba
 
-    def _calculate_size(self, start, end):
-        if end == self.INVALID_LBA:
+    @staticmethod
+    def _calculate_size(start, end):
+        if end == INVALID_LBA:
             return 0
 
         return end - start + 1
+
+    @staticmethod
+    def _is_int_string(s: str) -> bool:
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
