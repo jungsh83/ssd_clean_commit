@@ -19,7 +19,7 @@ def count_method_lines(filepath):
     return method_lengths
 
 all_lengths = []
-for root, _, files in os.walk("src"):
+for root, _, files in os.walk(".."):
     for file in files:
         if file.endswith(".py"):
             path = os.path.join(root, file)

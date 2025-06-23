@@ -18,7 +18,7 @@ def count_guard_clauses(filepath):
     return guard_count
 
 total_guards = 0
-for root, _, files in os.walk("src"):
+for root, _, files in os.walk(".."):
     for file in files:
         if file.endswith(".py"):
             path = os.path.join(root, file)
