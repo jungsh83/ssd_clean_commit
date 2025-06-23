@@ -122,70 +122,9 @@ def test_쓴_값을_바로_읽어서_같은지_확인(ssd_file_manager):
     ssd_file_manager.write(10, target_val)
     assert ssd_file_manager.read(10) == target_val
 
-@pytest.mark.skip
-def test_cli에서_write하면_nand에_입력한다():
-    subprocess.run([sys.executable, SSD_PY, 'W', '2', '0xDEADBEEF'], check=True)
-
-    with open(NAND_PATH) as f:
-        lines = [line.strip() for line in f.readlines()]
-
-    assert lines[2] == '0xDEADBEEF'
-
-@pytest.mark.skip
-def test_cli에서_read하면_nand값_읽는다(ssd_file_manager):
-    ssd_file_manager.write(3, '0xABCDEF12')
-
-    subprocess.run([sys.executable, SSD_PY, 'R', '3'], check=True)
-
-    with open(OUTPUT_PATH) as f:
-        assert f.read().strip() == '0xABCDEF12'
-
-@pytest.mark.skip
-def test_cli에서_command가_잘못되면_output에_error입력():
-    subprocess.run([sys.executable, SSD_PY, 'X', '1'], check=True)
-
-    with open(OUTPUT_PATH) as f:
-        assert f.read().strip() == 'ERROR'
-
-@pytest.mark.skip
-def test_cli_최초실행시_output파일이_없으면_생성한다():
-    if os.path.exists(OUTPUT_PATH):
-        os.remove(OUTPUT_PATH)
-
-    assert not os.path.exists(OUTPUT_PATH)
-
-    subprocess.run([sys.executable, SSD_PY, 'R', '0'], check=True)
-
-    assert os.path.exists(OUTPUT_PATH)
-
-    with open(OUTPUT_PATH) as f:
-        assert f.read().strip() == '0x00000000'
-
-@pytest.mark.skip
-def test_cli_W_정상동작시_output파일은_빈파일이다():
-    subprocess.run([sys.executable, SSD_PY, 'R', '100'], check=True)
-
-    with open(OUTPUT_PATH) as f:
-        assert f.read().strip() == 'ERROR'
-
-    subprocess.run([sys.executable, SSD_PY, 'W', '10', '0xA1B2C3D4'], check=True)
-
-    assert os.path.exists(OUTPUT_PATH)
-
-    with open(OUTPUT_PATH, encoding='utf-8') as f:
-        content = f.read()
-    assert content == ''
-
 
 def test_write_value가_16진수형식이_아니면_ERROR(ssd_file_manager):
     ssd_file_manager.write(5, "0xZZZZZZZZ")  # 유효하지 않은 hex 문자
-
-    with open(OUTPUT_PATH) as f:
-        assert f.read().strip() == "ERROR"
-
-@pytest.mark.skip
-def test_cli에서_lba가_숫자가_아니면_ERROR():
-    subprocess.run([sys.executable, SSD_PY, 'W', 'abc', '0x12345678'], check=True)
 
     with open(OUTPUT_PATH) as f:
         assert f.read().strip() == "ERROR"

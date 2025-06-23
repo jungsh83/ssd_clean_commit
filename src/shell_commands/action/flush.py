@@ -1,7 +1,7 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 
 
-class FlushCommand(CommandAction):
+class FlushShellCommand(ShellCommandAction):
     command_name: str = 'flush'
     _description = 'flush buffers'
     _usage = 'flush buffers'
