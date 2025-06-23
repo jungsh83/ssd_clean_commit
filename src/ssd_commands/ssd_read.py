@@ -2,7 +2,7 @@ from src.ssd_commands.ssd_command_action import SSDCommand, InvalidArgumentExcep
 from src.ssd_commands import validate_lba, validate_value
 
 
-class ReadCommand(SSDCommand):
+class ReadSSDCommand(SSDCommand):
     command_name = ['read', 'r']
 
     def __init__(self, ssd_file_manager, command_buffer, *args):

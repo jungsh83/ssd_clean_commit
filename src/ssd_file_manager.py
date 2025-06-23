@@ -29,6 +29,9 @@ class SSDFileManager:
                 for _ in range(LBA_COUNT):
                     f.write(DEFAULT_VAL + '\n')
 
+        with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
+            pass
+
     def _load_nand(self) -> list[str]:
         with open(self.NAND_PATH, 'r', encoding='utf-8') as f:
             return [line.rstrip('\n') for line in f]

@@ -81,7 +81,7 @@ def runner_mode(file_path: str, ssd_driver=SSDDriver()):
                 break
 
             label = f"{resolved_name.upper():<20}"
-            print(f"{label} ___   RUN...", end="")
+            print(f"{label} ___   RUN...", end="", flush=True)
 
             try:
                 _, result = execute_command(command, [], ssd_driver)

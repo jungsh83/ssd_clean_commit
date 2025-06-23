@@ -2,7 +2,7 @@ import pytest
 
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.ssd_commands.ssd_flush import SSDFlushCommand
+from src.ssd_commands.ssd_flush import FlushSSDCommand
 from src.ssd_file_manager import SSDFileManager
 
 
@@ -29,7 +29,7 @@ def test_flush_성공(mock_buffer_and_manager):
                                        mock_buffer_data(ERASE, 3, 5),
                                        mock_buffer_data(ERASE, 90, 10)]
 
-    ssd_flush_cmd = SSDFlushCommand(mock_file_manager, mock_cmd_buffer)
+    ssd_flush_cmd = FlushSSDCommand(mock_file_manager, mock_cmd_buffer)
     ret = ssd_flush_cmd.run()
 
     assert ret == "PASS"
@@ -42,7 +42,7 @@ def test_flush_파라미터_초과(mock_buffer_and_manager):
     error_arg = 'test'
     mocker, mock_cmd_buffer, mock_file_manager = mock_buffer_and_manager
 
-    ssd_flush_cmd = SSDFlushCommand(mock_file_manager, mock_cmd_buffer, error_arg)
+    ssd_flush_cmd = FlushSSDCommand(mock_file_manager, mock_cmd_buffer, error_arg)
     ret = ssd_flush_cmd.run()
 
     assert ret == "FAIL"

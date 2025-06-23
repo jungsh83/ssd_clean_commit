@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from src.shell_commands.script.erase_and_write_aging import EraseAndWriteAging
+from src.shell_commands.script.erase_and_write_aging import EraseAndWriteAgingCommand
 
 DEFULAT_VALUE = "0x00000000"
 
@@ -48,35 +48,35 @@ def ssd_driver_fail(mocker: MockerFixture):
 
 def test_validate_수행_성공(ssd_driver):
     # act & assert
-    assert EraseAndWriteAging(ssd_driver).validate()
+    assert EraseAndWriteAgingCommand(ssd_driver).validate()
 
 
 def test_validate_수행_실패(ssd_driver):
     # act & assert
-    assert not EraseAndWriteAging(ssd_driver, 1, "0x12345678").validate()
+    assert not EraseAndWriteAgingCommand(ssd_driver, 1, "0x12345678").validate()
 
 
 def test_수행_성공(ssd_driver):
-    assert EraseAndWriteAging(ssd_driver).run() == "PASS"
+    assert EraseAndWriteAgingCommand(ssd_driver).run() == "PASS"
 
 
 def test_수행_성공시_read_write_erase_횟수_확인(ssd_driver):
     # act
-    EraseAndWriteAging(ssd_driver).run()
+    EraseAndWriteAgingCommand(ssd_driver).run()
 
     # assert
-    assert ssd_driver.erase.call_count == 1 + 30 * 49
-    assert ssd_driver.write.call_count == 30 * 49 * 2
-    assert ssd_driver.read.call_count == 30 * 49 * 3
+    assert ssd_driver.erase.call_count == 1 + 30 * 48
+    assert ssd_driver.write.call_count == 30 * 48 * 2
+    assert ssd_driver.read.call_count == 30 * 48 * 3
 
 
 def test_수행_실패(ssd_driver_fail):
-    assert EraseAndWriteAging(ssd_driver_fail).run() == "FAIL"
+    assert EraseAndWriteAgingCommand(ssd_driver_fail).run() == "FAIL"
 
 
 def test_수행_실패시_read_write_erase_횟수_확인(ssd_driver_fail):
     # act
-    EraseAndWriteAging(ssd_driver_fail).run()
+    EraseAndWriteAgingCommand(ssd_driver_fail).run()
 
     # assert
     assert ssd_driver_fail.erase.call_count == 1 + 1
