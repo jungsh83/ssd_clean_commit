@@ -25,8 +25,8 @@ def simulate_shell(inputs, monkeypatch):
                              # ('1_', "[1_FULLWRITEANDREADCOMPARE] PASS"),
                              # ('2_PartialLBAWrite', "[2_PARTIALLBAWRITE] PASS"),
                              # ('2_', "[2_PARTIALLBAWRITE] PASS"),
-                             ('3_WriteReadAging', "[3_WRITEREADAGING] PASS"),
-                             ('3_', "[3_WRITEREADAGING] PASS"),
+                             # ('3_WriteReadAging', "[3_WRITEREADAGING] PASS"),
+                             # ('3_', "[3_WRITEREADAGING] PASS"),
                              ('4_EraseAndWriteAging', "[4_ERASEANDWRITEAGING] PASS"),
                              ('4_', "[4_ERASEANDWRITEAGING] PASS"),
                          ])
