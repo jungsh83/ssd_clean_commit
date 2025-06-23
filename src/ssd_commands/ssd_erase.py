@@ -1,5 +1,3 @@
-import datetime
-
 from src.ssd_commands import validate_erase_size, validate_lba
 from src.ssd_commands.ssd_command_action import SSDCommand
 from src.ssd_file_manager import SSDFileManager
@@ -25,7 +23,6 @@ class EraseSSDCommand(SSDCommand):
         )
 
     def run(self) -> str:
-        start_date = datetime.datetime.now()
         if not self.validate():
             self._ssd_file_manager.error()
             return "FAIL"
@@ -41,8 +38,6 @@ class EraseSSDCommand(SSDCommand):
         # Command를 buffer에 추가
         self.append_command_into_command_buffer()
 
-        end_date = datetime.datetime.now()
-        print(end_date - start_date)
         return "PASS"
 
     def append_command_into_command_buffer(self):
