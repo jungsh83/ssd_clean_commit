@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from src import ssd_file_manager
-import ssd
+from src import ssd_file_manager, ssd
 
 
 @pytest.fixture(autouse=True)
