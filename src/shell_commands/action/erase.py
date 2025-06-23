@@ -12,8 +12,8 @@ class EraseShellCommand(ShellCommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._input_lba: str = ''
-        self._input_size: str = ''
+        self._input_lba: str = INIT_VAL_STR
+        self._input_size: str = INIT_VAL_STR
 
     def run(self):
         if not self.validate():

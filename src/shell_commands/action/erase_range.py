@@ -9,9 +9,6 @@ class EraseRangeShellCommand(ShellCommandAction):
     _author = 'Gunam Kwon'
     _alias = []
 
-    VALID_ARGUMENT_LEN = 2
-    MAX_ERASE_LEN_ON_SSD_DRIVER = 10
-
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._end_lba = None

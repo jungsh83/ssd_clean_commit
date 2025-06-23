@@ -1,5 +1,5 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-from ..data_dict import VALID_ARGUMENT_SINGLE
+from ..data_dict import VALID_ARGUMENT_SINGLE, INIT_VAL_INT
 
 
 class ReadShellCommand(ShellCommandAction):
@@ -11,7 +11,7 @@ class ReadShellCommand(ShellCommandAction):
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._lba: int = -1
+        self._lba: int = INIT_VAL_INT
 
     def run(self) -> str:
         if not self.validate():
