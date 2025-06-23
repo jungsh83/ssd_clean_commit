@@ -20,8 +20,7 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
     def run(self) -> str:
 
         if not self.validate():
-            msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
-            raise InvalidArgumentException(msg)
+            raise InvalidArgumentException(f"{self.command_name} takes no arguments, but got '{self._arguments}'")
 
         for i in range(25):
             if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
@@ -42,7 +41,6 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, test_value) -> bool:
-
         real_value = self._ssd_driver.read(lba)
         if real_value == test_value:
             return True
