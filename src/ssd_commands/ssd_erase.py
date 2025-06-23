@@ -27,7 +27,7 @@ class SSDWriteCommand(SSDCommand):
             self._ssd_file_manager.error()
             return "FAIL"
 
-        self.lba, self.size = self._arguments[0], self._arguments[1]
+        self.lba, self.size = int(self._arguments[0]), int(self._arguments[1])
 
         if self.size == 0:
             return "PASS"
