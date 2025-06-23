@@ -6,8 +6,8 @@ from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData
 from src.ssd_commands.ssd_write import WriteCommandAction
 
-
 COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
+
 
 @pytest.fixture
 def ssd_file_manager():
