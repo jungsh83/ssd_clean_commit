@@ -1,5 +1,5 @@
-from .ssd_command_action import SSDCommand
-from ..ssd_file_manager import SSDFileManager
+from src.ssd_commands.ssd_command_action import SSDCommand
+from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 
@@ -32,8 +32,7 @@ class SSDWriteCommand(SSDCommand):
             self._ssd_file_manager.error()
             return "FAIL"
 
-        self.lba = self._arguments[0]
-        self.size = self._arguments[1]
+        self.lba, self.size = self._arguments[0], self._arguments[1]
 
         if not self._command_buffer.is_buffer_available():
             self.do_flush()
