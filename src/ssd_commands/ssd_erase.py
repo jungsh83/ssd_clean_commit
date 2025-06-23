@@ -1,10 +1,8 @@
+from src.ssd_commands import validate_erase_size, validate_lba
 from src.ssd_commands.ssd_command_action import SSDCommand
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
-
-LBA_MIN = SSDFileManager.LBA_START_INDEX
-LBA_MAX = SSDFileManager.LBA_START_INDEX + SSDFileManager.LBA_COUNT - 1  # 99
 
 
 class SSDWriteCommand(SSDCommand):
@@ -20,12 +18,9 @@ class SSDWriteCommand(SSDCommand):
         lba_str, size_str = self._arguments
 
         return (
-                self._is_valid_unsigned_int_in_range(lba_str, LBA_MIN, LBA_MAX) and
-                self._is_valid_unsigned_int_in_range(size_str, 0, 10)
+                validate_lba(lba_str) and
+                validate_erase_size(size_str)
         )
-
-    def _is_valid_unsigned_int_in_range(self, str_var: str, lower_bound: int, upper_bound: int) -> bool:
-        return str_var.isdigit() and lower_bound <= int(str_var) <= upper_bound
 
     def run(self) -> str:
         if not self.validate():
