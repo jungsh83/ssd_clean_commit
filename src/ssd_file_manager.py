@@ -55,9 +55,6 @@ class SSDFileManager:
         return value
 
     def write(self, lba: int, value: str) -> None:
-        if not self._is_valid_lba(lba) or not self._is_valid_value(value):
-            self.error()
-            return
         data = self._load_nand()
         data[lba] = value
         self._save_nand(data)
@@ -65,7 +62,7 @@ class SSDFileManager:
             pass
 
     def erase(self, lba: int, size: int) -> None:
-        if not self._is_valid_lba(lba) or not (0 <= size <= 10) or (lba + size > self.LBA_COUNT):
+        if not (0 <= size <= 10) or (lba + size > self.LBA_COUNT):
             self.error()
             return
 
@@ -75,17 +72,6 @@ class SSDFileManager:
         self._save_nand(data)
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             pass
-
-    def _is_valid_lba(self, lba: int) -> bool:
-        return 0 <= lba < self.LBA_COUNT
-
-    def _is_valid_value(self, value: str) -> bool:
-        if not isinstance(value, str) or len(value) != 10:
-            return False
-        if not value.startswith("0x"):
-            return False
-        hex_part = value[2:]
-        return all(c in "0123456789ABCDEF" for c in hex_part)
 
     def error(self):
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
