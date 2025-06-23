@@ -1,5 +1,5 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-from src.data_dict import *
+from ..data_dict import *
 
 
 class EraseRangeShellCommand(ShellCommandAction):
@@ -25,8 +25,8 @@ class EraseRangeShellCommand(ShellCommandAction):
         size = self._get_size(start_lba, end_lba)
 
         total_size = size
-        for offset in range(0, total_size, self.MAX_ERASE_LEN_ON_SSD_DRIVER):
-            cmd_size = min(self.MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
+        for offset in range(0, total_size, MAX_ERASE_LEN_ON_SSD_DRIVER):
+            cmd_size = min(MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
             self._ssd_driver.erase(start_lba + offset, cmd_size)
 
     def _get_lba_range(self) -> (int, int):
@@ -41,7 +41,7 @@ class EraseRangeShellCommand(ShellCommandAction):
         return end_lba - start_lba + 1
 
     def validate(self) -> bool:
-        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
+        if len(self._arguments) != VALID_ARGUMENT_RANGE:
             return False
 
         self._start_lba, self._end_lba = self._arguments
@@ -56,4 +56,4 @@ class EraseRangeShellCommand(ShellCommandAction):
         return True
 
     def get_exception_string(self):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
+        return f"{self.command_name} takes {VALID_ARGUMENT_RANGE} arguments, but got {self._arguments}."
