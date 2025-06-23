@@ -41,4 +41,11 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, expected_value) -> bool:
-        return self._ssd_driver.read(lba) == expected_value
+
+        real_value = self._ssd_driver.read(lba)
+        if real_value == expected_value:
+            return True
+        else:
+            msg = f"Detected Error Value, lba:{lba}, expected_value:{expected_value}, real_value:{real_value}"
+            logger.error(msg)
+            return False
