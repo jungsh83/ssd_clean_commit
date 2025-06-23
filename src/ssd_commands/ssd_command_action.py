@@ -1,5 +1,5 @@
 from src.ssd_file_manager import SSDFileManager
-from src.command_buffer_handler import CommandBufferHandler
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from abc import ABC, abstractmethod
 
 

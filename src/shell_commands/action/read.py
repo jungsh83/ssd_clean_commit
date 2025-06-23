@@ -1,7 +1,7 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 
 
-class ReadCommand(CommandAction):
+class ReadShellCommand(ShellCommandAction):
     command_name: str = 'read'
     _description = 'read value from LBA'
     _usage = 'read <LBA: int [0-99]>'

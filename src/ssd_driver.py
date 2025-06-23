@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-from winreg import FlushKey
 
 VALID_RETURN_CODE = 0
 

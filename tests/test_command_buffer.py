@@ -1,10 +1,8 @@
 import pytest
-from pytest_mock import MockerFixture
-from pathlib import Path
 
-from src.command_buffer_handler import CommandBufferHandler, CommandBufferHandlerException
-from src.command_buffer_data import ERASE, WRITE, EMPTY, ERASE_VALUE, WRITE_SIZE, CommandBufferDataException, CommandBufferData
-
+from src.command_buffer.command_buffer_handler import CommandBufferHandler, CommandBufferHandlerException
+from src.command_buffer.command_buffer_data import ERASE, WRITE, EMPTY, ERASE_VALUE, WRITE_SIZE, CommandBufferDataException, CommandBufferData
+from src.command_buffer.command_buffer_file_manager import CommandBufferFileManager
 
 @pytest.fixture
 def command_buffer():
@@ -22,7 +20,7 @@ def test_initialize_성공(command_buffer):
 
 
 def test_command_buffers_객체_생성_성공_파일_없는_상태():
-    files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
+    files_in_dir = [file for file in CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
     for file in files_in_dir:
         file.unlink(missing_ok=True)
 
@@ -71,27 +69,27 @@ def test_fast_Read_값이_없을_때(command_buffer):
     assert command_buffer.fast_read(4) is None
 
 def test_command_buffers_인자수_부족_2개미만(command_buffer):
-    files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
-    files_in_dir[0].rename("../buffer/test")
+    files_in_dir = [file for file in CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+    files_in_dir[0].rename(CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH / 'test')
     with pytest.raises(CommandBufferDataException):
         new_command_buffer = CommandBufferHandler()
 
-    files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
+    files_in_dir = [file for file in CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
     for file in files_in_dir:
         file.unlink(missing_ok=True)
 
 def test_command_buffers_WRITE_인자수_부족_4개_미만(command_buffer):
-    files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
-    files_in_dir[0].rename("../buffer/1_W_3")
+    files_in_dir = [file for file in CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
+    files_in_dir[0].rename(CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH / '1_W_3')
     with pytest.raises(CommandBufferDataException):
         new_command_buffer = CommandBufferHandler()
 
-    files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
+    files_in_dir = [file for file in CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
     for file in files_in_dir:
         file.unlink(missing_ok=True)
 
 def test_command_buffers_fast_read_성공_파일_없는_상태():
-    files_in_dir = [file for file in Path("../buffer").iterdir() if file.is_file()]
+    files_in_dir = [file for file in CommandBufferFileManager.COMMAND_BUFFER_DIR_PATH.iterdir() if file.is_file()]
     for file in files_in_dir:
         file.unlink(missing_ok=True)
 
