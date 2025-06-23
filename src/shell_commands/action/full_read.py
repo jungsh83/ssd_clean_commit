@@ -1,5 +1,6 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
+from ..data_dict import *
 
 
 class FullReadShellCommand(ShellCommandAction):
@@ -18,7 +19,7 @@ class FullReadShellCommand(ShellCommandAction):
     def _dump_all(self) -> list[str]:
         return [
             f"{lba} {self._ssd_driver.read(lba)}"
-            for lba in range(SSDFileManager.LBA_COUNT)
+            for lba in range(LBA_COUNT)
         ]
 
     def run(self) -> str:

@@ -18,7 +18,7 @@ class FullWriteShellCommand(ShellCommandAction):
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 
-        for lba in range(SSDFileManager.LBA_COUNT):
+        for lba in range(LBA_COUNT):
             self._ssd_driver.write(lba, self._value)
 
     def validate(self) -> bool:

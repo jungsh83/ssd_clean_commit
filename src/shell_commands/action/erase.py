@@ -41,7 +41,7 @@ class EraseShellCommand(ShellCommandAction):
         if not self._is_int_string(self._input_lba) or not self._is_int_string(self._input_size):
             return False
 
-        if not SSDFileManager.LBA_START_INDEX <= int(self._input_lba) < SSDFileManager.LBA_COUNT:
+        if not LBA_START_INDEX <= int(self._input_lba) < LBA_COUNT:
             return False
 
         return True
@@ -56,10 +56,10 @@ class EraseShellCommand(ShellCommandAction):
             start_lba, end_lba = lba, INVALID_LBA
         elif size > 0:
             start_lba = lba
-            end_lba = min(lba + size - 1, SSDFileManager.LBA_COUNT - 1)
+            end_lba = min(lba + size - 1, LBA_COUNT - 1)
         else:
             end_lba = lba
-            start_lba = max(lba + size + 1, SSDFileManager.LBA_START_INDEX)
+            start_lba = max(lba + size + 1, LBA_START_INDEX)
 
         return start_lba, end_lba
 
