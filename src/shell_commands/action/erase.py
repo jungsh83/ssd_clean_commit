@@ -1,8 +1,8 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
 
 
-class EraseCommand(CommandAction):
+class EraseShellCommand(ShellCommandAction):
     command_name: str = 'erase'
     _description = 'Erase value from LBA with size'
     _usage = 'erase <LBA: int [0-99]> <SIZE: int ["-2,147,483,648" - "2,147,483,647"]'

@@ -56,6 +56,8 @@ class _CustomLogger:
         padded_func = f"{class_name}.{func_name}()".ljust(30)
         formatted = f"[{timestamp}] [{level}] {padded_func}: {message}"
 
+        self.LOG_DIR.mkdir(exist_ok=True)
+
         with open(self.LOG_FILE, "a", encoding="utf-8") as f:
             f.write(formatted + "\n")
 

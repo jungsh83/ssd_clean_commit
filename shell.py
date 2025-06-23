@@ -1,4 +1,4 @@
-from src.shell_commands.command_action import CommandAction
+from src.shell_commands.shell_command_action import ShellCommandAction
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 import sys
@@ -9,11 +9,11 @@ EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
 def resolve_command(name):
-    handler = CommandAction.registry.get(name)
+    handler = ShellCommandAction.registry.get(name)
     if handler:
         return handler, name
 
-    for cls in CommandAction.registry.values():
+    for cls in ShellCommandAction.registry.values():
         if name in getattr(cls, '_alias', []):
             return cls, cls.command_name
     return None, name

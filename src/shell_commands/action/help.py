@@ -1,7 +1,7 @@
-from src.shell_commands.command_action import CommandAction, InvalidArgumentException
+from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.decorators import log_call
 
-class HelpCommand(CommandAction):
+class HelpShellCommand(ShellCommandAction):
     command_name: str = 'help'
     _description = 'Show list of available shell_commands.'
     _usage = 'help'
@@ -18,7 +18,7 @@ class HelpCommand(CommandAction):
             raise InvalidArgumentException(
                 f"{self.__class__.command_name} takes no arguments, but got {self._arguments}")
 
-        for name, cls in sorted(CommandAction.registry.items()):
+        for name, cls in sorted(ShellCommandAction.registry.items()):
             print(f"\n▶ {name}")
             print(f"  - Description : {getattr(cls, '_description', 'No description')}")
             print(f"  - Usage       : {getattr(cls, '_usage', 'No usage')}")
