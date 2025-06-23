@@ -1,3 +1,4 @@
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
 
@@ -13,11 +14,13 @@ class EraseShellCommand(ShellCommandAction):
     INVALID_LBA = -1  # Erase Size 0일 경우, 사용
     MAX_ERASE_LEN_ON_SSD_DRIVER = 10
 
+    @log_call(level="INFO")
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._input_lba: str = None
         self._input_size: str = None
 
+    @log_call(level="INFO")
     def run(self):
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())
