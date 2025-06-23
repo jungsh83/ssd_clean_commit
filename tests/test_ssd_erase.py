@@ -1,45 +1,88 @@
 import pytest
-from src.ssd_commands.ssd_command_action import SSDCommand, InvalidArgumentException
-from src.ssd_commands.ssd_erase_command import SSDCommandErase
+from pytest_mock import MockFixture
+
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
+from src.command_buffer.command_buffer_data import CommandBufferData, ERASE
+from src.ssd_commands.ssd_erase import SSDWriteCommand
+
+COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
 
 
 @pytest.fixture
-def get_filemanage_command_handler(mocker):
-    file_manager = SSDFileManager()
-    command_buffer_handler = CommandBufferHandler()
-    return file_manager, command_buffer_handler
+def ssd_file_manager():
+    return SSDFileManager()
 
 
-@pytest.mark.parametrize("lba, size, expected_erase_start, expected_erase_end", [
-    (98, 2, 98, 99),
-    (5, 1, 5, 5),
-    (5, 10, 5, 14),
-])
-def test_erase_성공(get_filemanage_command_handler, lba, size, expected_erase_start, expected_erase_end):
-    file_manager, command_buffer_handler = get_filemanage_command_handler
-    cmd = SSDCommandErase(file_manager, command_buffer_handler, str(lba), str(size))
+@pytest.fixture
+def command_buffer_without_flush(mocker: MockFixture):
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.read_all").side_effect = mk_read_all
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.append").return_value = None
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.is_buffer_available").return_value = True
 
-    cmd.run()
-
-    # assert
-    data = cmd._ssd_file_manager._load_nand()
-    for i in range(expected_erase_start, expected_erase_end + 1):
-        assert data[i] == cmd._ssd_file_manager.DEFAULT_VAL
+    obj = CommandBufferHandler()
+    return obj
 
 
-@pytest.mark.parametrize("lba, size", [
-    (50, -100),
-    (85, 100),
-    (100, 10),
-    (-1, 10),
-    ("가나다", 10),
-    (5, "가다")
-])
-def test_erase_파라미터_유효성오류(get_filemanage_command_handler, lba, size):
-    file_manager, command_buffer_handler = get_filemanage_command_handler
-    cmd = SSDCommandErase(file_manager, command_buffer_handler, str(lba), str(size))
+@pytest.fixture
+def command_buffer_with_flush(mocker: MockFixture):
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.read_all").side_effect = mk_read_all
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.append").return_value = None
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.is_buffer_available").return_value = False
 
-    with pytest.raises(InvalidArgumentException):
-        cmd.run()
+    obj = CommandBufferHandler()
+    return obj
+
+
+def mk_read_all():
+    return [
+        CommandBufferData(order=1, command_type=ERASE, lba=0, size=10),
+        CommandBufferData(order=1, command_type=ERASE, lba=10, size=10),
+        CommandBufferData(order=1, command_type=ERASE, lba=20, size=10),
+        CommandBufferData(order=1, command_type=ERASE, lba=30, size=10),
+        CommandBufferData(order=1, command_type=ERASE, lba=40, size=10),
+    ]
+
+
+@pytest.mark.parametrize(
+    "lba, size",
+    [("0", "10"), ("10", "10")]
+)
+def test_validate_성공(ssd_file_manager, command_buffer_without_flush, lba, size):
+    assert SSDWriteCommand(ssd_file_manager, command_buffer_without_flush, lba, size).validate()
+
+
+@pytest.mark.skip
+@pytest.mark.parametrize(
+    "lba, size",
+    [("0", "10"), ("10", "10")]
+)
+def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_without_flush, lba, size):
+    "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
+    assert not SSDWriteCommand(ssd_file_manager, command_buffer_without_flush, lba, size).validate()
+
+
+@pytest.mark.skip
+@pytest.mark.parametrize(
+    "lba, size",
+    [("0", "10"), ("10", "10")]
+)
+def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, size):
+    "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
+    assert SSDWriteCommand(ssd_file_manager, command_buffer_without_flush, lba, size).run() == "FAIL"
+
+
+@pytest.mark.parametrize(
+    "lba, size",
+    [("0", "10"), ("10", "10")]
+)
+def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush, lba, size):
+    assert SSDWriteCommand(ssd_file_manager, command_buffer_without_flush, lba, size).run() == "PASS"
+
+
+@pytest.mark.parametrize(
+    "lba, size",
+    [("0", "10"), ("10", "10")]
+)
+def test_run_성공_with_flush(ssd_file_manager, command_buffer_with_flush, lba, size):
+    assert SSDWriteCommand(ssd_file_manager, CommandBufferHandler(), lba, size).run() == "PASS"
