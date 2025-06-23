@@ -1,5 +1,5 @@
 from src.ssd_commands import validate_erase_size, validate_lba
-from src.ssd_commands.ssd_command_action import SSDCommand
+from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
@@ -22,7 +22,7 @@ class EraseSSDCommand(SSDCommand):
                 validate_erase_size(size_str)
         )
 
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
             return "FAIL"
