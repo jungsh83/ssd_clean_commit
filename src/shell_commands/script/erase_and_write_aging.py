@@ -28,7 +28,7 @@ class EraseAndWriteAgingCommand(ShellCommandAction):
         self._ssd_driver.erase(0, 2)
 
         for _ in range(30):
-            for start_lba in range(2, 100, 2):
+            for start_lba in range(2, 97, 2):
                 if not self.run_single_test(start_lba):
                     return "FAIL"
 
