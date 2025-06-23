@@ -3,7 +3,7 @@ from pytest_mock import MockFixture
 
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.command_buffer.command_buffer_data import CommandBufferData
+from src.command_buffer.command_buffer_data import CommandBufferData, WRITE
 from src.ssd_commands.ssd_write import WriteCommandAction
 
 COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
@@ -36,11 +36,11 @@ def command_buffer_with_flush(mocker: MockFixture):
 
 def mk_read_all():
     return [
-        CommandBufferData(order=1, command_type="W", lba=0, value="0x00000000"),
-        CommandBufferData(order=1, command_type="W", lba=1, value="0x00000001"),
-        CommandBufferData(order=1, command_type="W", lba=2, value="0x00000002"),
-        CommandBufferData(order=1, command_type="W", lba=3, value="0x00000003"),
-        CommandBufferData(order=1, command_type="W", lba=4, value="0x00000004"),
+        CommandBufferData(order=1, command_type=WRITE, lba=0, value="0x00000000"),
+        CommandBufferData(order=1, command_type=WRITE, lba=1, value="0x00000001"),
+        CommandBufferData(order=1, command_type=WRITE, lba=2, value="0x00000002"),
+        CommandBufferData(order=1, command_type=WRITE, lba=3, value="0x00000003"),
+        CommandBufferData(order=1, command_type=WRITE, lba=4, value="0x00000004"),
     ]
 
 
