@@ -25,12 +25,12 @@ def main(args: list[str]):
     command_str = args[0]
     command_args = args[1:]
 
-    CommandClass = SSD_COMMANDS.get(command_str)
-    if not CommandClass:
+    command_class = SSD_COMMANDS.get(command_str)
+    if not command_class:
         SSDFileManager().error()
         return
 
-    command = CommandClass(SSDFileManager(), CommandBuffer(), *command_args)
+    command = command_class(SSDFileManager(), CommandBuffer(), *command_args)
 
     try:
         command.run()
