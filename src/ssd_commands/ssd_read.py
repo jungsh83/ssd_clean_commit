@@ -1,4 +1,5 @@
 from src.ssd_commands.ssd_command_action import SSDCommand, InvalidArgumentException
+from src.ssd_commands import validate_lba, validate_value
 
 
 class ReadCommand(SSDCommand):
@@ -11,7 +12,7 @@ class ReadCommand(SSDCommand):
     def validate(self) -> bool:
         if len(self._arguments) != 1:
             return False
-        if not str(self._arguments[0]).isdigit():
+        if not validate_lba(self._arguments[0]):
             return False
 
         self._lba = int(self._arguments[0])

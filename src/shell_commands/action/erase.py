@@ -9,11 +9,13 @@ class EraseShellCommand(ShellCommandAction):
     _author = 'Gunam Kwon'
     _alias: list[str] = []
 
+    @log_call(level="INFO")
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._input_lba: str = INIT_VAL_STR
         self._input_size: str = INIT_VAL_STR
 
+    @log_call(level="INFO")
     def run(self):
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())

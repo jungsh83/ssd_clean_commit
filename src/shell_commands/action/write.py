@@ -1,3 +1,4 @@
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from ..data_dict import VALID_ARGUMENT_RANGE, INIT_VAL_INT, INIT_VAL_STR
 
@@ -9,11 +10,14 @@ class WriteShellCommand(ShellCommandAction):
     _author = 'Gunam Kwon'
     _alias = []
 
+
+    @log_call(level="INFO")
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._value: str = INIT_VAL_STR
         self._lba: int = INIT_VAL_INT
 
+    @log_call(level="INFO")
     def run(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())

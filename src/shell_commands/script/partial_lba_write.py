@@ -1,5 +1,6 @@
 import random
-
+from src.logger import LoggerSingleton
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from ..data_dict import START_TEST_VALUE
 
@@ -15,6 +16,7 @@ class PartialLBAWriteShellCommand(ShellCommandAction):
         super().__init__(ssd_driver, *args)
         self.test_value = START_TEST_VALUE
 
+    @log_call(level="INFO")
     def run(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
@@ -27,8 +29,14 @@ class PartialLBAWriteShellCommand(ShellCommandAction):
 
     def _is_read_compare_failed(self):
         for read_lba in range(5):
-            if self._get_test_value() != self._ssd_driver.read(read_lba):
+            test_value = self._get_test_value()
+            real_value = self._ssd_driver.read(read_lba)
+
+            if test_value != real_value:
+                msg = f"Detected Error Value, lba:{read_lba}, test_value:{test_value}, real_value:{real_value}"
+                logger.error(msg)
                 return True
+
         return False
 
     def _bulk_write(self):

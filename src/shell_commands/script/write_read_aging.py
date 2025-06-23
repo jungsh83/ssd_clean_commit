@@ -1,7 +1,12 @@
 import random
+from src.logger import LoggerSingleton
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.data_dict import LBA_START_INDEX, LBA_COUNT
+
 from ..data_dict import *
 
+logger = LoggerSingleton.get_logger()
 
 class WriteReadAgingShellCommand(ShellCommandAction):
     command_name: str = "3_WriteReadAging"
@@ -13,6 +18,7 @@ class WriteReadAgingShellCommand(ShellCommandAction):
     def validate(self) -> bool:
         return self._arguments == ()
 
+    @log_call(level="INFO")
     def run(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
@@ -37,4 +43,9 @@ class WriteReadAgingShellCommand(ShellCommandAction):
         self._ssd_driver.write(lba, test_value)
         read_value = self._ssd_driver.read(lba)
 
-        return read_value != test_value
+        if read_value != test_value:
+            msg = f"Detected Error Value, lba:{lba}, test_value:{test_value}, read_value:{read_value}"
+            logger.error(msg)
+            return True
+        else:
+            return False

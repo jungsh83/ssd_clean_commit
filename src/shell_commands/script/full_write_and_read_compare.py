@@ -1,5 +1,9 @@
 import random
+from src.logger import LoggerSingleton
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+
+logger = LoggerSingleton.get_logger()
 
 
 class FullWriteAndReadCompareShellCommand(ShellCommandAction):
@@ -12,6 +16,7 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
     def validate(self) -> bool:
         return self._arguments == ()
 
+    @log_call(level="INFO")
     def run(self) -> str:
 
         if not self.validate():
@@ -37,4 +42,11 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, test_value) -> bool:
-        return self._ssd_driver.read(lba) == test_value
+
+        real_value = self._ssd_driver.read(lba)
+        if real_value == test_value:
+            return True
+        else:
+            msg = f"Detected Error Value, lba:{lba}, expected_value:{test_value}, real_value:{real_value}"
+            logger.error(msg)
+            return False

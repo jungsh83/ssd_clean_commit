@@ -48,9 +48,6 @@ class SSDFileManager:
         return value
 
     def write(self, lba: int, value: str) -> None:
-        if not self._is_valid_lba(lba) or not self._is_valid_value(value):
-            self.error()
-            return
         data = self._load_nand()
         data[lba] = value
         self._save_nand(data)
@@ -58,7 +55,7 @@ class SSDFileManager:
             pass
 
     def erase(self, lba: int, size: int) -> None:
-        if not self._is_valid_lba(lba) or not (0 <= size <= 10) or (lba + size > LBA_COUNT):
+        if not (0 <= size <= 10) or (lba + size > LBA_COUNT):
             self.error()
             return
 
