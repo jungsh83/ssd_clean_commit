@@ -1,3 +1,4 @@
+from src.ssd_commands import validate_lba, validate_value
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData
@@ -37,10 +38,10 @@ class WriteCommandAction(SSDCommand):
         self.lba = int(self._arguments[0])
         self.value = self._arguments[1]
 
-        if not self._ssd_file_manager._is_valid_lba(self.lba):
+        if not validate_lba(self.lba):
             return False
 
-        if not self._ssd_file_manager._is_valid_value(self.value):
+        if not validate_value(self.value):
             return False
 
         return True
