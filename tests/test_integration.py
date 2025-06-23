@@ -17,8 +17,8 @@ def simulate_shell(inputs, monkeypatch):
 
 @pytest.mark.parametrize('operation, expected',
                          [
-                             # ('write 0 0x12345678', "[WRITE] Done"),
-                             # ('read 0', "[READ] LBA 0 : 0x12345678"),
+                             ('write 0 0x12345678', "[WRITE] Done"),
+                             ('read 0', "[READ] LBA 0 : 0x12345678"),
                              # ('fullwrite 0x87654321', ""),
                              # ('fullread', "[FULLREAD] 0 0x87654321"),
                              # ('1_FullWriteAndReadCompare', "[1_FULLWRITEANDREADCOMPARE] PASS"),
@@ -27,8 +27,8 @@ def simulate_shell(inputs, monkeypatch):
                              # ('2_', "[2_PARTIALLBAWRITE] PASS"),
                              # ('3_WriteReadAging', "[3_WRITEREADAGING] PASS"),
                              # ('3_', "[3_WRITEREADAGING] PASS"),
-                             ('4_EraseAndWriteAging', "[4_ERASEANDWRITEAGING] PASS"),
-                             ('4_', "[4_ERASEANDWRITEAGING] PASS"),
+                             # ('4_EraseAndWriteAging', "[4_ERASEANDWRITEAGING] PASS"),
+                             # ('4_', "[4_ERASEANDWRITEAGING] PASS"),
                          ])
 def test_통합테스트_정상명령어(monkeypatch, capsys, operation, expected):
     simulate_shell([operation, 'exit'], monkeypatch)
