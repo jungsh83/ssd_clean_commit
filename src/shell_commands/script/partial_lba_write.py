@@ -4,6 +4,8 @@ from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from ..data_dict import START_TEST_VALUE
 
+logger = LoggerSingleton.get_logger()
+
 
 class PartialLBAWriteShellCommand(ShellCommandAction):
     command_name: str = "2_PartialLBAWrite"
