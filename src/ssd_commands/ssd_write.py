@@ -1,7 +1,7 @@
 from src.ssd_commands import validate_lba, validate_value
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.command_buffer.command_buffer_data import CommandBufferData
+from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 from src.ssd_commands.ssd_command_action import SSDCommand
 
 
@@ -20,7 +20,7 @@ class WriteCommandAction(SSDCommand):
         # Buffer가 가득차 있다면 flush 수행
         if not self._command_buffer.is_buffer_available():
             self.do_flush()
-        
+
         # Command를 buffer에 추가
         self.append_command_into_command_buffer()
 
@@ -47,18 +47,12 @@ class WriteCommandAction(SSDCommand):
         return True
 
     def do_flush(self):
-        """
-
-        :return:
-        """
-
         # command들을 fileManager를 통해 수행
         for command in self._command_buffer.command_buffers:
-            match command.command_type:
-                case "W":
-                    self._ssd_file_manager.write(command.lba, command.value)
-                case "E":
-                    self._ssd_file_manager.erase(command.lba, command.size)
+            if command.command_type == WRITE:
+                self._ssd_file_manager.write(command.lba, command.value)
+            elif command.command_type == ERASE:
+                self._ssd_file_manager.erase(command.lba, command.size)
 
         # command buffer를 초기화
         self._command_buffer.initialize()
