@@ -2,16 +2,16 @@ import sys
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_commands.ssd_command_action import InvalidArgumentException
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.ssd_commands.ssd_read import ReadCommand
-from src.ssd_commands.ssd_write import WriteCommandAction
-from src.ssd_commands.ssd_erase import SSDWriteCommand
-from src.ssd_commands.ssd_flush import SSDFlushCommand
+from src.ssd_commands.ssd_read import ReadSSDCommand
+from src.ssd_commands.ssd_write import WriteSSDCommand
+from src.ssd_commands.ssd_erase import EraseSSDCommand
+from src.ssd_commands.ssd_flush import FlushSSDCommand
 
 SSD_COMMANDS = {
-    'R': ReadCommand,
-    'W': WriteCommandAction,
-    'E': SSDWriteCommand,
-    'F': SSDFlushCommand,
+    'R': ReadSSDCommand,
+    'W': WriteSSDCommand,
+    'E': EraseSSDCommand,
+    'F': FlushSSDCommand,
 }
 
 

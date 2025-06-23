@@ -25,7 +25,7 @@ class SSDDriver:
     _instance = None
 
     VENV_PYTHON_PATH = Path(__file__).parent.parent / ".venv/Scripts/python.exe"
-    COMMAND_PATH = Path(__file__).parent / "ssd_file_manager.py"
+    COMMAND_PATH = Path(__file__).parent.parent / "ssd.py"
     OUTPUT_TXT_PATH = Path(__file__).parent.parent / "data/ssd_output.txt"
     READ_TOKEN = 'R'
     WRITE_TOKEN = 'W'

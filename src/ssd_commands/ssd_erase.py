@@ -1,3 +1,5 @@
+import datetime
+
 from src.ssd_commands import validate_erase_size, validate_lba
 from src.ssd_commands.ssd_command_action import SSDCommand
 from src.ssd_file_manager import SSDFileManager
@@ -5,7 +7,7 @@ from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 
 
-class SSDWriteCommand(SSDCommand):
+class EraseSSDCommand(SSDCommand):
     def __init__(self, ssd_file_manager: SSDFileManager, command_buffer: CommandBufferHandler, *args):
         super().__init__(ssd_file_manager, command_buffer, *args)
         self.lba = -1
@@ -23,11 +25,12 @@ class SSDWriteCommand(SSDCommand):
         )
 
     def run(self) -> str:
+        start_date = datetime.datetime.now()
         if not self.validate():
             self._ssd_file_manager.error()
             return "FAIL"
 
-        self.lba, self.size = self._arguments[0], self._arguments[1]
+        self.lba, self.size = int(self._arguments[0]), int(self._arguments[1])
 
         if self.size == 0:
             return "PASS"
@@ -38,6 +41,8 @@ class SSDWriteCommand(SSDCommand):
         # Command를 buffer에 추가
         self.append_command_into_command_buffer()
 
+        end_date = datetime.datetime.now()
+        print(end_date - start_date)
         return "PASS"
 
     def append_command_into_command_buffer(self):
