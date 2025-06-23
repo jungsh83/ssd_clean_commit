@@ -4,7 +4,6 @@ from winreg import FlushKey
 from .data_dict import VALID_RETURN_CODE
 
 
-
 class ReadException(Exception):
     __module__ = "builtins"
 

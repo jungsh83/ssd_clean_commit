@@ -4,7 +4,6 @@ from src.shell_commands.shell_command_action import ShellCommandAction, InvalidA
 from ..data_dict import START_TEST_VALUE
 
 
-
 class PartialLBAWriteShellCommand(ShellCommandAction):
     command_name: str = "2_PartialLBAWrite"
     _description = 'Execute test scenario: Partial LBA Write'
@@ -41,7 +40,8 @@ class PartialLBAWriteShellCommand(ShellCommandAction):
     def _get_test_value(self):
         return f'0x{self.test_value}'
 
-    def _generate_order(self) -> list[int]:
+    @staticmethod
+    def _generate_order() -> list[int]:
         orders = list(range(5))  # [0, 1, 2, 3, 4]
         random.shuffle(orders)
 

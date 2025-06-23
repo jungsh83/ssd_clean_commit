@@ -10,7 +10,6 @@ class ReadCommand(SSDCommand):
 
     def validate(self) -> bool:
         if len(self._arguments) != 1:
-
             return False
         if not str(self._arguments[0]).isdigit():
             return False
