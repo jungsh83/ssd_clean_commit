@@ -85,4 +85,13 @@ def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush
     [("0", "10"), ("10", "10")]
 )
 def test_run_성공_with_flush(ssd_file_manager, command_buffer_with_flush, lba, size):
-    assert SSDWriteCommand(ssd_file_manager, CommandBufferHandler(), lba, size).run() == "PASS"
+    sut = SSDWriteCommand(ssd_file_manager, CommandBufferHandler(), lba, size)
+    assert sut.run() == "PASS"
+
+    expected_start_lba = int(lba)
+    expected_end_lba = expected_start_lba + int(size) -1
+
+    data = sut._ssd_file_manager._load_nand()
+
+    for i in range(expected_start_lba, expected_end_lba + 1):
+        assert data[i] == sut._ssd_file_manager.DEFAULT_VAL
