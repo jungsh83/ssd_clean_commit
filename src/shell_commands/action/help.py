@@ -1,6 +1,7 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.decorators import log_call
 
+
 class HelpShellCommand(ShellCommandAction):
     command_name: str = 'help'
     _description = 'Show list of available shell_commands.'

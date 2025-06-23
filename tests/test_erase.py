@@ -3,6 +3,7 @@ import pytest
 from src import EraseShellCommand
 from src.shell_commands.shell_command_action import InvalidArgumentException
 from src.ssd_driver import SSDDriver
+from src.data_dict import *
 
 
 @pytest.fixture

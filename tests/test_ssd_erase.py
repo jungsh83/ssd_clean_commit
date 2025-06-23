@@ -5,6 +5,7 @@ from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, ERASE
 from src.ssd_commands.ssd_erase import SSDWriteCommand
+from src.data_dict import DEFAULT_VAL
 
 COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
 
@@ -89,9 +90,9 @@ def test_run_성공_with_flush(ssd_file_manager, command_buffer_with_flush, lba,
     assert sut.run() == "PASS"
 
     expected_start_lba = int(lba)
-    expected_end_lba = expected_start_lba + int(size) -1
+    expected_end_lba = expected_start_lba + int(size) - 1
 
     data = sut._ssd_file_manager._load_nand()
 
     for i in range(expected_start_lba, expected_end_lba + 1):
-        assert data[i] == sut._ssd_file_manager.DEFAULT_VAL
+        assert data[i] == DEFAULT_VAL

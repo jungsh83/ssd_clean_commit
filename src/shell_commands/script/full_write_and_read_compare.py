@@ -37,7 +37,8 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
 
         return True
 
-    def generate_test_value(self):
+    @staticmethod
+    def generate_test_value():
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, test_value) -> bool:

@@ -4,7 +4,7 @@ from src.shell_commands.shell_command_action import InvalidArgumentException
 from src.shell_commands.action.full_write import FullWriteShellCommand
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
-
+from src.data_dict import *
 
 @pytest.fixture
 def mock_ssd_driver(mocker):
@@ -18,7 +18,7 @@ def test_full_write_command_성공(mock_ssd_driver):
 
     full_write_cmd.run()
 
-    assert mock_ssd_driver.write.call_count == SSDFileManager.LBA_COUNT
+    assert mock_ssd_driver.write.call_count == LBA_COUNT
 
 
 def test_full_write_command_유효성검사_Param개수_부족(mock_ssd_driver):

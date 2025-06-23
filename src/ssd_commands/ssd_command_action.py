@@ -10,7 +10,7 @@ class InvalidArgumentException(Exception):
 class SSDCommand(ABC):
     registry = {}
 
-    def __init__(self, ssd_file_manager:SSDFileManager, command_buffer:CommandBufferHandler, *args):
+    def __init__(self, ssd_file_manager: SSDFileManager, command_buffer: CommandBufferHandler, *args):
         self._ssd_file_manager = ssd_file_manager
         self._command_buffer = command_buffer
         self._arguments = args

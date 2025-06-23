@@ -30,10 +30,10 @@ class IgnoreCommandStrategy(CommandBufferOptimizeStrategy):
     def _append_unoverwritten_command(self, new_command_buffers, new_order, source_command):
         new_order += 1
         new_command_buffers.append(CommandBufferData(order=new_order,
-                                                command_type=source_command.command_type,
-                                                lba=source_command.lba,
-                                                value=source_command.value,
-                                                size=source_command.size))
+                                                     command_type=source_command.command_type,
+                                                     lba=source_command.lba,
+                                                     value=source_command.value,
+                                                     size=source_command.size))
         return new_order
 
     def _append_empty(self, new_command_buffers, new_order):
