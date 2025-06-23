@@ -5,7 +5,7 @@ class InvalidArgumentException(Exception):
     __module__ = 'builtins'
 
 
-class CommandAction(ABC):
+class ShellCommandAction(ABC):
     registry = {}
     _team_name = 'C-team (Clean Commit)'
 
@@ -16,7 +16,7 @@ class CommandAction(ABC):
     def __init_subclass__(cls):
         super().__init_subclass__()
         if hasattr(cls, 'command_name'):
-            CommandAction.registry[cls.command_name] = cls
+            ShellCommandAction.registry[cls.command_name] = cls
 
     @abstractmethod
     def run(self) -> str:

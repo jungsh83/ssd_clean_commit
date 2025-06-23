@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from src.command_buffer_data import MAX_SIZE_OF_COMMAND_BUFFERS, CommandBufferData, CommandBufferDataException
+from src.command_buffer.command_buffer_data import MAX_SIZE_OF_COMMAND_BUFFERS, CommandBufferData
 
 
 class CommandBufferFileManager:
-    BASE_DIR = Path(__file__).parent.parent
+    BASE_DIR = Path(__file__).parent.parent.parent
     COMMAND_BUFFER_DIR_PATH = BASE_DIR / 'buffer'
 
     def __init__(self):

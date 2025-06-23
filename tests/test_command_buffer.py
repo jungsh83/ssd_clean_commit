@@ -1,9 +1,8 @@
 import pytest
-from pytest_mock import MockerFixture
 from pathlib import Path
 
-from src.command_buffer_handler import CommandBufferHandler, CommandBufferHandlerException
-from src.command_buffer_data import ERASE, WRITE, EMPTY, ERASE_VALUE, WRITE_SIZE, CommandBufferDataException, CommandBufferData
+from src.command_buffer.command_buffer_handler import CommandBufferHandler, CommandBufferHandlerException
+from src.command_buffer.command_buffer_data import ERASE, WRITE, EMPTY, ERASE_VALUE, WRITE_SIZE, CommandBufferDataException, CommandBufferData
 
 
 @pytest.fixture

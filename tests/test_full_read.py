@@ -1,7 +1,7 @@
 import pytest
 
-from src.shell_commands.command_action import InvalidArgumentException
-from src.shell_commands.full_read import FullReadCommand
+from src.shell_commands.shell_command_action import InvalidArgumentException
+from src.shell_commands.action.full_read import FullReadShellCommand
 from src.ssd_file_manager import SSDFileManager
 
 
@@ -14,18 +14,18 @@ def ssd_driver(mocker):
 
 
 def test_fullread_100줄_출력확인(ssd_driver):
-    result = FullReadCommand(ssd_driver).run()
+    result = FullReadShellCommand(ssd_driver).run()
     assert len(result.splitlines()) == SSDFileManager.LBA_COUNT
 
 
 def test_fullread_첫줄_LBA0_값확인(ssd_driver):
-    result = FullReadCommand(ssd_driver).run()
+    result = FullReadShellCommand(ssd_driver).run()
     first = result.splitlines()[0]
     assert first == "0 0x00000000"
 
 
 def test_fullread_마지막줄_LBA99_값확인(ssd_driver):
-    result = FullReadCommand(ssd_driver).run()
+    result = FullReadShellCommand(ssd_driver).run()
     last = result.splitlines()[-1]
 
     indent = " " * 11  # 줄 앞에 들어가는 11칸 공백
@@ -35,4 +35,4 @@ def test_fullread_마지막줄_LBA99_값확인(ssd_driver):
 
 def test_fullread_유효성범위검사(ssd_driver):
     with pytest.raises(InvalidArgumentException):
-        FullReadCommand(ssd_driver, "dummy").run()
+        FullReadShellCommand(ssd_driver, "dummy").run()
