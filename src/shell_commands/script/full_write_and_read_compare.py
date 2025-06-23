@@ -1,5 +1,9 @@
 import random
+from src.logger import LoggerSingleton
+from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+
+logger = LoggerSingleton.get_logger()
 
 
 class FullWriteAndReadCompareShellCommand(ShellCommandAction):
@@ -12,6 +16,7 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
     def validate(self) -> bool:
         return self._arguments == ()
 
+    @log_call(level="INFO")
     def run(self) -> str:
 
         if not self.validate():
