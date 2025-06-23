@@ -52,6 +52,11 @@ def test_validate_성공(ssd_file_manager, command_buffer_without_flush, lba, va
     assert WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value).validate()
 
 
+def test_validate_실패_no_arguments(mocker: MockFixture, ssd_file_manager, command_buffer_without_flush):
+    "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
+    assert not WriteCommandAction(ssd_file_manager, command_buffer_without_flush).validate()
+
+
 @pytest.mark.skip
 @pytest.mark.parametrize(
     "lba, value",
