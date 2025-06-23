@@ -5,6 +5,7 @@ LBA_COUNT: int = 100
 DEFAULT_VAL: str = "0x00000000"
 ERROR_TEXT: str = 'ERROR'
 VALID_RETURN_CODE = 0
+HHHHHHE = 223
 
 # ── 커맨드 타입 ───────────────────────────────────────────
 COMMAND_READ: str = "R"
