@@ -1,4 +1,5 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from ..data_dict import VALID_ARGUMENT_SINGLE
 
 
 class ReadShellCommand(ShellCommandAction):
@@ -8,23 +9,21 @@ class ReadShellCommand(ShellCommandAction):
     _author = 'Gunam Kwon'
     _alias = []
 
-    VALID_ARGUMENT_LEN = 1
-
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
-        self._LBA = None
+        self._lba: int = -1
 
     def run(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 
-        return self.print_output(self._LBA, self._ssd_driver.read(self._LBA))
+        return self.print_output(self._lba, self._ssd_driver.read(self._lba))
 
     def validate(self) -> bool:
-        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
+        if len(self._arguments) != VALID_ARGUMENT_SINGLE:
             return False
 
-        self._LBA: int = self._arguments[0]
+        self._lba: int = self._arguments[0]
 
         return True
 
@@ -33,4 +32,4 @@ class ReadShellCommand(ShellCommandAction):
         return f'LBA {lba} : {value}'
 
     def get_exception_string(self):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
+        return f"{self.command_name} takes {VALID_ARGUMENT_SINGLE} arguments, but got {self._arguments}."
