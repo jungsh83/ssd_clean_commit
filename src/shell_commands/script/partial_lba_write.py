@@ -2,9 +2,9 @@ import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from ..data_dict import START_TEST_VALUE
 
 logger = LoggerSingleton.get_logger()
-START_TEST_VALUE = 10000000
 
 
 class PartialLBAWriteShellCommand(ShellCommandAction):
@@ -50,7 +50,8 @@ class PartialLBAWriteShellCommand(ShellCommandAction):
     def _get_test_value(self):
         return f'0x{self.test_value}'
 
-    def _generate_order(self) -> list[int]:
+    @staticmethod
+    def _generate_order() -> list[int]:
         orders = list(range(5))  # [0, 1, 2, 3, 4]
         random.shuffle(orders)
 

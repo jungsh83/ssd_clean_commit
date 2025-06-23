@@ -4,6 +4,8 @@ from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.data_dict import LBA_START_INDEX, LBA_COUNT
 
+from ..data_dict import *
+
 logger = LoggerSingleton.get_logger()
 
 class WriteReadAgingShellCommand(ShellCommandAction):

@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from src.command_buffer.command_buffer_data import MAX_SIZE_OF_COMMAND_BUFFERS, CommandBufferData
 
 

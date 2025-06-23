@@ -1,5 +1,4 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-import sys
 from src.decorators import log_call
 
 
