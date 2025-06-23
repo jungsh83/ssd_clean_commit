@@ -7,6 +7,8 @@ from src.command_buffer.command_buffer_data import CommandBufferData
 from src.ssd_commands.ssd_write import WriteCommandAction
 
 
+COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
+
 @pytest.fixture
 def ssd_file_manager():
     return SSDFileManager()
@@ -14,9 +16,9 @@ def ssd_file_manager():
 
 @pytest.fixture
 def command_buffer_without_flush(mocker: MockFixture):
-    mocker.patch("src.command_buffer.command_buffer_handler.CommandBufferHandler.read_all").side_effect = mk_read_all
-    mocker.patch("src.command_buffer.command_buffer_handler.CommandBufferHandler.append").return_value = None
-    mocker.patch("src.command_buffer.command_buffer_handler.CommandBufferHandler.is_buffer_available").return_value = True
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.read_all").side_effect = mk_read_all
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.append").return_value = None
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.is_buffer_available").return_value = True
 
     obj = CommandBufferHandler()
     return obj
@@ -24,9 +26,9 @@ def command_buffer_without_flush(mocker: MockFixture):
 
 @pytest.fixture
 def command_buffer_with_flush(mocker: MockFixture):
-    mocker.patch("src.command_buffer.command_buffer_handler.CommandBufferHandler.read_all").side_effect = mk_read_all
-    mocker.patch("src.command_buffer.command_buffer_handler.CommandBufferHandler.append").return_value = None
-    mocker.patch("src.command_buffer.command_buffer_handler.CommandBufferHandler.is_buffer_available").return_value = False
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.read_all").side_effect = mk_read_all
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.append").return_value = None
+    mocker.patch(f"{COMMAND_BUFFER_HANDLER_CLASS}.is_buffer_available").return_value = False
 
     obj = CommandBufferHandler()
     return obj
