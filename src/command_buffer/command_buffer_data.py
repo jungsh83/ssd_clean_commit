@@ -1,12 +1,5 @@
 from dataclasses import dataclass
-
-MAX_SIZE_OF_COMMAND_BUFFERS = 5
-ERASE_VALUE = "0x00000000"
-ERASE_CHUNK_SIZE = 10
-WRITE_SIZE = 1
-ERASE = 'E'
-WRITE = 'W'
-EMPTY = 'empty'
+from .data_dict import *
 
 
 class CommandBufferDataException(Exception):
