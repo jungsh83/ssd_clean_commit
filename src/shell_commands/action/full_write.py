@@ -1,9 +1,9 @@
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import *
 
 
-class FullWriteShellCommand(ShellCommandAction):
+class FullWriteShellCommand(ShellCommand):
     command_name: str = 'fullwrite'
     _description = 'write value to all of LBAs'
     _usage = 'fullwrite <value: hex32bit, e.g. 0x12345678>'
@@ -15,7 +15,7 @@ class FullWriteShellCommand(ShellCommandAction):
         self._value = None
 
     @log_call(level="INFO")
-    def run(self) -> None:
+    def execute(self) -> None:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 

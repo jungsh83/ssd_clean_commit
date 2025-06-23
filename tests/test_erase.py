@@ -1,7 +1,7 @@
 import pytest
 
 from src import EraseShellCommand
-from src.shell_commands.shell_command_action import InvalidArgumentException
+from src.shell_commands.shell_command import InvalidArgumentException
 from src.ssd_driver import SSDDriver
 from src.data_dict import *
 
@@ -26,7 +26,7 @@ def ssd_driver_mock(mocker):
 def test_erase_command_call_count_확인(lba, size, expected_call_count, ssd_driver_mock):
     erase_cmd = EraseShellCommand(ssd_driver_mock, lba, size)
 
-    erase_cmd.run()
+    erase_cmd.execute()
 
     assert ssd_driver_mock.erase.call_count == expected_call_count
 
@@ -46,7 +46,7 @@ def test_erase_command_call_count_확인(lba, size, expected_call_count, ssd_dri
 def test_erase_command_start_end_확인(lba, size, expected_start_lba, expected_end_lba, ssd_driver_mock):
     erase_cmd = EraseShellCommand(ssd_driver_mock, lba, size)
 
-    erase_cmd.run()
+    erase_cmd.execute()
     start_lba, end_lba = erase_cmd._calculate_lba_range()
 
     assert erase_cmd.validate()
@@ -68,7 +68,7 @@ def test_erase_command_start_end_확인(lba, size, expected_start_lba, expected_
 def test_erase_command_size_계산(lba, size, expected_size, ssd_driver_mock):
     erase_cmd = EraseShellCommand(ssd_driver_mock, lba, size)
 
-    erase_cmd.run()
+    erase_cmd.execute()
     start_lba, end_lba = erase_cmd._calculate_lba_range()
 
     assert erase_cmd._calculate_size(start_lba, end_lba) == expected_size
@@ -84,7 +84,7 @@ def test_erase_command_유효성_검사(lba, size, ssd_driver_mock):
     erase_cmd = EraseShellCommand(ssd_driver_mock, lba, size)
 
     with pytest.raises(InvalidArgumentException):
-        erase_cmd.run()
+        erase_cmd.execute()
 
     assert not erase_cmd.validate()
 
@@ -99,7 +99,7 @@ def test_erase_command_파라미터_초과(lba, size, error_argument, ssd_driver
     erase_cmd = EraseShellCommand(ssd_driver_mock, lba, size, error_argument)
 
     with pytest.raises(InvalidArgumentException):
-        erase_cmd.run()
+        erase_cmd.execute()
 
     assert not erase_cmd.validate()
 
@@ -108,6 +108,6 @@ def test_erase_command_파라미터_부족(ssd_driver_mock):
     erase_cmd = EraseShellCommand(ssd_driver_mock)
 
     with pytest.raises(InvalidArgumentException):
-        erase_cmd.run()
+        erase_cmd.execute()
 
     assert not erase_cmd.validate()

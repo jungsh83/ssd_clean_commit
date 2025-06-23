@@ -1,14 +1,14 @@
 import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from src.data_dict import LBA_START_INDEX, LBA_COUNT
 
 from ..data_dict import *
 
 logger = LoggerSingleton.get_logger()
 
-class WriteReadAgingShellCommand(ShellCommandAction):
+class WriteReadAgingShellCommand(ShellCommand):
     command_name: str = "3_WriteReadAging"
     _description = 'Execute test scenario: Write Read Aging'
     _usage = "'3_WriteReadAging' or '3_'"
@@ -19,7 +19,7 @@ class WriteReadAgingShellCommand(ShellCommandAction):
         return self._arguments == ()
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
