@@ -1,8 +1,8 @@
 import subprocess
 from pathlib import Path
 from winreg import FlushKey
+from .data_dict import VALID_RETURN_CODE
 
-VALID_RETURN_CODE = 0
 
 
 class ReadException(Exception):
