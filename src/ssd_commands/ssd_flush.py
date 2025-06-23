@@ -8,21 +8,15 @@ class SSDFlushCommand(SSDCommand):
         super().__init__(ssd_file_manager, command_buffer, *args)
 
     def run(self) -> str:
-        if not self.validate():
-            self._ssd_file_manager.error()
-            return "FAIL"
-
         cmd_buffers = self._command_buffer.read_all()
 
         for cmd in cmd_buffers:
-            if cmd.command_type == SSDFileManager.COMMAND_WRITE:
+            if cmd.command_type == "W":
                 self._ssd_file_manager.write(cmd.lba, cmd.value)
-            elif cmd.command_type == SSDFileManager.COMMAND_ERASE:
+            elif cmd.command_type == "E":
                 self._ssd_file_manager.erase(cmd.lba, cmd.value)
 
         self._command_buffer.initialize()
-
-        return "PASS"
 
     def validate(self) -> bool:
         return self._arguments == ()
