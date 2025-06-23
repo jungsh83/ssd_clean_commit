@@ -1,6 +1,7 @@
 import random
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
+from ..data_dict import *
 
 class WriteReadAgingShellCommand(ShellCommandAction):
     command_name: str = "3_WriteReadAging"
@@ -17,10 +18,10 @@ class WriteReadAgingShellCommand(ShellCommandAction):
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
 
-        if self._test_loop_failed(SSDFileManager.LBA_START_INDEX):
+        if self._test_loop_failed(LBA_START_INDEX):
             return "FAIL"
 
-        elif self._test_loop_failed(SSDFileManager.LBA_COUNT - 1):
+        elif self._test_loop_failed(LBA_COUNT - 1):
             return "FAIL"
 
         return "PASS"

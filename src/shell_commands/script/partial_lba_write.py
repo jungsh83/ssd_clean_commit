@@ -1,8 +1,8 @@
 import random
 
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from ..data_dict import START_TEST_VALUE
 
-START_TEST_VALUE = 10000000
 
 
 class PartialLBAWriteShellCommand(ShellCommandAction):
