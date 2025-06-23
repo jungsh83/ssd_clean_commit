@@ -1,21 +1,19 @@
 import sys
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_commands.ssd_command_action import InvalidArgumentException
-from src.command_buffer import CommandBuffer
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.ssd_commands.ssd_read import ReadCommand
-
-# Command 구현 전에 test 구동을 위해 임시로 None으로 처리해놨습니다
-WriteCommand = None
-EraseCommand = None
-FlushCommand = None
-
+from src.ssd_commands.ssd_write import WriteCommandAction
+from src.ssd_commands.ssd_erase import SSDWriteCommand
+from src.ssd_commands.ssd_flush import SSDFlushCommand
 
 SSD_COMMANDS = {
     'R': ReadCommand,
-    'W': WriteCommand,
-    'E': EraseCommand,
-    'F': FlushCommand,
+    'W': WriteCommandAction,
+    'E': SSDWriteCommand,
+    'F': SSDFlushCommand,
 }
+
 
 def main(args: list[str]):
     if not args:
@@ -30,12 +28,13 @@ def main(args: list[str]):
         SSDFileManager().error()
         return
 
-    command = command_class(SSDFileManager(), CommandBuffer(), *command_args)
+    command = command_class(SSDFileManager(), CommandBufferHandler(), *command_args)
 
     try:
         command.run()
     except InvalidArgumentException:
         pass
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
