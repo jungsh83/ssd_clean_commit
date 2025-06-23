@@ -1,9 +1,9 @@
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import *
 
 
-class EraseRangeShellCommand(ShellCommandAction):
+class EraseRangeShellCommand(ShellCommand):
     command_name: str = 'erase_range'
     _description = 'erase value from input range of LBAs'
     _usage = 'erase_range <start_LBA: int [0-99]> <end_LBA: int [0-99]>'
@@ -15,7 +15,7 @@ class EraseRangeShellCommand(ShellCommandAction):
         self._end_lba = None
         self._start_lba = None
 
-    def run(self) -> None:
+    def execute(self) -> None:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 

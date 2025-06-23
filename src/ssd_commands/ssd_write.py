@@ -2,7 +2,7 @@ from src.ssd_commands import validate_lba, validate_value
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
-from src.ssd_commands.ssd_command_action import SSDCommand
+from src.ssd_commands.ssd_command import SSDCommand
 
 
 class WriteSSDCommand(SSDCommand):
@@ -12,7 +12,7 @@ class WriteSSDCommand(SSDCommand):
         self.lba: int|None = None
         self.value: str|None = None
 
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
             return "FAIL"

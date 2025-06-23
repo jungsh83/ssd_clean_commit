@@ -48,12 +48,12 @@ def test_validate_수행_실패(ssd_driver):
 
 def test_수행_성공(ssd_driver):
     # act & assert
-    assert WriteReadAgingShellCommand(ssd_driver).run() == "PASS"
+    assert WriteReadAgingShellCommand(ssd_driver).execute() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_점검(ssd_driver):
     # act
-    WriteReadAgingShellCommand(ssd_driver).run()
+    WriteReadAgingShellCommand(ssd_driver).execute()
 
     # assert
     assert ssd_driver.write.call_count == 400
@@ -61,12 +61,12 @@ def test_수행_성공시_read_write_횟수_점검(ssd_driver):
 
 
 def test_수행_실패(ssd_driver_fail):
-    assert WriteReadAgingShellCommand(ssd_driver_fail).run() == "FAIL"
+    assert WriteReadAgingShellCommand(ssd_driver_fail).execute() == "FAIL"
 
 
 def test_수행_실패시_read_write_횟수_점검(ssd_driver_fail):
     # act
-    WriteReadAgingShellCommand(ssd_driver_fail).run()
+    WriteReadAgingShellCommand(ssd_driver_fail).execute()
 
     # assert
     assert ssd_driver_fail.write.call_count == 201

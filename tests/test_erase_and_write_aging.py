@@ -59,12 +59,12 @@ def test_validate_수행_실패(ssd_driver):
 
 
 def test_수행_성공(ssd_driver):
-    assert EraseAndWriteAgingCommand(ssd_driver).run() == "PASS"
+    assert EraseAndWriteAgingCommand(ssd_driver).execute() == "PASS"
 
 
 def test_수행_성공시_read_write_erase_횟수_확인(ssd_driver):
     # act
-    EraseAndWriteAgingCommand(ssd_driver).run()
+    EraseAndWriteAgingCommand(ssd_driver).execute()
 
     # assert
     assert ssd_driver.erase.call_count == 1 + 30 * 48
@@ -73,12 +73,12 @@ def test_수행_성공시_read_write_erase_횟수_확인(ssd_driver):
 
 
 def test_수행_실패(ssd_driver_fail):
-    assert EraseAndWriteAgingCommand(ssd_driver_fail).run() == "FAIL"
+    assert EraseAndWriteAgingCommand(ssd_driver_fail).execute() == "FAIL"
 
 
 def test_수행_실패시_read_write_erase_횟수_확인(ssd_driver_fail):
     # act
-    EraseAndWriteAgingCommand(ssd_driver_fail).run()
+    EraseAndWriteAgingCommand(ssd_driver_fail).execute()
 
     # assert
     assert ssd_driver_fail.erase.call_count == 1 + 1

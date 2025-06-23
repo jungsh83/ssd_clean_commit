@@ -2,13 +2,13 @@ import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
 from src.data_dict import DEFAULT_VAL
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import *
 
 logger = LoggerSingleton.get_logger()
 
 
-class EraseAndWriteAgingCommand(ShellCommandAction):
+class EraseAndWriteAgingCommand(ShellCommand):
     command_name: str = "4_EraseAndWriteAging"
     _description = 'Execute test scenario: Erase and Write Aging'
     _usage = "'4_EraseAndWriteAging' or '4_'"
@@ -19,7 +19,7 @@ class EraseAndWriteAgingCommand(ShellCommandAction):
         return self._arguments == ()
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
 
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
