@@ -1,5 +1,6 @@
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
 from src.ssd_file_manager import SSDFileManager
+from ..data_dict import *
 
 
 class FullWriteShellCommand(ShellCommandAction):
@@ -8,8 +9,6 @@ class FullWriteShellCommand(ShellCommandAction):
     _usage = 'fullwrite <value: hex32bit, e.g. 0x12345678>'
     _author = 'Gunam Kwon'
     _alias = []
-
-    VALID_ARGUMENT_LEN = 1
 
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
@@ -23,11 +22,11 @@ class FullWriteShellCommand(ShellCommandAction):
             self._ssd_driver.write(lba, self._value)
 
     def validate(self) -> bool:
-        if len(self._arguments) != self.VALID_ARGUMENT_LEN:
+        if len(self._arguments) != VALID_ARGUMENT_SINGLE:
             return False
 
         self._value = self._arguments[0]
         return True
 
     def get_exception_string(self):
-        return f"{self.command_name} takes {self.VALID_ARGUMENT_LEN} arguments, but got {self._arguments}."
+        return f"{self.command_name} takes {VALID_ARGUMENT_SINGLE} arguments, but got {self._arguments}."
