@@ -24,15 +24,15 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
             raise InvalidArgumentException(msg)
 
         for i in range(25):
-            if not self.run_test_case(start_lba=i * 4, expected_value=self.generate_test_value()):
+            if not self.run_test_case(start_lba=i * 4, test_value=self.generate_test_value()):
                 return "FAIL"
 
         return "PASS"
 
-    def run_test_case(self, start_lba, expected_value) -> bool:
+    def run_test_case(self, start_lba, test_value) -> bool:
         for lba in range(start_lba, start_lba + 4):
-            self._ssd_driver.write(lba, expected_value)
-            if not self.read_compare(lba, expected_value):
+            self._ssd_driver.write(lba, test_value)
+            if not self.read_compare(lba, test_value):
                 return False
 
         return True
@@ -40,12 +40,12 @@ class FullWriteAndReadCompareShellCommand(ShellCommandAction):
     def generate_test_value(self):
         return f"0x{random.randint(1111111, 4444444):08X}"
 
-    def read_compare(self, lba, expected_value) -> bool:
+    def read_compare(self, lba, test_value) -> bool:
 
         real_value = self._ssd_driver.read(lba)
-        if real_value == expected_value:
+        if real_value == test_value:
             return True
         else:
-            msg = f"Detected Error Value, lba:{lba}, expected_value:{expected_value}, real_value:{real_value}"
+            msg = f"Detected Error Value, lba:{lba}, expected_value:{test_value}, real_value:{real_value}"
             logger.error(msg)
             return False
