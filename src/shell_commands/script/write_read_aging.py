@@ -2,7 +2,7 @@ import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-from src.ssd_file_manager import SSDFileManager
+from src.data_dict import LBA_START_INDEX, LBA_COUNT
 
 logger = LoggerSingleton.get_logger()
 
@@ -22,10 +22,10 @@ class WriteReadAgingShellCommand(ShellCommandAction):
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
 
-        if self._test_loop_failed(SSDFileManager.LBA_START_INDEX):
+        if self._test_loop_failed(LBA_START_INDEX):
             return "FAIL"
 
-        elif self._test_loop_failed(SSDFileManager.LBA_COUNT - 1):
+        elif self._test_loop_failed(LBA_COUNT - 1):
             return "FAIL"
 
         return "PASS"
