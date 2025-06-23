@@ -29,6 +29,9 @@ class SSDWriteCommand(SSDCommand):
 
         self.lba, self.size = self._arguments[0], self._arguments[1]
 
+        if self.size == 0:
+            return "PASS"
+
         if not self._command_buffer.is_buffer_available():
             self.do_flush()
 
