@@ -1,7 +1,6 @@
 import random
 from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-
-DEFAULT_METHOD = "0x00000000"
+from ..data_dict import *
 
 
 class EraseAndWriteAging(ShellCommandAction):
@@ -35,12 +34,13 @@ class EraseAndWriteAging(ShellCommandAction):
         self._ssd_driver.erase(start_lba, 3)
 
         for lba in range(start_lba, start_lba + 3):
-            if not self.read_compare(lba, DEFAULT_METHOD):
+            if not self.read_compare(lba, DEFAULT_VAL):
                 return False
 
         return True
 
-    def generate_test_value(self):
+    @staticmethod
+    def generate_test_value():
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, test_value) -> bool:
