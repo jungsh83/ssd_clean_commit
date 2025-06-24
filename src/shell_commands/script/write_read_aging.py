@@ -9,7 +9,7 @@ from ..data_dict import *
 logger = LoggerSingleton.get_logger()
 
 
-class WriteReadAgingShellCommand(ShellCommandAction):
+class WriteReadAgingShellCommand(ShellCommand):
     command_name: str = "3_WriteReadAging"
     _description = 'Execute test scenario: Write Read Aging'
     _usage = "'3_WriteReadAging' or '3_'"
