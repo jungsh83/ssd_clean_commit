@@ -1,21 +1,22 @@
-from src.ssd_commands import validate_lba, validate_value
-from src.ssd_file_manager import SSDFileManager
-from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
+from src.data_dict import INIT_VAL_INT, INIT_VAL_STR, PASS_TEXT, FAIL_TEXT, VALID_ARGUMENT_RANGE
+from src.ssd_commands import validate_lba, validate_value
 from src.ssd_commands.ssd_command import SSDCommand
+from src.ssd_file_manager import SSDFileManager
 
 
 class WriteSSDCommand(SSDCommand):
     def __init__(self, ssd_file_manager: SSDFileManager, command_buffer: CommandBufferHandler, *args):
         super().__init__(ssd_file_manager, command_buffer, *args)
 
-        self.lba: int|None = None
-        self.value: str|None = None
+        self.lba: int = INIT_VAL_INT
+        self.value: str = INIT_VAL_STR
 
     def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
-            return "FAIL"
+            return FAIL_TEXT
 
         # Buffer가 가득차 있다면 flush 수행
         if not self._command_buffer.is_buffer_available():
@@ -24,7 +25,7 @@ class WriteSSDCommand(SSDCommand):
         # Command를 buffer에 추가
         self.append_command_into_command_buffer()
 
-        return "PASS"
+        return PASS_TEXT
 
     def append_command_into_command_buffer(self):
         self._command_buffer.append(
@@ -32,7 +33,7 @@ class WriteSSDCommand(SSDCommand):
         )
 
     def validate(self) -> bool:
-        if len(self._arguments) != 2:
+        if len(self._arguments) != VALID_ARGUMENT_RANGE:
             return False
 
         self.lba = int(self._arguments[0])
