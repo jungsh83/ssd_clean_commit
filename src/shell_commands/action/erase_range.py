@@ -1,5 +1,6 @@
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from src.shell_commands.data_dict import MAX_ERASE_LEN_ON_SSD_DRIVER, LBA_START_INDEX, LBA_COUNT, VALID_ARGUMENT_RANGE
+from src.shell_commands.data_dict import MAX_ERASE_LEN_ON_SSD_DRIVER, LBA_START_INDEX, LBA_COUNT, VALID_ARGUMENT_RANGE, \
+    DONE_TEXT
 from src.decorators import log_call
 from src.logger import LogLevel
 
