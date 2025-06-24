@@ -1,6 +1,6 @@
 from pathlib import Path
-from .data_dict import MAX_SIZE_OF_COMMAND_BUFFERS
-from .command_buffer_data import CommandBufferData
+from src.command_buffer.data_dict import MAX_SIZE_OF_COMMAND_BUFFERS
+from src.command_buffer.command_buffer_data import CommandBufferData
 
 
 class CommandBufferFileManager:

@@ -1,10 +1,9 @@
 import random
+
 from src.logger import LoggerSingleton, LogLevel
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from src.data_dict import LBA_START_INDEX, LBA_COUNT
-
-from ..data_dict import *
+from src.shell_commands.data_dict import LBA_START_INDEX, LBA_COUNT, FAIL_TEXT, PASS_TEXT
 
 logger = LoggerSingleton.get_logger()
 

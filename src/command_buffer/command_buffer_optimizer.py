@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
-from .command_buffer_data import CommandBufferData
-from .data_dict import ERASE, WRITE, EMPTY, MAX_SIZE_OF_COMMAND_BUFFERS, ERASE_CHUNK_SIZE
+from src.command_buffer.command_buffer_data import CommandBufferData
+from src.command_buffer.data_dict import ERASE, WRITE, EMPTY, MAX_SIZE_OF_COMMAND_BUFFERS, ERASE_CHUNK_SIZE
 
 
 class CommandBufferOptimizeStrategy(ABC):

@@ -1,5 +1,5 @@
 import os
-from src.data_dict import LBA_COUNT, ERROR_TEXT,DEFAULT_VAL, LBA_START_INDEX
+from src.data_dict import LBA_COUNT, ERROR_TEXT, DEFAULT_VAL, LBA_START_INDEX
 
 
 class SSDFileManager:
