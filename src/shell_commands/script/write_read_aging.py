@@ -1,5 +1,5 @@
 import random
-from src.logger import LoggerSingleton
+from src.logger import LoggerSingleton, LogLevel
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from src.data_dict import LBA_START_INDEX, LBA_COUNT
@@ -19,19 +19,19 @@ class WriteReadAgingShellCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
 
         if self._is_test_loop_failed(LBA_START_INDEX):
-            return "FAIL"
+            return FAIL_TEXT
 
         elif self._is_test_loop_failed(LBA_COUNT - 1):
-            return "FAIL"
+            return FAIL_TEXT
 
-        return "PASS"
+        return PASS_TEXT
 
     def _is_test_loop_failed(self, lba) -> bool:
         for _ in range(200):

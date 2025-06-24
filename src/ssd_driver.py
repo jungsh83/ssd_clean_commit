@@ -1,8 +1,8 @@
 import subprocess
 from pathlib import Path
 from src.decorators import log_call
-from winreg import FlushKey
-from .data_dict import VALID_RETURN_CODE
+from src.data_dict import VALID_RETURN_CODE, ERROR_TEXT
+from src.logger import LogLevel
 
 
 class ReadException(Exception):
@@ -37,7 +37,7 @@ class SSDDriver:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def read(self, lba: int) -> str:
         """
         지정된 lba 위치의 SSD Data를 읽어 값을 반환 한다.
@@ -48,11 +48,11 @@ class SSDDriver:
         """
 
         out = self.get_external_output(ReadException, self.READ_TOKEN, str(lba))
-        if out == "ERROR":
-            raise ReadException("ERROR")
+        if out == ERROR_TEXT:
+            raise ReadException(ERROR_TEXT)
         return out
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def write(self, lba: int, value: str) -> None:
         """
         lba 위치에 value 값을  SSD Data에 기록 한다.
@@ -63,20 +63,20 @@ class SSDDriver:
         """
 
         out = self.get_external_output(WriteException, self.WRITE_TOKEN, str(lba), str(value))
-        if out == "ERROR":
-            raise WriteException("ERROR")
+        if out == ERROR_TEXT:
+            raise WriteException(ERROR_TEXT)
 
         return
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def erase(self, lba, size):
         out = self.get_external_output(EraseException, self.ERASE_TOKEN, str(lba), str(size))
-        if out == "ERROR":
-            raise EraseException("ERROR")
+        if out == ERROR_TEXT:
+            raise EraseException(ERROR_TEXT)
 
         return
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def flush(self):
         """
         Flush는 실행 후 결과 확인이 없음으로 Test 코드를 추가하지 않습니다.
