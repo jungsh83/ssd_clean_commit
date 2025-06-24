@@ -27,9 +27,9 @@ class FullReadShellCommand(ShellCommand):
     @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         return "\n           ".join(self._dump_all())
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes no arguments, but got {self._arguments}."

@@ -18,7 +18,7 @@ class FullWriteShellCommand(ShellCommand):
     @log_call(level=LogLevel.INFO)
     def execute(self) -> None:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         for lba in range(LBA_COUNT):
             self._ssd_driver.write(lba, self._value)
@@ -30,5 +30,5 @@ class FullWriteShellCommand(ShellCommand):
         self._value = self._arguments[0]
         return True
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes {VALID_ARGUMENT_SINGLE} arguments, but got {self._arguments}."
