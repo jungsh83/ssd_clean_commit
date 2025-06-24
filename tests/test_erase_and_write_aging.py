@@ -9,6 +9,7 @@ data_dict = {}
 
 
 def mk_read(lba):
+    if not (0 <= lba < 100): return "ERROR"
     return data_dict.get(lba, DEFULAT_VALUE)
 
 
@@ -18,6 +19,7 @@ def mk_read_fail(lba):
 
 
 def mk_write(lba, value):
+    if not (0<=lba<100): return "ERROR"
     data_dict[lba] = value
 
 

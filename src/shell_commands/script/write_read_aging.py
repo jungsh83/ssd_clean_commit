@@ -1,5 +1,5 @@
 import random
-from src.logger import LoggerSingleton
+from src.logger import LoggerSingleton, LogLevel
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from src.data_dict import LBA_START_INDEX, LBA_COUNT
@@ -7,6 +7,7 @@ from src.data_dict import LBA_START_INDEX, LBA_COUNT
 from ..data_dict import *
 
 logger = LoggerSingleton.get_logger()
+
 
 class WriteReadAgingShellCommand(ShellCommand):
     command_name: str = "3_WriteReadAging"
@@ -18,28 +19,28 @@ class WriteReadAgingShellCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
             raise InvalidArgumentException(msg)
 
-        if self._test_loop_failed(LBA_START_INDEX):
-            return "FAIL"
+        if self._is_test_loop_failed(LBA_START_INDEX):
+            return FAIL_TEXT
 
-        elif self._test_loop_failed(LBA_COUNT - 1):
-            return "FAIL"
+        elif self._is_test_loop_failed(LBA_COUNT - 1):
+            return FAIL_TEXT
 
-        return "PASS"
+        return PASS_TEXT
 
-    def _test_loop_failed(self, lba) -> bool:
+    def _is_test_loop_failed(self, lba) -> bool:
         for _ in range(200):
             if self._write_read_compare_failed(lba):
                 return True
         return False
 
     def _write_read_compare_failed(self, lba) -> bool:
-        test_value = f"0x{random.randint(1111111, 4444444):08X}"
+        test_value = f"0x{self.generate_random_value() :08X}"
         self._ssd_driver.write(lba, test_value)
         read_value = self._ssd_driver.read(lba)
 
@@ -49,3 +50,6 @@ class WriteReadAgingShellCommand(ShellCommand):
             return True
         else:
             return False
+
+    def generate_random_value(self):
+        return random.randint(1111111, 4444444)

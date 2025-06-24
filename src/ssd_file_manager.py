@@ -1,5 +1,5 @@
 import os
-from .data_dict import *
+from src.data_dict import *
 
 
 class SSDFileManager:
@@ -41,10 +41,6 @@ class SSDFileManager:
             f.writelines(line + '\n' for line in data_lines)
 
     def read(self, lba: int) -> str:
-        if not LBA_START_INDEX <= lba < LBA_COUNT:
-            self.error()
-            return ERROR_TEXT
-
         value = self._load_nand()[lba]
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(value + '\n')
@@ -58,10 +54,6 @@ class SSDFileManager:
             pass
 
     def erase(self, lba: int, size: int) -> None:
-        if not (0 <= size <= 10) or (lba + size > LBA_COUNT):
-            self.error()
-            return
-
         data = self._load_nand()
         for i in range(lba, lba + size):
             data[i] = DEFAULT_VAL
@@ -69,21 +61,11 @@ class SSDFileManager:
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             pass
 
-    def _is_valid_lba(self, lba: int) -> bool:
-        return 0 <= lba < LBA_COUNT
-
-    def _is_valid_value(self, value: str) -> bool:
-        if not isinstance(value, str) or len(value) != 10:
-            return False
-        if not value.startswith("0x"):
-            return False
-        hex_part = value[2:]
-        return all(c in "0123456789ABCDEF" for c in hex_part)
-
     def error(self):
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(ERROR_TEXT)
 
+    # SSD Read Command에서 fast read 로 값을 읽어온 경우, SSDFileManger의 write_output 메서드를 호출
     def write_output(self, value: str):
         with open(self.OUTPUT_PATH, 'w', encoding='utf-8') as f:
             f.write(value + '\n')
