@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
 from src.decorators import log_call
-from .data_dict import VALID_RETURN_CODE
+from .data_dict import VALID_RETURN_CODE, ERROR_TEXT
 from .logger import LogLevel
 
 
@@ -48,8 +48,8 @@ class SSDDriver:
         """
 
         out = self.get_external_output(ReadException, self.READ_TOKEN, str(lba))
-        if out == "ERROR":
-            raise ReadException("ERROR")
+        if out == ERROR_TEXT:
+            raise ReadException(ERROR_TEXT)
         return out
 
     @log_call(level=LogLevel.INFO)
@@ -63,16 +63,16 @@ class SSDDriver:
         """
 
         out = self.get_external_output(WriteException, self.WRITE_TOKEN, str(lba), str(value))
-        if out == "ERROR":
-            raise WriteException("ERROR")
+        if out == ERROR_TEXT:
+            raise WriteException(ERROR_TEXT)
 
         return
 
     @log_call(level=LogLevel.INFO)
     def erase(self, lba, size):
         out = self.get_external_output(EraseException, self.ERASE_TOKEN, str(lba), str(size))
-        if out == "ERROR":
-            raise EraseException("ERROR")
+        if out == ERROR_TEXT:
+            raise EraseException(ERROR_TEXT)
 
         return
 
