@@ -1,6 +1,6 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from src.shell_commands.data_dict import *
+from src.shell_commands.data_dict import LBA_COUNT
 from src.logger import LogLevel
 
 

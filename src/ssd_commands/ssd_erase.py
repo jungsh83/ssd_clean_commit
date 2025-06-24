@@ -1,6 +1,6 @@
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.data_dict import ERASE_SIZE_MIN, VALID_ARGUMENT_RANGE, INIT_VAL_INT, PASS_TEXT, FAIL_TEXT
+from src.ssd_commands.data_dict import ERASE_SIZE_MIN, VALID_ARGUMENT_RANGE, INIT_VAL_INT, PASS_TEXT, FAIL_TEXT
 from src.ssd_commands import validate_erase_size, validate_lba
 from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
