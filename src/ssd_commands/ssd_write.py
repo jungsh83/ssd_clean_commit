@@ -1,6 +1,6 @@
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.data_dict import INIT_VAL_INT, INIT_VAL_STR, PASS_TEXT, FAIL_TEXT
+from src.data_dict import INIT_VAL_INT, INIT_VAL_STR, PASS_TEXT, FAIL_TEXT, VALID_ARGUMENT_RANGE
 from src.ssd_commands import validate_lba, validate_value
 from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
@@ -33,7 +33,7 @@ class WriteSSDCommand(SSDCommand):
         )
 
     def validate(self) -> bool:
-        if len(self._arguments) != 2:
+        if len(self._arguments) != VALID_ARGUMENT_RANGE:
             return False
 
         self.lba = int(self._arguments[0])
