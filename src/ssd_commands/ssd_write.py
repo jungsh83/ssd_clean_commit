@@ -10,6 +10,21 @@ class WriteSSDCommand(SSDCommand):
         self.lba: int|None = None
         self.value: str|None = None
 
+    def validate(self) -> bool:
+        if len(self._arguments) != 2:
+            return False
+
+        if not validate_lba(self._arguments[0]):
+            return False
+
+        if not validate_value(self._arguments[1]):
+            return False
+
+        self.lba = int(self._arguments[0])
+        self.value = self._arguments[1]
+
+        return True
+
     def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
@@ -29,20 +44,7 @@ class WriteSSDCommand(SSDCommand):
             CommandBufferData.create_write_command(lba=self.lba, value=self.value)
         )
 
-    def validate(self) -> bool:
-        if len(self._arguments) != 2:
-            return False
 
-        self.lba = int(self._arguments[0])
-        self.value = self._arguments[1]
-
-        if not validate_lba(self.lba):
-            return False
-
-        if not validate_value(self.value):
-            return False
-
-        return True
 
     def do_flush(self):
         # command들을 fileManager를 통해 수행
