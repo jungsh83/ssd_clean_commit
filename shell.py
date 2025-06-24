@@ -1,7 +1,6 @@
 #!.venv/Scripts/python.exe
 
 from src.shell_commands.shell_command import ShellCommand
-from src.ssd_file_manager import SSDFileManager
 from src.ssd_driver import SSDDriver
 import sys
 import re
