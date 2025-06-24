@@ -1,8 +1,9 @@
 import random
-from src.logger import LoggerSingleton
+
 from src.decorators import log_call
+from src.logger import LoggerSingleton, LogLevel
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import START_TEST_VALUE
+from ..data_dict import START_TEST_VALUE, PASS_TEXT, FAIL_TEXT
 
 logger = LoggerSingleton.get_logger()
 
@@ -21,7 +22,7 @@ class PartialLBAWriteShellCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
@@ -30,8 +31,8 @@ class PartialLBAWriteShellCommand(ShellCommand):
         for i in range(30):
             self._bulk_write()
             if self._is_read_compare_failed():
-                return "FAIL"
-        return "PASS"
+                return FAIL_TEXT
+        return PASS_TEXT
 
     def _is_read_compare_failed(self):
         for read_lba in range(5):
@@ -60,5 +61,3 @@ class PartialLBAWriteShellCommand(ShellCommand):
         random.shuffle(orders)
 
         return orders
-
-

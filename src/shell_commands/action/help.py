@@ -1,3 +1,4 @@
+from src.logger import LogLevel
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from src.decorators import log_call
 
@@ -9,11 +10,11 @@ class HelpShellCommand(ShellCommand):
     _author = 'Songju Na'
     _alias: list[str] = ['h']
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self):
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())

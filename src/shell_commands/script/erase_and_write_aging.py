@@ -1,5 +1,5 @@
 import random
-from src.logger import LoggerSingleton
+from src.logger import LoggerSingleton, LogLevel
 from src.decorators import log_call
 from src.data_dict import DEFAULT_VAL
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
@@ -18,7 +18,7 @@ class EraseAndWriteAgingCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
 
         if not self.validate():
@@ -30,9 +30,9 @@ class EraseAndWriteAgingCommand(ShellCommand):
         for _ in range(30):
             for start_lba in range(2, 97, 2):
                 if not self.run_single_test(start_lba):
-                    return "FAIL"
+                    return FAIL_TEXT
 
-        return "PASS"
+        return PASS_TEXT
 
     def run_single_test(self, start_lba) -> bool:
         self._ssd_driver.write(start_lba, self.generate_test_value())

@@ -1,6 +1,7 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import VALID_ARGUMENT_SINGLE, INIT_VAL_INT
+from src.shell_commands.data_dict import VALID_ARGUMENT_SINGLE, INIT_VAL_INT
+from src.logger import LogLevel
 
 
 class ReadShellCommand(ShellCommand):
@@ -10,12 +11,12 @@ class ReadShellCommand(ShellCommand):
     _author = 'Gunam Kwon'
     _alias = []
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._lba: int = INIT_VAL_INT
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())
