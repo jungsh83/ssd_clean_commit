@@ -59,7 +59,7 @@ def test_validate_실패_no_arguments(mocker: MockFixture, ssd_file_manager, com
 
 @pytest.mark.parametrize(
     "lba, value",
-    [("0", "0x0000000T"), ("101", "0x00000002")]
+    [("-5", "0x0000000T"), ("0", "0x0000000T"), ("101", "0x00000002")]
 )
 def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_without_flush, lba, value):
     assert not WriteSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, value).validate()
@@ -70,7 +70,6 @@ def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_w
     [("0", "0x0000000T"), ("101", "0x00000002")]
 )
 def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, value):
-    "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
     assert WriteSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, value).execute() == "FAIL"
 
 
