@@ -16,7 +16,7 @@ class SSDCommand(ABC):
         self._arguments = args
 
     @abstractmethod
-    def run(self) -> str:
+    def execute(self) -> str:
         ...
 
     @abstractmethod

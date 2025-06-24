@@ -1,9 +1,9 @@
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import VALID_ARGUMENT_SINGLE, INIT_VAL_INT
 
 
-class ReadShellCommand(ShellCommandAction):
+class ReadShellCommand(ShellCommand):
     command_name: str = 'read'
     _description = 'read value from LBA'
     _usage = 'read <LBA: int [0-99]>'
@@ -16,7 +16,7 @@ class ReadShellCommand(ShellCommandAction):
         self._lba: int = INIT_VAL_INT
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 

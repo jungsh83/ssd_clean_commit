@@ -69,7 +69,7 @@ def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_w
 )
 def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, size):
     "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
-    assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).run() == "FAIL"
+    assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).execute() == "FAIL"
 
 
 @pytest.mark.parametrize(
@@ -77,7 +77,7 @@ def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, size):
     [("0", "10"), ("10", "10")]
 )
 def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush, lba, size):
-    assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).run() == "PASS"
+    assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).execute() == "PASS"
 
 
 @pytest.mark.parametrize(
@@ -86,7 +86,7 @@ def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush
 )
 def test_run_성공_with_flush(ssd_file_manager, command_buffer_with_flush, lba, size):
     sut = EraseSSDCommand(ssd_file_manager, CommandBufferHandler(), lba, size)
-    assert sut.run() == "PASS"
+    assert sut.execute() == "PASS"
 
     expected_start_lba = int(lba)
     expected_end_lba = expected_start_lba + int(size) - 1

@@ -1,6 +1,6 @@
 import pytest
 
-from src.shell_commands.shell_command_action import InvalidArgumentException
+from src.shell_commands.shell_command import InvalidArgumentException
 from src.shell_commands.action.write import WriteShellCommand
 from src.ssd_driver import SSDDriver
 
@@ -15,7 +15,7 @@ def test_write_command_성공(test_address, mock_ssd_driver):
     test_value = "0x12345678"
 
     write_cmd = WriteShellCommand(mock_ssd_driver, test_address, test_value)
-    write_cmd.run()
+    write_cmd.execute()
 
     mock_ssd_driver.write.assert_called_once()
 
@@ -30,7 +30,7 @@ def test_write_command_유효성검사_Param개수_초과(test_value, error_para
     write_cmd = WriteShellCommand(mock_ssd_driver, test_address, test_value, error_param)
 
     with pytest.raises(InvalidArgumentException):
-        write_cmd.run()
+        write_cmd.execute()
 
     assert not write_cmd.validate()
     mock_ssd_driver.write.assert_not_called()
@@ -40,7 +40,7 @@ def test_write_command_유효성검사_Param개수_부족(mock_ssd_driver):
     write_cmd = WriteShellCommand(mock_ssd_driver)
 
     with pytest.raises(InvalidArgumentException):
-        write_cmd.run()
+        write_cmd.execute()
 
     assert not write_cmd.validate()
     mock_ssd_driver.write.assert_not_called()

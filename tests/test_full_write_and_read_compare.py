@@ -50,12 +50,12 @@ def test_validate_수행_실패(ssd_driver):
 
 
 def test_수행_성공(ssd_driver):
-    assert FullWriteAndReadCompareShellCommand(ssd_driver).run() == "PASS"
+    assert FullWriteAndReadCompareShellCommand(ssd_driver).execute() == "PASS"
 
 
 def test_수행_성공시_read_write_횟수_확인(ssd_driver):
     # act
-    FullWriteAndReadCompareShellCommand(ssd_driver).run()
+    FullWriteAndReadCompareShellCommand(ssd_driver).execute()
 
     # assert
     assert ssd_driver.read.call_count == LBA_COUNT
@@ -64,7 +64,7 @@ def test_수행_성공시_read_write_횟수_확인(ssd_driver):
 
 def test_수행_성공시_테스트_케이스_검증(ssd_driver):
     # act
-    FullWriteAndReadCompareShellCommand(ssd_driver).run()
+    FullWriteAndReadCompareShellCommand(ssd_driver).execute()
 
     # assert
     samples = set(
@@ -75,12 +75,12 @@ def test_수행_성공시_테스트_케이스_검증(ssd_driver):
 
 
 def test_수행_실패(ssd_driver_fail):
-    assert FullWriteAndReadCompareShellCommand(ssd_driver_fail).run() == "FAIL"
+    assert FullWriteAndReadCompareShellCommand(ssd_driver_fail).execute() == "FAIL"
 
 
 def test_수행_실패시_read_write_횟수_확인(ssd_driver_fail):
     # act
-    FullWriteAndReadCompareShellCommand(ssd_driver_fail).run()
+    FullWriteAndReadCompareShellCommand(ssd_driver_fail).execute()
 
     # assert
     assert ssd_driver_fail.write.call_count == 34

@@ -1,9 +1,9 @@
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import *
 
 
-class FullReadShellCommand(ShellCommandAction):
+class FullReadShellCommand(ShellCommand):
     command_name: str = 'fullread'
     _description = 'read value all of LBAs'
     _usage = 'fullread'
@@ -24,7 +24,7 @@ class FullReadShellCommand(ShellCommandAction):
         ]
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self.get_exception_string())
 

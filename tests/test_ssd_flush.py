@@ -30,7 +30,7 @@ def test_flush_성공(mock_buffer_and_manager):
                                        mock_buffer_data(ERASE, 90, 10)]
 
     ssd_flush_cmd = FlushSSDCommand(mock_file_manager, mock_cmd_buffer)
-    ret = ssd_flush_cmd.run()
+    ret = ssd_flush_cmd.execute()
 
     assert ret == "PASS"
     assert mock_file_manager.write.call_count == 3
@@ -43,7 +43,7 @@ def test_flush_파라미터_초과(mock_buffer_and_manager):
     mocker, mock_cmd_buffer, mock_file_manager = mock_buffer_and_manager
 
     ssd_flush_cmd = FlushSSDCommand(mock_file_manager, mock_cmd_buffer, error_arg)
-    ret = ssd_flush_cmd.run()
+    ret = ssd_flush_cmd.execute()
 
     assert ret == "FAIL"
     assert not ssd_flush_cmd.validate()

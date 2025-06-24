@@ -12,7 +12,7 @@ def mock_ssd_driver(mocker):
 def test_flush_command_성공(mock_ssd_driver):
     flush_cmd = FlushShellCommand(mock_ssd_driver)
 
-    flush_cmd.run()
+    flush_cmd.execute()
 
     mock_ssd_driver.flush.assert_called_once()
 

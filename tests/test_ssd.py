@@ -22,7 +22,7 @@ def test_main_정상_명령어가_호출되면_해당_커맨드클래스를_실�
         ssd.main(args)
 
     mock_cmd_class.assert_called_once()
-    mock_instance.run.assert_called_once()
+    mock_instance.execute.assert_called_once()
 
 
 def test_main_없는_명령어_입력시_ERROR를_출력한다(monkeypatch, capsys):

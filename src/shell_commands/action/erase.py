@@ -1,10 +1,10 @@
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from src.decorators import log_call
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import *
 
 
-class EraseShellCommand(ShellCommandAction):
+class EraseShellCommand(ShellCommand):
     command_name: str = 'erase'
     _description = 'Erase value from LBA with size'
     _usage = 'erase <LBA: int [0-99]> <SIZE: int ["-2,147,483,648" - "2,147,483,647"]'
@@ -18,7 +18,7 @@ class EraseShellCommand(ShellCommandAction):
         self._input_size: str = INIT_VAL_STR
 
     @log_call(level="INFO")
-    def run(self):
+    def execute(self):
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())
 
