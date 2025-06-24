@@ -16,7 +16,7 @@ class HelpShellCommand(ShellCommand):
     @log_call(level="INFO")
     def execute(self):
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         for name, cls in sorted(ShellCommand.registry.items()):
             print(f"\n▶ {name}")
@@ -32,5 +32,5 @@ class HelpShellCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.__class__.command_name} takes no arguments, but got {self._arguments}"

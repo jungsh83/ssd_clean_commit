@@ -18,7 +18,7 @@ class ReadShellCommand(ShellCommand):
     @log_call(level="INFO")
     def execute(self) -> str:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         return self.print_output(self._lba, self._ssd_driver.read(self._lba))
 
@@ -34,5 +34,5 @@ class ReadShellCommand(ShellCommand):
     def print_output(lba, value):
         return f'LBA {lba} : {value}'
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes {VALID_ARGUMENT_SINGLE} arguments, but got {self._arguments}."

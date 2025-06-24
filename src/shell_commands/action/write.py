@@ -20,7 +20,7 @@ class WriteShellCommand(ShellCommand):
     @log_call(level="INFO")
     def execute(self) -> str:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         self._ssd_driver.write(self._lba, self._value)
         return "Done"
@@ -33,5 +33,5 @@ class WriteShellCommand(ShellCommand):
 
         return True
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes {VALID_ARGUMENT_RANGE} arguments, but got {self._arguments}."
