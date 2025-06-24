@@ -20,7 +20,7 @@ class EraseSSDCommand(SSDCommand):
 
         return (
                 validate_lba(lba_str) and
-                validate_erase_size(size_str)
+                validate_erase_size(lba_str, size_str)
         )
 
     def execute(self) -> str:

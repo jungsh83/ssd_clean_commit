@@ -29,6 +29,8 @@ class EraseRangeShellCommand(ShellCommand):
             cmd_size = min(MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
             self._ssd_driver.erase(start_lba + offset, cmd_size)
 
+        return DONE_TEXT
+
     def _get_lba_range(self) -> (int, int):
         start_lba, end_lba = int(self._start_lba), int(self._end_lba)
 

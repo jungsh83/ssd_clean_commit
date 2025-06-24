@@ -1,10 +1,8 @@
 from src.ssd_commands import validate_lba, validate_value
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
-from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.data_dict import INIT_VAL_INT, INIT_VAL_STR, PASS_TEXT, FAIL_TEXT, VALID_ARGUMENT_RANGE
 from src.ssd_commands import validate_lba, validate_value
 from src.ssd_commands.ssd_command import SSDCommand
-from src.ssd_file_manager import SSDFileManager
 
 
 class WriteSSDCommand(SSDCommand):
@@ -29,7 +27,7 @@ class WriteSSDCommand(SSDCommand):
         self.value = self._arguments[1]
 
         return True
-
+      
 
     def execute(self) -> str:
         if not self.validate():
@@ -42,12 +40,13 @@ class WriteSSDCommand(SSDCommand):
         self.append_command_into_command_buffer()
 
         return PASS_TEXT
+      
 
     def append_command_into_command_buffer(self):
         self._command_buffer.append(
             CommandBufferData.create_write_command(lba=self.lba, value=self.value)
         )
-        
+
 
     def do_flush(self):
         for command in self._command_buffer.command_buffers:

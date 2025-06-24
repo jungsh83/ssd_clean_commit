@@ -15,7 +15,11 @@ def validate_value(value: str) -> bool:
     return all(c in "0123456789ABCDEF" for c in (value[2:]))
 
 
-def validate_erase_size(size: str) -> bool:
-    if not str(size).isdigit():
+def validate_erase_size(lba: str, size: str) -> bool:
+    if not validate_lba(lba) or not size.isdigit():
         return False
-    return ERASE_SIZE_MIN <= int(size) <= ERASE_SIZE_MAX
+
+    return (
+            ERASE_SIZE_MIN <= int(size) <= ERASE_SIZE_MAX and
+            int(lba) + int(size) <= LBA_COUNT
+    )
