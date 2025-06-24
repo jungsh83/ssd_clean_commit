@@ -1,6 +1,7 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from ..data_dict import *
+from ...logger import LogLevel
 
 
 class EraseShellCommand(ShellCommand):
@@ -10,13 +11,13 @@ class EraseShellCommand(ShellCommand):
     _author = 'Gunam Kwon'
     _alias: list[str] = []
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def __init__(self, ssd_driver, *args):
         super().__init__(ssd_driver, *args)
         self._input_lba: str = INIT_VAL_STR
         self._input_size: str = INIT_VAL_STR
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self):
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())

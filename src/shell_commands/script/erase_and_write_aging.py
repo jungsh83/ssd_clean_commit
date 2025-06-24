@@ -1,5 +1,5 @@
 import random
-from src.logger import LoggerSingleton
+from src.logger import LoggerSingleton, LogLevel
 from src.decorators import log_call
 from src.data_dict import DEFAULT_VAL
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
@@ -18,7 +18,7 @@ class EraseAndWriteAgingCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
 
         if not self.validate():
