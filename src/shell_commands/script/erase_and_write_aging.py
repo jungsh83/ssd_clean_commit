@@ -30,9 +30,9 @@ class EraseAndWriteAgingCommand(ShellCommand):
         for _ in range(30):
             for start_lba in range(2, 97, 2):
                 if not self.run_single_test(start_lba):
-                    return "FAIL"
+                    return FAIL_TEXT
 
-        return "PASS"
+        return PASS_TEXT
 
     def run_single_test(self, start_lba) -> bool:
         self._ssd_driver.write(start_lba, self.generate_test_value())

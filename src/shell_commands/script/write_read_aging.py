@@ -26,12 +26,12 @@ class WriteReadAgingShellCommand(ShellCommand):
             raise InvalidArgumentException(msg)
 
         if self._is_test_loop_failed(LBA_START_INDEX):
-            return "FAIL"
+            return FAIL_TEXT
 
         elif self._is_test_loop_failed(LBA_COUNT - 1):
-            return "FAIL"
+            return FAIL_TEXT
 
-        return "PASS"
+        return PASS_TEXT
 
     def _is_test_loop_failed(self, lba) -> bool:
         for _ in range(200):

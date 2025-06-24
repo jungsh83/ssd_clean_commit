@@ -33,7 +33,7 @@ class EraseShellCommand(ShellCommand):
                 cmd_size = min(MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
                 self._ssd_driver.erase(start_lba + offset, cmd_size)
 
-        return "Done"
+        return DONE_TEXT
 
     def validate(self) -> bool:
         if len(self._arguments) != VALID_ARGUMENT_RANGE:
