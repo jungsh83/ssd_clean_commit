@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.command_buffer.data_dict import *
+from src.command_buffer.data_dict import EMPTY, ERASE, ERASE_VALUE, WRITE, WRITE_SIZE
 
 
 class CommandBufferDataException(Exception):

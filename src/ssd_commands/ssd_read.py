@@ -1,4 +1,4 @@
-from src.data_dict import VALID_ARGUMENT_SINGLE, INIT_VAL_INT
+from src.ssd_commands.data_dict import VALID_ARGUMENT_SINGLE, INIT_VAL_INT
 from src.ssd_commands import validate_lba
 from src.ssd_commands.ssd_command import SSDCommand
 

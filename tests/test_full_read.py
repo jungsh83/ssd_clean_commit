@@ -2,8 +2,7 @@ import pytest
 
 from src.shell_commands.shell_command import InvalidArgumentException
 from src.shell_commands.action.full_read import FullReadShellCommand
-from src.ssd_file_manager import SSDFileManager
-from src.data_dict import *
+from src.data_dict import LBA_COUNT
 
 
 @pytest.fixture

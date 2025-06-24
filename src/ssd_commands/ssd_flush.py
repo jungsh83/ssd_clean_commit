@@ -1,6 +1,6 @@
 from src.command_buffer.command_buffer_data import WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.data_dict import FAIL_TEXT, PASS_TEXT
+from src.ssd_commands.data_dict import FAIL_TEXT, PASS_TEXT
 from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
 

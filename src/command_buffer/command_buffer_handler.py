@@ -1,5 +1,5 @@
-from src.command_buffer.command_buffer_data import ERASE_VALUE, ERASE, WRITE, EMPTY, CommandBufferData, \
-    MAX_SIZE_OF_COMMAND_BUFFERS
+from .data_dict import ERASE_VALUE, ERASE, WRITE, EMPTY, MAX_SIZE_OF_COMMAND_BUFFERS
+from src.command_buffer.command_buffer_data import CommandBufferData
 from src.command_buffer.command_buffer_file_manager import CommandBufferFileManager
 from src.command_buffer.command_buffer_optimizer import CommandBufferOptimizer, IgnoreCommandStrategy, \
     MergeEraseStrategy, \
