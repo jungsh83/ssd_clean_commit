@@ -1,6 +1,7 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import *
+from src.shell_commands.data_dict import *
+from src.logger import LogLevel
 
 
 class FullReadShellCommand(ShellCommand):
@@ -10,7 +11,7 @@ class FullReadShellCommand(ShellCommand):
     _author = 'Gunam Kwon'
     _alias = []
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def __init__(self, ssd_driver, *arguments: str) -> None:
         super().__init__(ssd_driver, *arguments)
 
@@ -23,12 +24,12 @@ class FullReadShellCommand(ShellCommand):
             for lba in range(LBA_COUNT)
         ]
 
-    @log_call(level="INFO")
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> str:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         return "\n           ".join(self._dump_all())
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes no arguments, but got {self._arguments}."

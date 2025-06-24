@@ -1,6 +1,7 @@
-from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import *
+from src.shell_commands.data_dict import *
+from src.decorators import log_call
+from src.logger import LogLevel
 
 
 class EraseRangeShellCommand(ShellCommand):
@@ -15,9 +16,10 @@ class EraseRangeShellCommand(ShellCommand):
         self._end_lba = None
         self._start_lba = None
 
+    @log_call(level=LogLevel.INFO)
     def execute(self) -> None:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         start_lba, end_lba = self._get_lba_range()
         size = self._get_size(start_lba, end_lba)
@@ -53,5 +55,5 @@ class EraseRangeShellCommand(ShellCommand):
 
         return True
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes {VALID_ARGUMENT_RANGE} arguments, but got {self._arguments}."
