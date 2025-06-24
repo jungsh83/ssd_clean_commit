@@ -45,6 +45,7 @@ def test_erase_size가_숫자가_아니면_false():
 def test_erase_size가_범위를_벗어나면_false():
     assert validate_erase_size("0", str(ERASE_SIZE_MIN - 1)) is False
     assert validate_erase_size("0", str(ERASE_SIZE_MAX + 1)) is False
+    assert validate_erase_size("95", "6") is False
 
 
 @pytest.mark.parametrize("lba,size", [
