@@ -1,4 +1,4 @@
-./shell.py
+
 
 초기화 확인
   >> buffer 삭제
@@ -8,6 +8,7 @@
 1) shell_script 부터 실행
   >> buffer 확인
   >> nand.txt 확인
+  >> log 생성 확인
 
 2) shell command 실행
 	help
@@ -34,4 +35,8 @@
 	>> buffer
 	>> nand.txt
 	>> log
+
+	erase_range 90 94
+	write 95 0x23456789
+	erase_range 95 99
 
