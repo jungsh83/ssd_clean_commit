@@ -9,14 +9,14 @@
 
 ## 👨‍💻 우리 팀, CleanCommit: 역할 및 책임
 
-| 역할 | 이름 | GitHub                                                                                                           | 주요 역할                                |
-| :--- | :--- |:-----------------------------------------------------------------------------------------------------------------|:-------------------------------------|
-| **팀장** | 정송화 | [@jungsh83](https://github.com/jungsh83)                                                                         | 프로젝트 통합, 시나리오 개발 및 리뷰, SSD Driver 리뷰 |
-| **팀원** | 나송주 | [@rmsidgo1](https://github.com/rmsidgo1)                                                                         | Shell 개발, Commands 리뷰, 통합테스트 케이스 개발  |
-| **팀원** | 설서은 | [@seoeun46](https://github.com/seoeun46)                                                                         | SSD 개발 및 리뷰, 전체 소스 Refactoring 제안    |
-| **팀원** | 권구남 | [@Nueve-Code](https://github.com/Nueve-Code)<br>commit-id: jihun75.kim<br>commit-email: gnswlrla0218@naver.com   | Commands 개발, Shell 리뷰                |
-| **팀원** | 우성경 | [@SKWOO-CRA-EDU](https://github.com/SKWOO-CRA-EDU)                                                               | SSD 개발 및 리뷰, Commands 개발 및 리뷰        |
-| **팀원** | 지우성 | [@jws9106](https://github.com/jws9106)                                                                           | 시나리오 개발 및 리뷰, SSD Driver 개발          |
+| 역할 | 이름 | GitHub                                                                                                           | 주요 역할                                       |
+| :--- | :--- |:-----------------------------------------------------------------------------------------------------------------|:--------------------------------------------|
+| **팀장** | 정송화 | [@jungsh83](https://github.com/jungsh83)                                                                         | 프로젝트 통합, 시나리오 및 Command Buffer 개발, 리팩토링, 리뷰 |
+| **팀원** | 나송주 | [@rmsidgo1](https://github.com/rmsidgo1)                                                                         | Shell 및 Logger 개발, 통합테스트 준비, 리팩토링, 리뷰       |
+| **팀원** | 설서은 | [@seoeun46](https://github.com/seoeun46)                                                                         | SSD 및 SSD Commands 개발, 리팩토링, 리뷰             |
+| **팀원** | 권구남 | [@Nueve-Code](https://github.com/Nueve-Code)<br>commit-id: jihun75.kim<br>commit-email: gnswlrla0218@naver.com   | Shell 및 SSD Commands 개발, 리팩토링, 리뷰           |
+| **팀원** | 우성경 | [@SKWOO-CRA-EDU](https://github.com/SKWOO-CRA-EDU)                                                               | SSD 개발, SSD Commands 개발, 리팩토링, 리뷰           |
+| **팀원** | 지우성 | [@jws9106](https://github.com/jws9106)                                                                           | 시나리오 개발, SSD Driver 개발, SSD Commands 개발, 리팩토링, 리뷰                 |
 
 ---
 
