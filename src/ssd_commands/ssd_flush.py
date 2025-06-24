@@ -18,7 +18,7 @@ class FlushSSDCommand(SSDCommand):
             if cmd.command_type == WRITE:
                 self._ssd_file_manager.write(cmd.lba, cmd.value)
             elif cmd.command_type == ERASE:
-                self._ssd_file_manager.erase(cmd.lba, cmd.value)
+                self._ssd_file_manager.erase(cmd.lba, cmd.size)
 
         self._command_buffer.initialize()
 
