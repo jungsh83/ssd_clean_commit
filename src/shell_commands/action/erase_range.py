@@ -17,7 +17,7 @@ class EraseRangeShellCommand(ShellCommand):
         self._start_lba = None
 
     @log_call(level=LogLevel.INFO)
-    def execute(self) -> None:
+    def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())
 
