@@ -1,6 +1,6 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import VALID_ARGUMENT_RANGE, INIT_VAL_INT, INIT_VAL_STR
+from ..data_dict import VALID_ARGUMENT_RANGE, INIT_VAL_INT, INIT_VAL_STR, DONE_TEXT
 
 
 class WriteShellCommand(ShellCommand):
@@ -23,10 +23,10 @@ class WriteShellCommand(ShellCommand):
             raise InvalidArgumentException(self.get_exception_string())
 
         self._ssd_driver.write(self._lba, self._value)
-        return "Done"
+        return DONE_TEXT
 
     def validate(self) -> bool:
-        if len(self._arguments) != 2:
+        if len(self._arguments) != VALID_ARGUMENT_RANGE:
             return False
 
         self._lba, self._value = self._arguments

@@ -1,5 +1,6 @@
 from src.command_buffer.command_buffer_data import WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
+from src.data_dict import FAIL_TEXT, PASS_TEXT
 from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
 
@@ -11,7 +12,7 @@ class FlushSSDCommand(SSDCommand):
     def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
-            return "FAIL"
+            return FAIL_TEXT
 
         for cmd in self._command_buffer.command_buffers:
             if cmd.command_type == WRITE:
@@ -21,7 +22,7 @@ class FlushSSDCommand(SSDCommand):
 
         self._command_buffer.initialize()
 
-        return "PASS"
+        return PASS_TEXT
 
     def validate(self) -> bool:
         return self._arguments == ()

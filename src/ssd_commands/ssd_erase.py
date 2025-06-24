@@ -1,6 +1,6 @@
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.data_dict import ERASE_SIZE_MIN, VALID_ARGUMENT_RANGE, INIT_VAL_INT
+from src.data_dict import ERASE_SIZE_MIN, VALID_ARGUMENT_RANGE, INIT_VAL_INT, PASS_TEXT, FAIL_TEXT
 from src.ssd_commands import validate_erase_size, validate_lba
 from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
@@ -26,12 +26,12 @@ class EraseSSDCommand(SSDCommand):
     def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
-            return "FAIL"
+            return FAIL_TEXT
 
         self.lba, self.size = int(self._arguments[0]), int(self._arguments[1])
 
         if self.size == ERASE_SIZE_MIN:
-            return "PASS"
+            return PASS_TEXT
 
         if not self._command_buffer.is_buffer_available():
             self.do_flush()
@@ -39,7 +39,7 @@ class EraseSSDCommand(SSDCommand):
         # Command를 buffer에 추가
         self.append_command_into_command_buffer()
 
-        return "PASS"
+        return PASS_TEXT
 
     def append_command_into_command_buffer(self):
         self._command_buffer.append(

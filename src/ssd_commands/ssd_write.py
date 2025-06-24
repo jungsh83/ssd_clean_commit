@@ -1,6 +1,6 @@
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE, ERASE
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.data_dict import INIT_VAL_INT, INIT_VAL_STR
+from src.data_dict import INIT_VAL_INT, INIT_VAL_STR, PASS_TEXT, FAIL_TEXT
 from src.ssd_commands import validate_lba, validate_value
 from src.ssd_commands.ssd_command import SSDCommand
 from src.ssd_file_manager import SSDFileManager
@@ -16,7 +16,7 @@ class WriteSSDCommand(SSDCommand):
     def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
-            return "FAIL"
+            return FAIL_TEXT
 
         # Buffer가 가득차 있다면 flush 수행
         if not self._command_buffer.is_buffer_available():
@@ -25,7 +25,7 @@ class WriteSSDCommand(SSDCommand):
         # Command를 buffer에 추가
         self.append_command_into_command_buffer()
 
-        return "PASS"
+        return PASS_TEXT
 
     def append_command_into_command_buffer(self):
         self._command_buffer.append(
