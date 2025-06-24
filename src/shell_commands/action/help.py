@@ -17,14 +17,13 @@ class HelpShellCommand(ShellCommand):
     @log_call(level=LogLevel.INFO)
     def execute(self):
         if not self.validate():
-            raise InvalidArgumentException(
-                f"{self.__class__.command_name} takes no arguments, but got {self._arguments}")
+            raise InvalidArgumentException(self._get_exception_string())
 
+        team_name = getattr(ShellCommand, '_team_name', "C-team")
         for name, cls in sorted(ShellCommand.registry.items()):
             print(f"\n▶ {name}")
             print(f"  - Description : {getattr(cls, '_description', 'No description')}")
             print(f"  - Usage       : {getattr(cls, '_usage', 'No usage')}")
-            team_name = getattr(cls, '_team_name', "")
             print(f"  - Author      : [{team_name}] {getattr(cls, '_author', 'Unknown')}")
 
             aliases = getattr(cls, '_alias', [])
@@ -33,3 +32,6 @@ class HelpShellCommand(ShellCommand):
 
     def validate(self) -> bool:
         return self._arguments == ()
+
+    def _get_exception_string(self):
+        return f"{self.__class__.command_name} takes no arguments, but got {self._arguments}"

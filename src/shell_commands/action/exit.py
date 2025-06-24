@@ -17,7 +17,7 @@ class ExitShellCommand(ShellCommand):
     @log_call(level=LogLevel.INFO)
     def execute(self):
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
         print("[EXIT]")
         # sys.exit(0)
         return
@@ -25,5 +25,5 @@ class ExitShellCommand(ShellCommand):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes no arguments, but got {self._arguments}."

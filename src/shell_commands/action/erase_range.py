@@ -19,7 +19,7 @@ class EraseRangeShellCommand(ShellCommand):
     @log_call(level=LogLevel.INFO)
     def execute(self) -> None:
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
 
         start_lba, end_lba = self._get_lba_range()
         size = self._get_size(start_lba, end_lba)
@@ -28,6 +28,8 @@ class EraseRangeShellCommand(ShellCommand):
         for offset in range(0, total_size, MAX_ERASE_LEN_ON_SSD_DRIVER):
             cmd_size = min(MAX_ERASE_LEN_ON_SSD_DRIVER, total_size - offset)
             self._ssd_driver.erase(start_lba + offset, cmd_size)
+
+        return DONE_TEXT
 
     def _get_lba_range(self) -> (int, int):
         start_lba, end_lba = int(self._start_lba), int(self._end_lba)
@@ -55,5 +57,5 @@ class EraseRangeShellCommand(ShellCommand):
 
         return True
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes {VALID_ARGUMENT_RANGE} arguments, but got {self._arguments}."
