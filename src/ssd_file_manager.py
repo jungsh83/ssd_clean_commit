@@ -1,5 +1,5 @@
 import os
-from .data_dict import *
+from src.data_dict import *
 
 
 class SSDFileManager:

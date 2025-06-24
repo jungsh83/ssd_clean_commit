@@ -3,6 +3,12 @@ from datetime import datetime
 from pathlib import Path
 
 
+class LogLevel:
+    INFO: str = "INFO"
+    ERROR: str = "ERROR"
+    DEBUG: str = "DEBUG"
+
+
 class _CustomLogger:
     BASE_DIR = Path(__file__).resolve().parent.parent
     LOG_DIR = BASE_DIR / "logs"
@@ -62,13 +68,13 @@ class _CustomLogger:
             f.write(formatted + "\n")
 
     def info(self, message: str):
-        self._log("INFO ", message)
+        self._log(LogLevel.INFO, message)
 
     def error(self, message: str):
-        self._log("ERROR", message)
+        self._log(LogLevel.ERROR, message)
 
     def debug(self, message: str):
-        self._log("DEBUG", message)
+        self._log(LogLevel.DEBUG, message)
 
 
 class LoggerSingleton:
