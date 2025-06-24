@@ -1,0 +1,37 @@
+./shell.py
+
+초기화 확인
+  >> buffer 삭제
+  >> nand.txt 삭제
+  >> log 삭제
+
+1) shell_script 부터 실행
+  >> buffer 확인
+  >> nand.txt 확인
+
+2) shell command 실행
+	help
+
+	fullread
+	>> shell_scripts 동작 확인
+
+	fullwrite 0x12345678
+
+	read 13
+	read 93
+
+	erase 95 20
+	erase_range 89 92
+
+    >> buffer 확인
+	>> nand.txt 확인
+
+	write 99 0x23456789
+	read 99
+
+	flush
+
+	>> buffer
+	>> nand.txt
+	>> log
+
