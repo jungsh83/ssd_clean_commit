@@ -1,20 +1,9 @@
 import builtins
 import pytest
-
 import shell
-
 from src.shell_commands.shell_command import ShellCommand
 
-
-@pytest.fixture
-def mock_handler_and_driver(mocker):
-    mock_driver = mocker.Mock()
-    mock_handler = mocker.Mock()
-    mock_handler_instance = mocker.Mock()
-    mock_handler.return_value = mock_handler_instance
-    mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mock_driver)
-
-    return mock_driver, mock_handler, mock_handler_instance
+FILEMANAGER_SOURCE_PATH = "src.ssd_file_manager.SSDFileManager"
 
 
 def simulate_shell(inputs, monkeypatch):
@@ -38,7 +27,7 @@ def test_help_정상명령(monkeypatch, capsys, mocker):
 
         def validate(self): return True
 
-    mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mocker.Mock())
+    mocker.patch(FILEMANAGER_SOURCE_PATH, return_value=mocker.Mock())
     simulate_shell(["help", "exit"], monkeypatch)
 
     shell.shell_mode()
@@ -61,7 +50,7 @@ def test_help_많은인자(monkeypatch, capsys, mocker):
 
         def validate(self): return True
 
-    mocker.patch("src.ssd_file_manager.SSDFileManager", return_value=mocker.Mock())
+    mocker.patch(FILEMANAGER_SOURCE_PATH, return_value=mocker.Mock())
     simulate_shell(["help 0", "exit"], monkeypatch)
 
     shell.shell_mode()

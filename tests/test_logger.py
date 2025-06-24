@@ -1,7 +1,7 @@
 import shutil
 import pytest
 from pathlib import Path
-from src.logger import LoggerSingleton, _CustomLogger
+from src.logger import LoggerSingleton, _CustomLogger, LogLevel
 
 
 @pytest.fixture(scope="function")
@@ -60,9 +60,9 @@ def test_logger_log_잘나오는지(fixed_log_dir):
 
     log_content = latest_log.read_text(encoding="utf-8")
 
-    assert "INFO" in log_content, "'INFO' 로그가 기록되지 않음"
-    assert "DEBUG" in log_content, "'DEBUG' 로그가 기록되지 않음"
-    assert "ERROR" in log_content, "'ERROR' 로그가 기록되지 않음"
+    assert LogLevel.INFO in log_content, "'INFO' 로그가 기록되지 않음"
+    assert LogLevel.DEBUG in log_content, "'DEBUG' 로그가 기록되지 않음"
+    assert LogLevel.ERROR in log_content, "'ERROR' 로그가 기록되지 않음"
 
 
 def test_logger_builtin_print_패치되는지(fixed_log_dir):
