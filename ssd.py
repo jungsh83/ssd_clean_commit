@@ -1,3 +1,5 @@
+#!.venv/Scripts/python.exe
+
 import sys
 from src.ssd_file_manager import SSDFileManager
 from src.ssd_commands.ssd_command import InvalidArgumentException
