@@ -157,3 +157,8 @@ def test_write_output_정상동작_파일생성_및_내용확인(ssd_file_manage
     with open(OUTPUT_PATH, encoding='utf-8') as f:
         content = f.read().strip()
     assert content == test_value
+
+def test_lba_valid_확인(ssd_file_manager):
+    test_lba = -1
+
+    assert not ssd_file_manager._is_valid_lba(test_lba)
