@@ -1,6 +1,7 @@
 import pytest
 
 from src.shell_commands.action.erase_range import EraseRangeShellCommand
+from src.shell_commands.data_dict import DONE_TEXT
 from src.ssd_driver import SSDDriver
 
 
@@ -19,8 +20,7 @@ def mock_ssd_driver(mocker):
 def test_erase_range_call_count_확인(start_lba, end_lba, expected_call_count, mock_ssd_driver):
     erase_range_cmd = EraseRangeShellCommand(mock_ssd_driver, start_lba, end_lba)
 
-    erase_range_cmd.execute()
-
+    assert erase_range_cmd.execute() == DONE_TEXT
     assert mock_ssd_driver.erase.call_count == expected_call_count
 
 

@@ -1,11 +1,11 @@
 import pytest
 from pytest_mock import MockFixture
 
-from src.ssd_file_manager import SSDFileManager
-from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, ERASE
-from src.ssd_commands.ssd_erase import EraseSSDCommand
+from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.data_dict import DEFAULT_VAL
+from src.ssd_commands.ssd_erase import EraseSSDCommand
+from src.ssd_file_manager import SSDFileManager
 
 COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
 
@@ -53,13 +53,11 @@ def test_validate_성공(ssd_file_manager, command_buffer_without_flush, lba, si
     assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).validate()
 
 
-
 @pytest.mark.parametrize(
     "lba, size",
     [("0", "20"), ("100", "10")]
 )
 def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_without_flush, lba, size):
-    "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
     assert not EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).validate()
 
 
@@ -68,13 +66,20 @@ def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_w
     [("0", "20"), ("100", "10")]
 )
 def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, size):
-    "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
     assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).execute() == "FAIL"
 
 
 @pytest.mark.parametrize(
+    "lba, size, error_param",
+    [("0", "20", "0"), ("100", "10", "x")]
+)
+def test_run_param_오류(ssd_file_manager, command_buffer_without_flush, lba, size, error_param):
+    assert not EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size, error_param).validate()
+
+
+@pytest.mark.parametrize(
     "lba, size",
-    [("0", "10"), ("10", "10")]
+    [("0", "10"), ("10", "10"), ("0", "0")]
 )
 def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush, lba, size):
     assert EraseSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, size).execute() == "PASS"
