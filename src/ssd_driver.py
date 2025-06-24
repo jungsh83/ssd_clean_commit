@@ -1,8 +1,8 @@
 import subprocess
 from pathlib import Path
 from src.decorators import log_call
-from .data_dict import VALID_RETURN_CODE, ERROR_TEXT
-from .logger import LogLevel
+from src.data_dict import VALID_RETURN_CODE, ERROR_TEXT
+from src.logger import LogLevel
 
 
 class ReadException(Exception):

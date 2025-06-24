@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from .data_dict import *
+from src.command_buffer.data_dict import *
 
 
 class CommandBufferDataException(Exception):

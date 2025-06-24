@@ -1,7 +1,7 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import VALID_ARGUMENT_RANGE, INIT_VAL_INT, INIT_VAL_STR, DONE_TEXT
-from ...logger import LogLevel
+from src.shell_commands.data_dict import VALID_ARGUMENT_RANGE, INIT_VAL_INT, INIT_VAL_STR, DONE_TEXT
+from src.logger import LogLevel
 
 
 class WriteShellCommand(ShellCommand):

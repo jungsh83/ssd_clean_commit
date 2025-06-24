@@ -1,7 +1,7 @@
 from src.decorators import log_call
 from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
-from ..data_dict import *
-from ...logger import LogLevel
+from src.shell_commands.data_dict import *
+from src.logger import LogLevel
 
 
 class EraseShellCommand(ShellCommand):
