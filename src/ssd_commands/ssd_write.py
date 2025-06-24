@@ -26,6 +26,7 @@ class WriteSSDCommand(SSDCommand):
 
         return True
 
+
     def execute(self) -> str:
         if not self.validate():
             self._ssd_file_manager.error()
@@ -38,10 +39,12 @@ class WriteSSDCommand(SSDCommand):
 
         return PASS_TEXT
 
+
     def append_command_into_command_buffer(self):
         self._command_buffer.append(
             CommandBufferData.create_write_command(lba=self.lba, value=self.value)
         )
+
 
     def do_flush(self):
         for command in self._command_buffer.command_buffers:
