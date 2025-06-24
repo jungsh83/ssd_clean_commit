@@ -21,6 +21,13 @@ def fixed_log_dir(monkeypatch):
     shutil.rmtree(test_logs.parent)
 
 
+def test_logger가_싱글톤인지(fixed_log_dir):
+    logger1 = LoggerSingleton.get_logger()
+    logger2 = LoggerSingleton.get_logger()
+
+    assert logger1 is logger2, "로거 인스턴스가 싱글톤이 아님 (다른 객체임)"
+
+
 def test_logger_파일생성되는지_각파일이10kB넘지않는지(fixed_log_dir):
     logger = LoggerSingleton.get_logger()
     message = "X" * 1024  # 1kB
