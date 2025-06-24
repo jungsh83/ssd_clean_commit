@@ -1,7 +1,6 @@
 import subprocess
 from pathlib import Path
 from src.decorators import log_call
-from winreg import FlushKey
 from .data_dict import VALID_RETURN_CODE
 
 
