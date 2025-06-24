@@ -12,3 +12,4 @@ from src.shell_commands.action.erase_range import EraseRangeShellCommand
 from src.shell_commands.script.full_write_and_read_compare import FullWriteAndReadCompareShellCommand
 from src.shell_commands.script.partial_lba_write import PartialLBAWriteShellCommand
 from src.shell_commands.script.write_read_aging import WriteReadAgingShellCommand
+from src.shell_commands.script.erase_and_write_aging import EraseAndWriteAgingCommand

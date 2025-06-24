@@ -1,9 +1,8 @@
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
-import sys
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
 from src.decorators import log_call
 
 
-class ExitShellCommand(ShellCommandAction):
+class ExitShellCommand(ShellCommand):
     command_name: str = 'exit'
     _description = 'Exit the shell.'
     _usage = 'exit'
@@ -15,9 +14,9 @@ class ExitShellCommand(ShellCommandAction):
         super().__init__(*args, **kwargs)
 
     @log_call(level="INFO")
-    def run(self):
+    def execute(self):
         if not self.validate():
-            raise InvalidArgumentException(self.get_exception_string())
+            raise InvalidArgumentException(self._get_exception_string())
         print("[EXIT]")
         # sys.exit(0)
         return
@@ -25,5 +24,5 @@ class ExitShellCommand(ShellCommandAction):
     def validate(self) -> bool:
         return self._arguments == ()
 
-    def get_exception_string(self):
+    def _get_exception_string(self):
         return f"{self.command_name} takes no arguments, but got {self._arguments}."

@@ -4,7 +4,7 @@ from pytest_mock import MockFixture
 from src.ssd_file_manager import SSDFileManager
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
 from src.command_buffer.command_buffer_data import CommandBufferData, WRITE
-from src.ssd_commands.ssd_write import WriteCommandAction
+from src.ssd_commands.ssd_write import WriteSSDCommand
 
 COMMAND_BUFFER_HANDLER_CLASS = "src.command_buffer.command_buffer_handler.CommandBufferHandler"
 
@@ -49,12 +49,12 @@ def mk_read_all():
     [("0", "0x00000001"), ("33", "0x00000002")]
 )
 def test_validate_성공(ssd_file_manager, command_buffer_without_flush, lba, value):
-    assert WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value).validate()
+    assert WriteSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, value).validate()
 
 
 def test_validate_실패_no_arguments(mocker: MockFixture, ssd_file_manager, command_buffer_without_flush):
     "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
-    assert not WriteCommandAction(ssd_file_manager, command_buffer_without_flush).validate()
+    assert not WriteSSDCommand(ssd_file_manager, command_buffer_without_flush).validate()
 
 
 @pytest.mark.parametrize(
@@ -62,7 +62,7 @@ def test_validate_실패_no_arguments(mocker: MockFixture, ssd_file_manager, com
     [("0", "0x0000000T"), ("101", "0x00000002")]
 )
 def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_without_flush, lba, value):
-    assert not WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value).validate()
+    assert not WriteSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, value).validate()
 
 
 @pytest.mark.parametrize(
@@ -71,7 +71,7 @@ def test_validate_실패(mocker: MockFixture, ssd_file_manager, command_buffer_w
 )
 def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, value):
     "src.ssd_commands.(validate_lba, validate_value) 구성 후 Test"
-    assert WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value).run() == "FAIL"
+    assert WriteSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, value).execute() == "FAIL"
 
 
 @pytest.mark.parametrize(
@@ -79,7 +79,7 @@ def test_run_실패(ssd_file_manager, command_buffer_without_flush, lba, value):
     [("0", "0x00000001"), ("99", "0x00000099")]
 )
 def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush, lba, value):
-    assert WriteCommandAction(ssd_file_manager, command_buffer_without_flush, lba, value).run() == "PASS"
+    assert WriteSSDCommand(ssd_file_manager, command_buffer_without_flush, lba, value).execute() == "PASS"
 
 
 @pytest.mark.parametrize(
@@ -87,4 +87,4 @@ def test_run_성공_without_flush(ssd_file_manager, command_buffer_without_flush
     [("0", "0x00000001"), ("99", "0x00000099")]
 )
 def test_run_성공_with_flush(ssd_file_manager, command_buffer_with_flush, lba, value):
-    assert WriteCommandAction(ssd_file_manager, CommandBufferHandler(), lba, value).run() == "PASS"
+    assert WriteSSDCommand(ssd_file_manager, CommandBufferHandler(), lba, value).execute() == "PASS"

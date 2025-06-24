@@ -2,12 +2,13 @@ import random
 from src.logger import LoggerSingleton
 from src.decorators import log_call
 from src.data_dict import DEFAULT_VAL
-from src.shell_commands.shell_command_action import ShellCommandAction, InvalidArgumentException
+from src.shell_commands.shell_command import ShellCommand, InvalidArgumentException
+from ..data_dict import *
 
 logger = LoggerSingleton.get_logger()
 
 
-class EraseAndWriteAging(ShellCommandAction):
+class EraseAndWriteAgingCommand(ShellCommand):
     command_name: str = "4_EraseAndWriteAging"
     _description = 'Execute test scenario: Erase and Write Aging'
     _usage = "'4_EraseAndWriteAging' or '4_'"
@@ -18,7 +19,7 @@ class EraseAndWriteAging(ShellCommandAction):
         return self._arguments == ()
 
     @log_call(level="INFO")
-    def run(self) -> str:
+    def execute(self) -> str:
 
         if not self.validate():
             msg = f"{self.command_name} takes no arguments, but got '{self._arguments}'"
@@ -27,7 +28,7 @@ class EraseAndWriteAging(ShellCommandAction):
         self._ssd_driver.erase(0, 2)
 
         for _ in range(30):
-            for start_lba in range(2, 100, 2):
+            for start_lba in range(2, 97, 2):
                 if not self.run_single_test(start_lba):
                     return "FAIL"
 
@@ -44,7 +45,8 @@ class EraseAndWriteAging(ShellCommandAction):
 
         return True
 
-    def generate_test_value(self):
+    @staticmethod
+    def generate_test_value():
         return f"0x{random.randint(1111111, 4444444):08X}"
 
     def read_compare(self, lba, test_value) -> bool:

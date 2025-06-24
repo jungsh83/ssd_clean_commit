@@ -3,7 +3,7 @@ import pytest
 
 import shell
 
-from src.shell_commands.shell_command_action import ShellCommandAction
+from src.shell_commands.shell_command import ShellCommand
 
 
 @pytest.fixture
@@ -39,9 +39,9 @@ def test_shell_없는_명령어_입력_시_invalid_command_확인(monkeypatch, c
 
 def test_shell_일반적인_명령어(monkeypatch, capsys, mock_handler_and_driver):
     mock_driver, mock_handler, mock_handler_instance = mock_handler_and_driver
-    mock_handler_instance.run.return_value = "Done"
+    mock_handler_instance.execute.return_value = "Done"
 
-    ShellCommandAction.registry["write"] = mock_handler
+    ShellCommand.registry["write"] = mock_handler
 
     simulate_shell(["write arg1 arg2", "exit"], monkeypatch)
 
@@ -53,14 +53,14 @@ def test_shell_일반적인_명령어(monkeypatch, capsys, mock_handler_and_driv
 
 
 def test_shell_help_명령어_목록_출력(monkeypatch, capsys, mocker):
-    class DummyShellCommand(ShellCommandAction):
+    class DummyShellCommand(ShellCommand):
         command_name = 'dummy'
         description = 'Test Dummy'
         usage = 'dummy <LBA>'
         author = 'Tester'
         alias = ['du']
 
-        def run(self): pass
+        def execute(self): pass
 
         def validate(self): return True
 
@@ -81,9 +81,9 @@ def test_shell_exception_뜨면_안멈추고_메시지_띄우는지(monkeypatch,
     def broken_run(*args):
         raise Exception("boom")
 
-    mock_handler_instance.run.side_effect = broken_run
+    mock_handler_instance.execute.side_effect = broken_run
 
-    ShellCommandAction.registry["explode"] = mock_handler
+    ShellCommand.registry["explode"] = mock_handler
 
     simulate_shell(["explode", "exit"], monkeypatch)
 

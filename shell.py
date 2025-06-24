@@ -1,5 +1,6 @@
-from src.shell_commands.shell_command_action import ShellCommandAction
-from src.ssd_file_manager import SSDFileManager
+#!.venv/Scripts/python.exe
+
+from src.shell_commands.shell_command import ShellCommand
 from src.ssd_driver import SSDDriver
 import sys
 import re
@@ -8,12 +9,23 @@ from pathlib import Path
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
+class Invoker:
+    def __init__(self):
+        self.command = None
+
+    def set_command(self, command):
+        self.command = command
+
+    def run(self):
+        return self.command.execute()
+
+
 def resolve_command(name):
-    handler = ShellCommandAction.registry.get(name)
+    handler = ShellCommand.registry.get(name)
     if handler:
         return handler, name
 
-    for cls in ShellCommandAction.registry.values():
+    for cls in ShellCommand.registry.values():
         if name in getattr(cls, '_alias', []):
             return cls, cls.command_name
     return None, name
@@ -26,7 +38,11 @@ def execute_command(command: str, args: list[str], ssd_driver):
         raise Exception(f"[{command.upper()}] INVALID COMMAND")
 
     handler_instance = handler(ssd_driver, *args)
-    result = handler_instance.run()
+
+    remote_controller = Invoker()
+    remote_controller.set_command(handler_instance)
+    result = remote_controller.run()
+
     return resolved_name, result
 
 
@@ -81,7 +97,7 @@ def runner_mode(file_path: str, ssd_driver=SSDDriver()):
                 break
 
             label = f"{resolved_name.upper():<20}"
-            print(f"{label} ___   RUN...", end="")
+            print(f"{label} ___   RUN...", end="", flush=True)
 
             try:
                 _, result = execute_command(command, [], ssd_driver)

@@ -1,18 +1,31 @@
+#!.venv/Scripts/python.exe
+
 import sys
 from src.ssd_file_manager import SSDFileManager
-from src.ssd_commands.ssd_command_action import InvalidArgumentException
+from src.ssd_commands.ssd_command import InvalidArgumentException
 from src.command_buffer.command_buffer_handler import CommandBufferHandler
-from src.ssd_commands.ssd_read import ReadCommand
-from src.ssd_commands.ssd_write import WriteCommandAction
-from src.ssd_commands.ssd_erase import SSDWriteCommand
-from src.ssd_commands.ssd_flush import SSDFlushCommand
+from src.ssd_commands.ssd_read import ReadSSDCommand
+from src.ssd_commands.ssd_write import WriteSSDCommand
+from src.ssd_commands.ssd_erase import EraseSSDCommand
+from src.ssd_commands.ssd_flush import FlushSSDCommand
 
 SSD_COMMANDS = {
-    'R': ReadCommand,
-    'W': WriteCommandAction,
-    'E': SSDWriteCommand,
-    'F': SSDFlushCommand,
+    'R': ReadSSDCommand,
+    'W': WriteSSDCommand,
+    'E': EraseSSDCommand,
+    'F': FlushSSDCommand,
 }
+
+
+class Invoker:
+    def __init__(self):
+        self.command = None
+
+    def set_command(self, command):
+        self.command = command
+
+    def run(self):
+        return self.command.execute()
 
 
 def main(args: list[str]):
@@ -30,8 +43,11 @@ def main(args: list[str]):
 
     command = command_class(SSDFileManager(), CommandBufferHandler(), *command_args)
 
+    remote_controller = Invoker()
+    remote_controller.set_command(command)
+
     try:
-        command.run()
+        remote_controller.run()
     except InvalidArgumentException:
         pass
 
