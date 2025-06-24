@@ -16,12 +16,14 @@ class FullWriteShellCommand(ShellCommand):
         self._value = None
 
     @log_call(level=LogLevel.INFO)
-    def execute(self) -> None:
+    def execute(self) -> str:
         if not self.validate():
             raise InvalidArgumentException(self._get_exception_string())
 
         for lba in range(LBA_COUNT):
             self._ssd_driver.write(lba, self._value)
+
+        return DONE_TEXT
 
     def validate(self) -> bool:
         if len(self._arguments) != VALID_ARGUMENT_SINGLE:
